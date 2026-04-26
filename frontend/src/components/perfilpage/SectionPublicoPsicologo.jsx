@@ -5,6 +5,7 @@ import InfoPublicoPsicologo from "./InfoPublicoPsicologo.jsx";
 import Calendario from "./Calendario.jsx";
 import SobrePsicologo from "./SobrePsicologo.jsx";
 import VerPsi from "../popups/Verpsi.jsx";
+import SkipNavigation from "../SkipNavigation.jsx";
 
 export default function PerfilPublicoPsicologo() {
   const { id } = useParams();
@@ -33,6 +34,8 @@ export default function PerfilPublicoPsicologo() {
   if (!perfil) return <div>Carregando perfil...</div>;
 
   return (
+    <>
+    < SkipNavigation mainContent="cardPerfilPsicologoPublico" />
     <div className="container-section-perfil">
       <div className="sobre-notif-container">
         <InfoPublicoPsicologo />
@@ -46,9 +49,11 @@ export default function PerfilPublicoPsicologo() {
             open={openPsi}
             close={() => setOpenPsi(false)}
             perfil={perfil}
+            modo="marcar"
           />
          )}
       </div>
     </div>
+    </>
   );
 }

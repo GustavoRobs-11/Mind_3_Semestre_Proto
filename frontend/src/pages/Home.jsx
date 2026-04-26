@@ -161,6 +161,7 @@ export default function Home() {
               open={openPsi}
               close={() => setOpenPsi(false)}
               perfil={selectedPerfil}
+              modo="marcar"
           />
       )}
     </>

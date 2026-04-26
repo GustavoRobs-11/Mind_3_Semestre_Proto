@@ -1,0 +1,184 @@
+.pop-up-backdrop {
+    box-sizing: border-box;
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    background-color: #3a3a3aa2;
+    backdrop-filter: blur(2px);
+    z-index: 80;
+    top:0;
+    left:0;
+    overflow: hidden;
+}
+
+.pop-up-agenda-historico{
+    position: fixed; 
+    background-color: var(--secondary-cream-700);
+    width:500px;
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--border-radius-md);
+    box-shadow: 0px 0px 30px -5px #3a3a3a;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    gap: 10px;
+    z-index: 81;
+}
+
+.header-pop-agendamento{
+    width: 100%;
+    padding: var(--spacing-xs);
+    background-color: var(--primary-orange-700);
+    border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-pop-agendamento h3{
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.pop-up-agendamento-content,
+.agendamento-infos{
+    padding: var(--spacing-xs);
+    width: 100%;
+}
+
+.pop-up-agendamento-content{
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs)
+}
+
+.pop-up-agendamento-content > .status-termos{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: var(--spacing-xs)
+}
+
+.pop-up-agendamento-content > p {
+    margin-top: var(--spacing-xs);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Texto informando o não parecer do psicologo na solicitação realizada */
+.attention-setence{
+    padding: 5px;
+    border-radius: var(--border-radius-sm);
+}
+
+.attention-setence.cancel{
+    background-color: var(--accent-mid-orange-400);
+}
+.attention-setence.done{
+    background-color: var(--tertiary-light-green-500);
+}
+
+.icon-attention-setence{
+    font-size: 1.2rem;
+    padding: 0 5px;
+    margin-top: 5px
+}
+
+/* Informações gerais do agendamento */
+
+.agendamento-infos{
+    background-color: var(--white-200);
+    border-radius: var(--border-radius-md);
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-xs-);
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info-remetente span,
+.status-agendamento span{
+    font-weight: 600;
+}
+
+.remarcar-consulta,
+.cancelar-consulta{
+    width: 100%;
+    padding:10px 20px;
+    font-size: 1rem;
+}
+
+.wrapped-btn{
+    width: 100%
+}
+
+.btn-close-pop-up{
+    font-size: 1.5rem; 
+    background: none; 
+    border: none; 
+    cursor: pointer; 
+}
+
+.btn-pop-up-agendamento-historico{
+    width: 100% !important;
+}
+
+.link-text a{
+    text-decoration: underline;
+    color: var(--accent-dark-green-800) !important
+}
+
+.status-agendamento{
+    font-size: 0.9rem;
+    width: max-content;
+    padding: 5px var(--spacing-xs);
+    border-radius: var(--border-radius-lg);
+}
+
+.status-agendamento.pendente{
+    background-color: var(--primary-orange-700);
+}
+.status-agendamento.confirmado{
+    background-color: var(--tertiary-light-green-700);
+}
+.status-agendamento.cancelado{
+    background-color: var(--accent-mid-orange-600);
+}
+
+/* Animação - chamada de video do dia */
+
+.dot-animated {
+    position: relative;
+    width: 8px;
+    height: 8px;
+    background-color: var(--tertiary-light-green-800);
+    border-radius: 100%;
+}
+
+.dot-animated::before{
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 100%;
+    background-color: var(--tertiary-light-green-800);
+    animation: ping 1s ease-out infinite;
+}
+
+@keyframes ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  80% {
+    transform: scale(2.5);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}

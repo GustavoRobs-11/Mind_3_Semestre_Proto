@@ -71,14 +71,14 @@ export default function Info({ profileData }) {
     };
 
     return (
-        <div className="card-perfil-content">
+        <div className="card-perfil-content" id="cardPerfilPaciente">
             <div className="foto-perfil">
                 <div className="banner-perfil"></div>
                 <img
                     id="perfilFoto"
                     src={imageUrl}
                     alt="Foto de Perfil"
-                    onError={(e) => {
+                    onError={() => {
                         if (!imageError) {
                             console.warn('Imagem não encontrada, carregando imagem padrão (base64)');
                             setImageError(true);

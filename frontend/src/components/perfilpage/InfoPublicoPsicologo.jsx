@@ -35,7 +35,7 @@ export default function InfoPublicoPsicologo() {
 
     return (
         <>
-            <div className="card-perfil-content">
+            <div className="card-perfil-content" id="cardPerfilPsicologoPublico">
                 <div className="foto-perfil">
                     <div className="banner-perfil"></div>
                     <img id="perfilFoto" src={fotoPsi} alt="Foto do Psicólogo" />
@@ -90,6 +90,7 @@ export default function InfoPublicoPsicologo() {
                 open={openPsi}
                 close={() => setOpenPsi(false)}
                 perfil={perfil}
+                modo="marcar"
             />
         </>
     );

@@ -10,7 +10,13 @@ import { useAuth } from "../../context/AuthContext";
 import { HiOutlineUser } from "react-icons/hi";
 import { toast } from "react-toastify";
 
-export default function VerPsi({ open = false, close = () => { }, perfil }) {
+export default function VerPsi({ 
+  open = false, 
+  close = () => { }, 
+  perfil ,
+  // onConfirm = () => {},
+  modo
+}) {
   const navigate = useNavigate();
   const { user, isPaciente } = useAuth();
   const inputRef = useRef(null);
@@ -180,6 +186,17 @@ export default function VerPsi({ open = false, close = () => { }, perfil }) {
     } catch (err) {
       toast.error(err.message || "Erro ao realizar agendamento");
     }
+    // Dados selecionados para agendamento
+    const dados = {
+      data: selecionadoData,
+      diaDaSemana: selecionadoSemana,
+      horaInicio: selecionadoHorario,
+      psicologoCRP: perfil.crp,
+      ocupado: true
+    }
+
+    // onConfirm(dados)
+    alert("Agendado com sucesso!");
   };
 
   // Focus no pop-up
@@ -264,7 +281,7 @@ export default function VerPsi({ open = false, close = () => { }, perfil }) {
         </div>
         
         <img 
-          src={perfil.foto} 
+          src={perfil.foto || fotoDefault} 
           alt={`Foto de perfil - psicologo: ${perfil.nome || "Sem nome"}`} 
           onError={(e) => {
             e.target.src = fotoDefault;
@@ -344,7 +361,9 @@ export default function VerPsi({ open = false, close = () => { }, perfil }) {
       </div>
       <div className="btn-agendar-cancelar">
         <button className="button-cancelar" onClick={close} aria-label="Fechar">Cancelar</button>
-        <button className="button-confirm" onClick={() => handleAgendar()}>Agendar</button>
+        <button className="button-confirm" onClick={() => handleAgendar()}>
+          {modo === "remarcar" ? "Remarcar" : "Agendar"}
+        </button>
       </div>
     </div>
     </>

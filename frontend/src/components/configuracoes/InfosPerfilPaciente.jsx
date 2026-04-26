@@ -22,7 +22,7 @@ export default function InfosPerfilPaciente({
                     className="img-edit-wallpaper"
                     onError={(e) => {
                         e.currentTarget.onerror = null;
-                        e.currentTarget.src = getDefaultAvatar();
+                        e.currentTarget.src = getDefaultWallpaper();
                     }}
                 />
                 <div>
