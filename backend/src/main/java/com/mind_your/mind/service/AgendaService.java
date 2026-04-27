@@ -11,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,15 +34,30 @@ public class AgendaService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O horário selecionado não está mais disponível.");
         }
 
+        // Validação de data/hora no passado
+        LocalDateTime agora = LocalDateTime.now();
+        LocalDate data = LocalDate.parse(dto.getData());
+        LocalTime horaInicio = LocalTime.parse(dto.getHoraInicio());
+        LocalDateTime dataHoraAgendamento = LocalDateTime.of(data, horaInicio);
+
+        if (dataHoraAgendamento.isBefore(agora)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não é possível agendar um horário que já passou.");
+        }
+
+        // Verifica se já existe agendamento para este psicólogo nesta data e hora
+        if (agendaRepository.existsByPsicologoIdAndDataAndHoraInicioAndStatusNot(
+                dto.getPsicologoId(), dto.getData(), dto.getHoraInicio(), "CANCELADO")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Este horário já está reservado para esta data.");
+        }
+
         Agenda agenda = new Agenda();
         agenda.setPacienteId(dto.getPacienteId());
         agenda.setPsicologoId(dto.getPsicologoId());
         agenda.setHorarioId(dto.getHorarioId());
+        agenda.setData(dto.getData());
+        agenda.setDiaDaSemana(dto.getDiaDaSemana());
+        agenda.setHoraInicio(dto.getHoraInicio());
         agenda.setStatus("AGENDADO");
-
-        // Atualiza a disponibilidade do horário
-        horario.setDisponivel(false);
-        horarioRepository.save(horario);
 
         agenda = agendaRepository.save(agenda);
         return toDTO(agenda);
@@ -63,13 +81,6 @@ public class AgendaService {
 
         agenda.setStatus("CANCELADO");
         agendaRepository.save(agenda);
-
-        // Libera o horário novamente
-        Horario horario = horarioRepository.findById(agenda.getHorarioId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Horário vinculado não encontrado."));
-        
-        horario.setDisponivel(true);
-        horarioRepository.save(horario);
     }
 
     private AgendaResponseDTO toDTO(Agenda agenda) {
@@ -78,6 +89,9 @@ public class AgendaService {
         dto.setPacienteId(agenda.getPacienteId());
         dto.setPsicologoId(agenda.getPsicologoId());
         dto.setHorarioId(agenda.getHorarioId());
+        dto.setData(agenda.getData());
+        dto.setDiaDaSemana(agenda.getDiaDaSemana());
+        dto.setHoraInicio(agenda.getHoraInicio());
         dto.setStatus(agenda.getStatus());
         return dto;
     }

@@ -12,6 +12,9 @@ public class Agenda {
     private String pacienteId;
     private String psicologoId;
     private String horarioId;
+    private String data;
+    private String diaDaSemana;
+    private String horaInicio;
     
     // Status can be: AGENDADO, CANCELADO, CONCLUIDO
     private String status = "AGENDADO";
@@ -48,6 +51,30 @@ public class Agenda {
 
     public void setHorarioId(String horarioId) {
         this.horarioId = horarioId;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    public String getDiaDaSemana() {
+        return diaDaSemana;
+    }
+
+    public void setDiaDaSemana(String diaDaSemana) {
+        this.diaDaSemana = diaDaSemana;
+    }
+
+    public String getHoraInicio() {
+        return horaInicio;
+    }
+
+    public void setHoraInicio(String horaInicio) {
+        this.horaInicio = horaInicio;
     }
 
     public String getStatus() {
