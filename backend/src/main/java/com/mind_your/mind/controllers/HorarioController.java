@@ -2,8 +2,7 @@ package com.mind_your.mind.controllers;
 
 import com.mind_your.mind.dto.request.HorarioRequestDTO;
 import com.mind_your.mind.dto.response.HorarioResponseDTO;
-import com.mind_your.mind.service.HorarioService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.mind_your.mind.service.IHorarioService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +12,11 @@ import java.util.List;
 @RequestMapping("/horarios")
 public class HorarioController {
 
-    @Autowired
-    private HorarioService horarioService;
+    private final IHorarioService horarioService;
+
+    public HorarioController(IHorarioService horarioService) {
+        this.horarioService = horarioService;
+    }
 
     @PostMapping
     public ResponseEntity<HorarioResponseDTO> criar(@RequestBody HorarioRequestDTO dto) {

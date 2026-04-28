@@ -6,7 +6,6 @@ import com.mind_your.mind.models.Agenda;
 import com.mind_your.mind.models.Horario;
 import com.mind_your.mind.repository.AgendaRepository;
 import com.mind_your.mind.repository.HorarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -18,14 +17,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class AgendaService {
+public class AgendaService implements IAgendaService {
 
-    @Autowired
-    private AgendaRepository agendaRepository;
+    private final AgendaRepository agendaRepository;
+    private final HorarioRepository horarioRepository;
 
-    @Autowired
-    private HorarioRepository horarioRepository;
+    public AgendaService(AgendaRepository agendaRepository, HorarioRepository horarioRepository) {
+        this.agendaRepository = agendaRepository;
+        this.horarioRepository = horarioRepository;
+    }
 
+    @Override
     public AgendaResponseDTO agendar(AgendaRequestDTO dto) {
         Horario horario = horarioRepository.findById(dto.getHorarioId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Horário não encontrado."));
@@ -34,7 +36,6 @@ public class AgendaService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O horário selecionado não está mais disponível.");
         }
 
-        // Validação de data/hora no passado
         LocalDateTime agora = LocalDateTime.now();
         LocalDate data = LocalDate.parse(dto.getData());
         LocalTime horaInicio = LocalTime.parse(dto.getHoraInicio());
@@ -44,7 +45,6 @@ public class AgendaService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não é possível agendar um horário que já passou.");
         }
 
-        // Verifica se já existe agendamento para este psicólogo nesta data e hora
         if (agendaRepository.existsByPsicologoIdAndDataAndHoraInicioAndStatusNot(
                 dto.getPsicologoId(), dto.getData(), dto.getHoraInicio(), "CANCELADO")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Este horário já está reservado para esta data.");
@@ -63,22 +63,24 @@ public class AgendaService {
         return toDTO(agenda);
     }
 
+    @Override
     public List<AgendaResponseDTO> listarDoPsicologo(String psicologoId) {
         return agendaRepository.findByPsicologoId(psicologoId).stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<AgendaResponseDTO> listarDoPaciente(String pacienteId) {
         return agendaRepository.findByPacienteId(pacienteId).stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
+    @Override
     public void cancelar(String id) {
         Agenda agenda = agendaRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agendamento não encontrado."));
-
         agenda.setStatus("CANCELADO");
         agendaRepository.save(agenda);
     }

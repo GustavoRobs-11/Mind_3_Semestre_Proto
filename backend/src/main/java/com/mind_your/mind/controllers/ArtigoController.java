@@ -4,8 +4,7 @@ import com.mind_your.mind.dto.request.ArtigoRequestDTO;
 import com.mind_your.mind.dto.request.ArtigoUpdateRequestDTO;
 import com.mind_your.mind.dto.response.ArtigoResponseDTO;
 import com.mind_your.mind.dto.response.UploadImagemResponseDTO;
-import com.mind_your.mind.service.ArtigoService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.mind_your.mind.service.IArtigoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,8 +15,11 @@ import java.util.List;
 @RequestMapping("/artigos")
 public class ArtigoController {
 
-    @Autowired
-    private ArtigoService artigoService;
+    private final IArtigoService artigoService;
+
+    public ArtigoController(IArtigoService artigoService) {
+        this.artigoService = artigoService;
+    }
 
     @PostMapping
     public ResponseEntity<ArtigoResponseDTO> criarArtigo(@RequestBody ArtigoRequestDTO dados) {

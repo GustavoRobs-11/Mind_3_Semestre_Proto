@@ -2,7 +2,6 @@ package com.mind_your.mind.service;
 
 import com.mind_your.mind.models.RefreshToken;
 import com.mind_your.mind.repository.RefreshTokenRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -11,17 +10,19 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class RefreshTokenService {
+public class RefreshTokenService implements IRefreshTokenService {
 
     @Value("${jwt.refresh.expiration.ms}")
     private Long refreshExpirationMs;
 
-    @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    // Criar novo refresh token para o usuário
+    public RefreshTokenService(RefreshTokenRepository refreshTokenRepository) {
+        this.refreshTokenRepository = refreshTokenRepository;
+    }
+
+    @Override
     public RefreshToken criar(String username) {
-        // Deletar token antigo se existir
         refreshTokenRepository.deleteByUsername(username);
 
         RefreshToken refreshToken = new RefreshToken();
@@ -32,24 +33,24 @@ public class RefreshTokenService {
         return refreshTokenRepository.save(refreshToken);
     }
 
-    // Buscar por token
+    @Override
     public Optional<RefreshToken> buscarPorToken(String token) {
         return refreshTokenRepository.findByToken(token);
     }
 
-    // Verificar se expirou
+    @Override
     public boolean isExpirado(RefreshToken token) {
         return token.getExpiryDate().isBefore(Instant.now());
     }
 
-    // Rotacionar token: Gera um novo e deleta o antigo
+    @Override
     public RefreshToken rotacionar(RefreshToken oldToken) {
         String username = oldToken.getUsername();
         refreshTokenRepository.delete(oldToken);
         return criar(username);
     }
 
-    // Deletar por username (logout)
+    @Override
     public void deletarPorUsername(String username) {
         refreshTokenRepository.deleteByUsername(username);
     }

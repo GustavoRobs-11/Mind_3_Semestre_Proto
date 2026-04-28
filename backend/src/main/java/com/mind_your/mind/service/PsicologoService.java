@@ -2,21 +2,13 @@ package com.mind_your.mind.service;
 
 import com.mind_your.mind.dto.request.PsicologoCadastroRequestDTO;
 import com.mind_your.mind.dto.request.PsicologoUpdateRequestDTO;
-import com.mind_your.mind.dto.response.JwtResponseDTO;
-import com.mind_your.mind.dto.response.PsicologoCadastroResponseDTO;
-import com.mind_your.mind.dto.response.PsicologoResponseDTO;
-import com.mind_your.mind.dto.response.UploadImagemResponseDTO;
+import com.mind_your.mind.dto.response.*;
 import com.mind_your.mind.mapper.PsicologoMapper;
 import com.mind_your.mind.models.Psicologo;
 import com.mind_your.mind.models.RefreshToken;
 import com.mind_your.mind.repository.PsicologoRepository;
 import com.mind_your.mind.security.JwtUtil;
-import com.mind_your.mind.dto.response.PsicologoConfiguracoesResponseDTO;
 import com.mind_your.mind.security.UserDetailsImpl;
-import org.springframework.security.core.Authentication;
-import com.mind_your.mind.dto.response.PsicologoSessionResponseDTO;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,43 +26,45 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class PsicologoService {
+public class PsicologoService implements IPsicologoService {
 
-    @Autowired
-    private PsicologoRepository psicologoRepository;
+    private final PsicologoRepository psicologoRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
+    private final IRefreshTokenService refreshTokenService;
+    private final IEnderecoService enderecoService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public PsicologoService(PsicologoRepository psicologoRepository,
+                            PasswordEncoder passwordEncoder,
+                            JwtUtil jwtUtil,
+                            AuthenticationManager authenticationManager,
+                            IRefreshTokenService refreshTokenService,
+                            IEnderecoService enderecoService) {
+        this.psicologoRepository = psicologoRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
+        this.authenticationManager = authenticationManager;
+        this.refreshTokenService = refreshTokenService;
+        this.enderecoService = enderecoService;
+    }
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private RefreshTokenService refreshTokenService;
-
-    @Autowired
-    private EnderecoService enderecoService;
-
-    // Cadastrar
+    @Override
     public PsicologoCadastroResponseDTO cadastrar(PsicologoCadastroRequestDTO dados) {
         Psicologo psicologo = new Psicologo();
 
         psicologo.setNome(dados.getNome());
         psicologo.setSobrenome(dados.getSobrenome());
         psicologo.setEmail(dados.getEmail());
-        psicologo.setLogin(
-                (dados.getLogin() == null || dados.getLogin().isEmpty())
-                        ? dados.getEmail()
-                        : dados.getLogin());
+        psicologo.setLogin((dados.getLogin() == null || dados.getLogin().isEmpty())
+                ? dados.getEmail()
+                : dados.getLogin());
         psicologo.setSenha(passwordEncoder.encode(dados.getSenha()));
         psicologo.setCrp(dados.getCrp());
         psicologo.setEspecialidades(dados.getEspecialidades());
         psicologo.setNumeroResidencia(dados.getNumeroResidencia());
 
-        if (dados.getCep() != null){
+        if (dados.getCep() != null) {
             enderecoService.obtemEnderecoPorCep(dados.getCep()).ifPresent(dadosEndereco -> {
                 psicologo.setCep(dados.getCep());
                 psicologo.setCidade(dadosEndereco.getCidade());
@@ -83,7 +77,7 @@ public class PsicologoService {
         return PsicologoMapper.toCadastroResponseDTO(salvo);
     }
 
-    // Buscar todos
+    @Override
     public List<PsicologoResponseDTO> buscarTodos() {
         return psicologoRepository.findAll()
                 .stream()
@@ -91,38 +85,42 @@ public class PsicologoService {
                 .toList();
     }
 
-    // Buscar por ID
+    @Override
     public Optional<PsicologoResponseDTO> buscarPorId(String id) {
         return psicologoRepository.findById(id)
                 .map(PsicologoMapper::toResponseDTO);
     }
 
-    // Buscar configurações por ID
+    @Override
     public Optional<PsicologoConfiguracoesResponseDTO> buscarConfiguracoesPorId(String id) {
         checarPropriedade(id);
         return psicologoRepository.findById(id)
                 .map(PsicologoMapper::toConfiguracoesResponseDTO);
     }
 
-    // Buscar por email
+    @Override
     public Optional<PsicologoResponseDTO> buscarPorEmail(String email) {
         return psicologoRepository.findByEmail(email)
                 .map(PsicologoMapper::toResponseDTO);
     }
 
-    // Buscar por nome
+    @Override
     public Optional<PsicologoResponseDTO> buscarPorNome(String nome) {
         return psicologoRepository.findByNome(nome)
                 .map(PsicologoMapper::toResponseDTO);
     }
 
-    // Buscar por login (email ou username)
+    @Override
     public Optional<PsicologoResponseDTO> buscarPorLogin(String login) {
-        return buscarPorLoginAuth(login)
-                .map(PsicologoMapper::toResponseDTO);
+        return buscarPorLoginAuth(login).map(PsicologoMapper::toResponseDTO);
     }
 
-    // Atualizar
+    @Override
+    public Optional<PsicologoSessionResponseDTO> buscarSessaoPorLogin(String login) {
+        return buscarPorLoginAuth(login).map(PsicologoMapper::toSessionDTO);
+    }
+
+    @Override
     public Optional<PsicologoResponseDTO> atualizar(String id, PsicologoUpdateRequestDTO dados) {
         checarPropriedade(id);
         return psicologoRepository.findById(id).map(psicologo -> {
@@ -132,7 +130,7 @@ public class PsicologoService {
         });
     }
 
-    // Deletar por ID
+    @Override
     public boolean deletarPorId(String id) {
         checarPropriedade(id);
         if (psicologoRepository.existsById(id)) {
@@ -142,7 +140,7 @@ public class PsicologoService {
         return false;
     }
 
-    // Login com JWT
+    @Override
     public Optional<JwtResponseDTO> fazerLogin(String login, String senha) {
         return buscarPorLoginAuth(login)
                 .filter(p -> passwordEncoder.matches(senha, p.getSenha()))
@@ -156,7 +154,7 @@ public class PsicologoService {
                 });
     }
 
-    // Upload de imagem de perfil
+    @Override
     public Optional<UploadImagemResponseDTO> uploadImagem(String id, MultipartFile file) {
         checarPropriedade(id);
         try {
@@ -164,7 +162,6 @@ public class PsicologoService {
             if (contentType == null || !contentType.startsWith("image/")) {
                 throw new RuntimeException("Arquivo deve ser uma imagem");
             }
-
             if (file.getSize() > 5 * 1024 * 1024) {
                 throw new RuntimeException("Imagem deve ter no máximo 5MB");
             }
@@ -175,17 +172,13 @@ public class PsicologoService {
             }
 
             Psicologo psicologo = psicologoOpt.get();
-
             Path uploadPath = Paths.get("uploads/users-pictures").toAbsolutePath().normalize();
             Files.createDirectories(uploadPath);
 
-            // Deletar imagem antiga
             if (psicologo.getImgPerfil() != null && !psicologo.getImgPerfil().isEmpty()) {
-                Path oldImage = uploadPath.resolve(psicologo.getImgPerfil());
-                Files.deleteIfExists(oldImage);
+                Files.deleteIfExists(uploadPath.resolve(psicologo.getImgPerfil()));
             }
 
-            // Gerar nome único
             String originalFilename = file.getOriginalFilename();
             String extension = (originalFilename != null && originalFilename.contains("."))
                     ? originalFilename.substring(originalFilename.lastIndexOf("."))
@@ -194,25 +187,17 @@ public class PsicologoService {
             String filename = "perfil-psi-" + psicologo.getLogin() + "-"
                     + UUID.randomUUID().toString().substring(0, 8) + extension;
 
-            Path targetLocation = uploadPath.resolve(filename);
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(file.getInputStream(), uploadPath.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
 
             psicologo.setImgPerfil(filename);
             psicologoRepository.save(psicologo);
 
             return Optional.of(new UploadImagemResponseDTO("Imagem enviada com sucesso", filename));
-
         } catch (Exception e) {
             throw new RuntimeException("Erro ao fazer upload da imagem", e);
         }
     }
 
-    // Buscar Sessao por login
-    public Optional<PsicologoSessionResponseDTO> buscarSessaoPorLogin(String login) {
-        return buscarPorLoginAuth(login).map(PsicologoMapper::toSessionDTO);
-    }
-
-    // Método interno de busca por login ou email
     private Optional<Psicologo> buscarPorLoginAuth(String login) {
         if (login.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
             return psicologoRepository.findByEmail(login);
@@ -222,8 +207,7 @@ public class PsicologoService {
 
     private void checarPropriedade(String id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.getPrincipal() instanceof UserDetailsImpl) {
-            UserDetailsImpl user = (UserDetailsImpl) auth.getPrincipal();
+        if (auth != null && auth.getPrincipal() instanceof UserDetailsImpl user) {
             if (!user.getId().equals(id)) {
                 throw new RuntimeException("Acesso negado: Você não tem permissão para acessar ou modificar dados de outro usuário.");
             }
