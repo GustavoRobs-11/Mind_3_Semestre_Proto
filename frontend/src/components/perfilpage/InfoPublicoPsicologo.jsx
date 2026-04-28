@@ -2,9 +2,11 @@ import { usePsicologos } from "../../context/Psicologos";
 import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { HiOutlineMail } from "react-icons/hi";
+import { agendar } from "../../services/agendaService.js";
+import { toast } from "react-toastify";
 import fotoPsi from '../../assets/img/perfil-default.png';
-import "../../assets/styles/perfil/info.css";
 import VerPsi from "../popups/Verpsi"; // Importa o pop-up
+import "../../assets/styles/perfil/info.css";
 
 export default function InfoPublicoPsicologo() {
     const { id } = useParams();
@@ -31,11 +33,23 @@ export default function InfoPublicoPsicologo() {
         }
     }, [id, psicologos, location.state]);
 
+    const handleAgendamento = async (dados) => {
+        try{
+            await agendar({
+            ...dados,
+            psicologoId: perfil.id
+            });
+
+        } catch (err) {
+            toast.error(err.message || "Erro ao realizar agendamento")
+        }
+    }
+
     if (!perfil) return <p>Carregando...</p>;
 
     return (
         <>
-            <div className="card-perfil-content">
+            <div className="card-perfil-content" id="cardPerfilPsicologoPublico">
                 <div className="foto-perfil">
                     <div className="banner-perfil"></div>
                     <img id="perfilFoto" src={fotoPsi} alt="Foto do Psicólogo" />
@@ -90,6 +104,8 @@ export default function InfoPublicoPsicologo() {
                 open={openPsi}
                 close={() => setOpenPsi(false)}
                 perfil={perfil}
+                modo="marcar"
+                onConfirm={handleAgendamento}
             />
         </>
     );

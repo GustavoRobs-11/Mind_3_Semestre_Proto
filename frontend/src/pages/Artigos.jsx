@@ -3,6 +3,7 @@ import "../assets/styles/artigos/artigos.css";
 import ArticleCard from "../components/cards/ArticleCard";
 import ArticlesMostLiked from "../components/cards/ArticlesMostLiked";
 import ArticlesMostViewed from "../components/cards/ArticlesMostViewed";
+import SkipNavigation from "../components/SkipNavigation";
 import { HiOutlineSearch } from "react-icons/hi";
 import { listarPublicados } from "../services/artigoService";
 import { toast } from "react-toastify";
@@ -19,6 +20,7 @@ export default function Artigos() {
         setArticles(data);
       } catch (error) {
         toast.error("Erro ao carregar artigos");
+        console.log(error)
       } finally {
         setLoading(false);
       }
@@ -36,6 +38,8 @@ export default function Artigos() {
   };
 
   return (
+    <>
+    < SkipNavigation mainContent="articlesContainerLeft" />
     <main className="container-artigos">
       {/* SEARCH */}
       <div className="search-section">
@@ -55,7 +59,7 @@ export default function Artigos() {
       </div>
 
       {/* CONTEÚDO */}
-      <div className="articles-container">
+      <div className="articles-container" id="articlesContainerLeft">
         {/* SEÇÃO ESQUERDA - ARTIGOS PRINCIPAIS */}
         <div className="articles-main">
           <div className="articles-list">
@@ -78,5 +82,6 @@ export default function Artigos() {
         </aside>
       </div>
     </main>
+    </>
   );
 }

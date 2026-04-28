@@ -7,6 +7,7 @@ import { buscarPorId } from "../services/artigoService";
 import "../assets/styles/artigos/artigo.css";
 import "../assets/styles/artigos/cards-artigos.css";
 import DefaultImg from "../assets/img/articles.png";
+import SkipNavigation from "../components/SkipNavigation";
 
 export default function Artigo() {
   const { id } = useParams();
@@ -22,6 +23,7 @@ export default function Artigo() {
       } catch (error) {
         toast.error("Artigo não encontrado ou sem permissão");
         navigate("/artigos");
+        console.log(error)
       } finally {
         setLoading(false);
       }
@@ -41,8 +43,10 @@ export default function Artigo() {
     : "";
 
   return (
+    <>
+    < SkipNavigation mainContent="articleRead" />
     <main className="article-page">
-      <div className="article-page-wrapper">
+      <div className="article-page-wrapper" id="articleRead">
           <img
             src={articleImg}
             alt="banner do artigo"
@@ -92,5 +96,6 @@ export default function Artigo() {
 
       </div>
     </main>
+    </>
   );
 }
