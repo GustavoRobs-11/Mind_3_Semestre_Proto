@@ -24,8 +24,8 @@ export default function TermosCondicoes() {
           <h2>3 - TERMOS E CONDIÇÕES DO USUÁRIO PACIENTE</h2>
           <p>3.1 - O usuário paciente é responsável pela correta utilização do aplicativo; pelo cumprimento dos presentes Termos de Uso e Políticas de Privacidade e pela proteção dos seus dados de acesso (Login e Senha).</p>
           <p>3.2 - Os usuários pacientes comprometem-se a operar e utilizar a plataforma dentro dos limites da legislação brasileira, sendo vedada a utilização da mesma para fins ilegais.</p>
-          <p>3.3 - Os usuários pacientes comprometem-se a realizar o pagamento referente ao plano de sua escolha nos possíveis formatos em cartão de crédito ou Pix;</p>
-          <p>3.4 - É necessário possuir conexão com a internet em que a velocidade mínima suporte videochamada, áudio ou mensagem.</p>
+          <p>3.3 - Os usuários pacientes comprometem-se a realizar o pagamento referente ao plano de sua escolha nos possíveis formatos em cartão de crédito ou Pix;</p>
+          <p>3.4 - É necessário possuir conexão com a internet em que a velocidade mínima suporte videochamada, áudio ou mensagem.</p>
           <p>3.5 - O Usuário paciente reconhece que, em qualquer circunstância, será o único e exclusivo responsável pela utilização da plataforma, realizada a partir de suas credenciais de acesso, comprometendo-se a não utilizar a Mind para propósitos ilegais, isentando a mesma de qualquer responsabilidade pelo uso da plataforma feito pelo usuário paciente.</p>
           <p>3.6 - O Usuário paciente reconhece que o Cadastro de seu perfil implica na possibilidade de revelação de todas informações ali contidas para a Mind.</p>
           <p>3.7 - Sobre o compromisso dos pacientes:</p>
@@ -34,7 +34,8 @@ export default function TermosCondicoes() {
             <p>b.    Zelar e garantir a segurança, o armazenamento e o sigilo das informações, contratos e quaisquer outros documentos da relação com seus psicólogos, por métodos próprios, sejam eles físicos ou tecnológicos, impedindo o acesso, o compartilhamento e o uso indevido desses dados por quaisquer outras pessoas;</p> 
             <p>c.    O usuário concorda em respeitar todas as condições presentes nesse termo assim como respeitar todos os direitos de propriedade intelectual de titularidade da Mind;</p>
           </div>
-          <p>3.8 - O usuário deverá tem a possibilidade de cancelamento e remarcação de consulta, com antecedência de no mínimo 1 dia após o agendamento.</p>
+          <p>3.8 - O usuário paciente poderá cancelar ou remarcar consultas respeitando as regras e prazos estabelecidos na Seção 6 destes Termos..</p>
+          
 
           <h2>4 - TERMOS E CONDIÇÕES GERAIS AOS PROFISSIONAIS</h2>
           <p>4.1 - O profissional interessado em cadastrar-se como Psicólogo na plataforma Mind deverá ter ciência de que é condição mínima ter nível superior completo em Psicologia, ser maior de 18 anos, estar devidamente registrado e regularizado junto ao Conselho Federal de Psicologia e Conselho Regional da jurisdição onde atua, e estar habilitado para realizar atendimentos na modalidade online pelo sistema E-PSI, que é pertencente ao site oficial do Conselho Federal de Psicologia.</p>
@@ -64,6 +65,52 @@ export default function TermosCondicoes() {
           <p>5.3 - O atendimento realizado será supervisionado por psicólogos experientes, e o voluntário compromete-se a seguir suas orientações para o desenvolvimento profissional. A comunicação com os supervisores deve ser profissional e respeitosa, e o voluntário deve garantir a confidencialidade das informações dos atendimentos, de acordo com o Código de Ética do Psicólogo.</p>
           <p>5.4 - A Mind se reserva o direito de suspender ou encerrar a participação de qualquer profissional que viole os termos ou adote conduta inadequada.</p>
           <p>5.5 -  Os dados fornecidos pelos voluntários e pelos usuários da plataforma serão tratados de acordo com a legislação de proteção de dados vigente. Portanto, pela conduta ética e profissional, é de atuação deste manter o sigilo e a confidencialidade das informações dos atendidos.</p>
+
+          <h2>6 - REGRAS DE AGENDAMENTO E FUNCIONAMENTO DAS CONSULTAS</h2>
+
+          <p>6.1 - As consultas realizadas por meio da plataforma possuem duração padrão de 40 (quarenta) minutos.</p>
+          <p>6.2 - A plataforma disponibilizará automaticamente o acesso à sala de videochamada com antecedência de até 10 (dez) minutos do horário agendado para a consulta.</p>
+          <p>6.3 - O cancelamento ou remarcação de consultas deverá ser realizado com antecedência mínima de 1 (um) dia em relação à data agendada.</p>
+          <p>6.4 - Solicitações de agendamento que permanecerem com status "Pendente" até o limite de 1 (um) dia antes da data da consulta serão automaticamente canceladas pelo sistema.</p>
+
+            <h3>6.5 - Processo de agendamento para pacientes</h3>
+            <p>a. O paciente poderá buscar psicólogos por meio da plataforma e acessar seus perfis profissionais para visualizar informações detalhadas;</p>
+            <p>b. Ao selecionar um profissional, o paciente poderá realizar uma solicitação de agendamento, que será enviada automaticamente ao psicólogo;</p>
+            <p>c. A solicitação de agendamento dependerá da confirmação do psicólogo, podendo assumir os seguintes status:</p>
+
+            <div className="space-text">
+              <p><strong>i. Pendente:</strong> quando não houve resposta do psicólogo;</p>
+              <p><strong>ii. Confirmado:</strong> quando o psicólogo aceita a solicitação;</p>
+              <p><strong>iii. Cancelado:</strong> quando o psicólogo recusa a solicitação.</p>
+            </div>
+
+            <p>d. Em caso de confirmação, o paciente deverá apenas aguardar a data e horário da consulta;</p>
+            <p>e. Em caso de cancelamento pelo psicólogo, o paciente será notificado e poderá realizar uma nova solicitação, seja com o mesmo profissional ou outro disponível;</p>
+            <p>f. O psicólogo poderá, opcionalmente, informar a justificativa do cancelamento por meio do sistema de comunicação da plataforma;</p>
+            <p>g. Em caso de ausência de resposta do psicólogo, a solicitação permanecerá com status "Pendente", sujeita ao cancelamento automático conforme item 6.4;</p>
+            <p>h. O paciente poderá remarcar a consulta respeitando o prazo mínimo de 1 (um) dia de antecedência;</p>
+            <p>i. O cancelamento da solicitação pelo paciente poderá ocorrer:</p>
+
+            <div className="space-text">
+              <p><strong>i.</strong> Antes da confirmação do psicólogo: sem necessidade de notificação ao profissional;</p>
+              <p><strong>ii.</strong> Após a confirmação: com notificação automática ao psicólogo.</p>
+            </div>
+
+            <h3>6.6 - Processo para psicólogos</h3>
+            <p>a. O psicólogo poderá definir seus horários de atendimento, bem como gerenciar suas informações profissionais por meio da plataforma;</p>
+            <p>b. É permitido ao psicólogo publicar conteúdos informativos, sendo obrigatória a utilização de referências científicas;</p>
+            <p>c. O psicólogo poderá visualizar e gerenciar solicitações de agendamento, podendo aceitá-las ou recusá-las;</p>
+            <p>d. O psicólogo terá acesso ao histórico completo de agendamentos, incluindo:</p>
+            <div className="space-text">
+              <p>- Consultas realizadas;</p>
+              <p>- Consultas futuras;</p>
+              <p>- Cancelamentos manuais;</p>
+              <p>- Cancelamentos automáticos;</p>
+              <p>- Solicitações pendentes;</p>
+            </div>
+
+            <p>e. Durante o atendimento, o psicólogo poderá registrar anotações em prontuário do paciente, acessíveis exclusivamente em ambiente privado;</p>
+            <p>f. Os prontuários poderão ser editados ou excluídos pelo psicólogo, sendo vedado seu acesso público.</p>
 
         </section>
     </main>

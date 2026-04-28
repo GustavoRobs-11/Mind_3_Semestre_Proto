@@ -4,7 +4,8 @@
 .container-ver-psi{
     position: fixed; 
     background-color: var(--secondary-cream-700);
-    height: auto;
+    max-height: 90vh; 
+    overflow-y: auto; 
     padding: var(--spacing-xs);
     display: flex;
     flex-direction: column;
@@ -17,6 +18,7 @@
     text-align: center;
     gap: 10px;
     z-index: 81;
+    width: 600px;
 }
 
 .container-info-psi{

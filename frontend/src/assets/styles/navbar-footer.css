@@ -23,7 +23,7 @@ header {
 nav > ul,
 a {
   list-style: none;
-  color: var(--black-950)
+  color: var(--black-950);
 }
 
 .logotipo {

@@ -4,9 +4,12 @@ import Calendario from './Calendario.jsx';
 import SobrePsicologo from './SobrePsicologo.jsx';
 import Logout from './Logout.jsx';
 import ArtigosPerfil from './ArtigosPerfil.jsx';
+import SkipNavigation from "../SkipNavigation.jsx";
 
 export default function SectionPsicologo({ profileData }) {
     return (
+        <>
+        < SkipNavigation mainContent="cardPerfilPsicologo" />
         <div className="container-section-perfil">
             <div className="sobre-notif-container">
                 <InfoPsicologo profileData={profileData} />
@@ -19,5 +22,6 @@ export default function SectionPsicologo({ profileData }) {
             </div>
             
         </div>
+        </>
     );
 }

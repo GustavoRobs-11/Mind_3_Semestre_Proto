@@ -1,10 +1,13 @@
 import { useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { usePsicologos } from "../../context/Psicologos";
+import { agendar } from "../../services/agendaService.js";
+import { toast } from "react-toastify";
 import InfoPublicoPsicologo from "./InfoPublicoPsicologo.jsx";
 import Calendario from "./Calendario.jsx";
 import SobrePsicologo from "./SobrePsicologo.jsx";
 import VerPsi from "../popups/Verpsi.jsx";
+import SkipNavigation from "../SkipNavigation.jsx";
 
 export default function PerfilPublicoPsicologo() {
   const { id } = useParams();
@@ -30,9 +33,23 @@ export default function PerfilPublicoPsicologo() {
     }
   }, [id, psicologos, location.state]);
 
+  const handleAgendamento = async (dados) => {
+    try{
+      await agendar({
+        ...dados,
+        psicologoId: perfil.id
+      });
+
+    } catch (err) {
+      toast.error(err.message || "Erro ao realizar agendamento")
+    }
+  }
+
   if (!perfil) return <div>Carregando perfil...</div>;
 
   return (
+    <>
+    < SkipNavigation mainContent="cardPerfilPsicologoPublico" />
     <div className="container-section-perfil">
       <div className="sobre-notif-container">
         <InfoPublicoPsicologo />
@@ -46,9 +63,12 @@ export default function PerfilPublicoPsicologo() {
             open={openPsi}
             close={() => setOpenPsi(false)}
             perfil={perfil}
+            modo="marcar"
+            onConfirm={handleAgendamento}
           />
          )}
       </div>
     </div>
+    </>
   );
 }

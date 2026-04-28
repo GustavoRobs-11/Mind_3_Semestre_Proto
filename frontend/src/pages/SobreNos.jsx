@@ -1,14 +1,15 @@
 import "../assets/styles/sobrenos/sobrenos.css"
 import videoCall from "../assets/img/ilustracao_sobrenos.svg";
 import therapySection from "../assets/img/imagem_sobrenos.jpg";
+import SkipNavigation from "../components/SkipNavigation";
 import {Link} from "react-router-dom"
-
 
 export default function SobreNos() {
     
   return (
     <>
-      <section className="container-sb-1">
+      < SkipNavigation mainContent="readAboutUs" />
+      <section className="container-sb-1" id="readAboutUs">
         <img src={videoCall} alt="ilustração de uma video chamada" className="imagem-1"/>
         <div className="container-text-sb-1">
           <p>
