@@ -5,6 +5,8 @@ import ActiveFilters from "../components/homepage/ActiveFilters";
 import SkipNavigation from "../components/SkipNavigation";
 import { useState, useEffect } from "react";
 import { usePsicologos } from "../context/Psicologos";
+import { agendar } from "../services/agendaService.js";
+import { toast } from "react-toastify";
 import '../assets/styles/home/filtros-home.css';
 import '../assets/styles/home/card-psicologo.css';
 
@@ -67,6 +69,19 @@ export default function Home() {
       
       return matchTexto && matchEspecialidade && matchLocal;
   });
+
+  const handleAgendamento = async (dados) => { // Guardar agendamento feito
+    try{
+
+      await agendar({
+        ...dados,
+        psicologoId: selectedPerfil.id
+      });
+
+    } catch (err) {
+      toast.error(err.message || "Erro ao realizar agendamento")
+    }
+  }
 
   // Exibir estado de carregamento
   if (loading) {
@@ -162,6 +177,7 @@ export default function Home() {
               close={() => setOpenPsi(false)}
               perfil={selectedPerfil}
               modo="marcar"
+              onConfirm={handleAgendamento}
           />
       )}
     </>

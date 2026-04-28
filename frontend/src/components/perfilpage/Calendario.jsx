@@ -38,77 +38,56 @@ export default function Calendario() {
 
   const [agendamentos, setAgendamentos] = useState([
     {
-      id_agendamento: "",
-      paciente: "Luigi",
+      id_agendamento: "1",
       horaAgendada: "13:00",
-      diaAgendado: "2026-04-26",
-      status: "Confirmado",
-      psicologo: {
-        id: "69e27b23ecfdc4d223d16522" ,
-        nome: "Ana" 
-      }
-    },
-    {
-      id_agendamento: "",
-      paciente: "Luigi",
-      horaAgendada: "9:00",
-      diaAgendado: "2026-04-26",
+      diaAgendado: "2026-04-29",
       status: "Pendente",
+      paciente: {
+        id: "69e27b21ecfdc4d223d16520",
+        nome: "Snoopy",
+      },
       psicologo: {
         id: "69e27b23ecfdc4d223d16522" ,
-        nome: "Ana" 
+        nome: "Ana" ,
+        tags: ["Ansiedade"]
       }
     },
     {
-      id_agendamento: "",
-      paciente: "Luigi",
+      id_agendamento: "2",
+      horaAgendada: "18:00",
+      diaAgendado: "2026-04-28",
+      status: "Confirmado",
+      paciente: {
+        id: "69e27b21ecfdc4d223d16520",
+        nome: "Snoopy",
+      },
+      psicologo: {
+        id: "69e27b23ecfdc4d223d16522" ,
+        nome: "Ana",
+        tags: ["Ansiedade"]
+      }
+    },
+    {
+      id_agendamento: "3",
       horaAgendada: "12:00",
-      diaAgendado: "2026-04-26",
-      status: "Confirmado",
-      psicologo: {
-        id: "69e27b23ecfdc4d223d16522" ,
-        nome: "Ana" 
-      }
-    },
-    {
-      id_agendamento: "",
-      paciente: "Maria",
-      horaAgendada: "10:00",
       diaAgendado: "2026-04-27",
-      status: "Pendente",
-      psicologo: {
-        id: "69e27b23ecfdc4d223d16522", 
-        nome: "Carlos" 
-      }
-    },
-    {
-      id_agendamento: "",
-      paciente: "Maria",
-      horaAgendada: "10:00",
-      diaAgendado: "2026-04-25",
-      status: "Pendente",
-      psicologo: {
-        id: "69e27b23ecfdc4d223d16522", 
-        nome: "Carlos" 
-      }
-    },
-    {
-      id_agendamento: "",
-      paciente: "Maria",
-      horaAgendada: "9:00",
-      diaAgendado: "2026-04-25",
       status: "Confirmado",
+      paciente: {
+        id: "69e27b21ecfdc4d223d16520",
+        nome: "Snoopy"
+      },
       psicologo: {
-        id: "69e27b23ecfdc4d223d16522", 
-        nome: "Carlos" 
+        id: "" ,
+        nome: "Luigi",
+        tags: ["Depressão"] 
       }
     }
   ]);
 
   const horariosPsi = {
     domingo: ["9:00", "10:00", "11:00", "12:00", "13:00"],
-    segunda: ["9:00", "10:00", "11:00", "13:00"],
-    terca: ["9:00", "10:00", "11:00", "14:00"],
+    segunda: ["9:00", "10:00", "11:00", "13:00", "18:00"],
+    terca: ["9:00", "10:00", "11:00", "14:00", "18:00"],
     quarta: ["9:00", "10:00", "11:00", "13:00"],
     quinta: ["9:00", "10:00", "11:00", "14:00", "15:00"],
     sexta: ["9:00", "10:00", "11:00"],
@@ -135,9 +114,11 @@ export default function Calendario() {
   function getAgendamento(dia, hora) {
     return agendamentos.find(a => {
       const data = parseDateBR(a.diaAgendado); // formatação do dia agendado
+
       return (
         data.toDateString() === dia.toDateString() &&
-        a.horaAgendada === hora
+        a.horaAgendada === hora &&
+        a.psicologo?.id === user.id
       );
     });
   }
@@ -177,6 +158,28 @@ export default function Calendario() {
 
     setAgendamentos(atualizados);
     setAgendaSelecionada({ ...agendaSelecionada, status: novoStatus });
+  }
+
+  function handleRemarcar(agendaAntiga, novosDados) {
+    setAgendamentos(prev =>
+      prev.map(a => {
+        if (a.id_agendamento === agendaAntiga.id_agendamento){
+          return {
+            ...a,
+            diaAgendado: novosDados.data,
+            horaAgendada: novosDados.horaInicio,
+            status: "Pendente"
+          };
+        }
+        return a;
+      })
+    );
+  }
+
+  function handleRemover(dadosParaRemover) {
+    setAgendamentos(prev =>
+      prev.filter(a => a.id_agendamento !== dadosParaRemover.id_agendamento)
+    );
   }
 
   return (
@@ -241,38 +244,80 @@ export default function Calendario() {
               <HiChevronRight />
             </button>
           </div>
+            <div className="grid-semana">
+            {user.tipo == "psicologo" ? (
+              <>
+                {diasSemanaAtual.map(dia => {
+                  const key = diasMap[dia.getDay()];
+                  const horarios = horariosPsi[key] || [];
+                  return (
+                    <div key={dia.toISOString()} className="coluna-dia">
+                      {horarios.map(hora => {
+                        const ag = getAgendamento(dia, hora);
+                        return (
+                          <div
+                            key={hora}
+                            className={`slot-horario ${
+                              ag ? ag.status.toLowerCase() : "livre"
+                            }`}
+                            onClick={() => {
+                              if (!ag) return;
+                              setDaySelected(dia);
+                              setAgendaSelecionada(ag);
+                              setOpenAgenda(true);
+                            }}
+                          >
+                            {hora}
+                            {ag && ag.status.toLowerCase() === "confirmado" && isAgora(ag) && (
+                              <span className="dot-animated"></span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+              })}
+            </>
+            
+          ) : (
+            <>
+              {diasSemanaAtual.map(dia => {
+                const agsDoDia = agendamentos.filter(a => {
+                  const data = parseDateBR(a.diaAgendado);
 
-          <div className="grid-semana">
-            {diasSemanaAtual.map(dia => {
-              const key = diasMap[dia.getDay()];
-              const horarios = horariosPsi[key] || [];
-              return (
-                <div key={dia.toISOString()} className="coluna-dia">
-                  {horarios.map(hora => {
-                    const ag = getAgendamento(dia, hora);
-                    return (
-                      <div
-                        key={hora}
-                        className={`slot-horario ${
-                          ag ? ag.status.toLowerCase() : "livre"
-                        }`}
-                        onClick={() => {
-                          if (!ag) return;
-                          setDaySelected(dia);
-                          setAgendaSelecionada(ag);
-                          setOpenAgenda(true);
-                        }}
-                      >
-                        {hora}
-                        {ag && ag.status.toLowerCase() === "confirmado" && isAgora(ag) && (
-                          <span className="dot-animated"></span>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })}
+                  return (
+                    data.toDateString() === dia.toDateString() &&
+                    a.paciente?.id === user.id
+                  );
+                });
+
+                return (
+                  <div key={dia.toISOString()} className="coluna-dia">
+                    {agsDoDia.length === 0 ? (
+                      <div className="slot-horario livre">—</div>
+                    ) : (
+                      agsDoDia.map(ag => (
+                        <div
+                          key={ag.id_agendamento}
+                          className={`slot-horario ${ag.status.toLowerCase()}`}
+                          onClick={() => {
+                            setDaySelected(dia);
+                            setAgendaSelecionada(ag);
+                            setOpenAgenda(true);
+                          }}
+                        >
+                          {ag.horaAgendada}
+                          {ag.status.toLowerCase() === "confirmado" && isAgora(ag) && (
+                            <span className="dot-animated"></span>
+                          )}
+                        </div>
+                      ))
+                    )}
+                  </div>
+                );
+              })}
+            </>
+          )}
           </div>
         </div>
         <div className="container-legenda-calendario">
@@ -318,6 +363,8 @@ export default function Calendario() {
             })}
             ano={daySelected?.getFullYear()}
             agenda={agendaSelecionada}
+            onRemarcar={handleRemarcar}
+            onDeletar={handleRemover}
           />
         ))}
     </>

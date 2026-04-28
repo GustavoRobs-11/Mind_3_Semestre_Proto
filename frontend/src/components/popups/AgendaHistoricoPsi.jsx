@@ -57,7 +57,7 @@ export default function AgendaHistoricoPsi({
                 <div className="pop-up-agendamento-content">
                     <div className="agendamento-infos">
                         <div className="info-remetente">
-                            <p><span>Nome: </span> {agenda.paciente} </p>
+                            <p><span>Nome: </span> {agenda.paciente.nome} </p>
                             <p><span>Data: </span> {` ${dia}/${mesNum}/${ano}`}</p>
                             <p><span>Horário: </span> {agenda.horaAgendada}</p>
                         </div>

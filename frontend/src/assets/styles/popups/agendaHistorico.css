@@ -156,14 +156,14 @@
     width: 8px;
     height: 8px;
     background-color: var(--tertiary-light-green-800);
-    border-radius: 100%;
+    border-radius: 100px;
 }
 
 .dot-animated::before{
     content: "";
     position: absolute;
     inset: 0;
-    border-radius: 100%;
+    border-radius: 100px;
     background-color: var(--tertiary-light-green-800);
     animation: ping 1s ease-out infinite;
 }

@@ -25,7 +25,9 @@ export default function AgendaHistorico({
     mes,
     mesNome,
     ano,
-    agenda
+    agenda,
+    onRemarcar,
+    onDeletar
 }) {
     const navigate = useNavigate();
     const [openReschedule, setOpenReschedule] = useState(false);
@@ -49,9 +51,17 @@ export default function AgendaHistorico({
         navigate(`/perfil/psicologo/${agenda.psicologo.id}`);
     }
 
-    const removerSchedule = (id) => {
+    const removerSchedule = () => {
         setDeletando(true);
+        onDeletar(agenda)
     };
+
+    const remarcarAgendamento = (dados) => {
+        onRemarcar({
+            agendamentoId: agenda.id_agendamento,
+            ...dados
+        });
+    }
 
     if (!open) return null;
 
@@ -119,7 +129,7 @@ export default function AgendaHistorico({
                 open={openReschedule}
                 close={() => setOpenReschedule(false)}
                 perfil={agenda.psicologo}
-                // onConfirm={(dados) => handleRemarcar(dados)}
+                onConfirm={remarcarAgendamento}
                 modo="remarcar"
             />
         </>

@@ -5,7 +5,7 @@ import "../../assets/styles/popups/verpsi.css";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { listarTodosDoPsicologo } from "../../services/horarioService.js";
-import { agendar, listarDoPsicologo as listarAgendasDoPsicologo } from "../../services/agendaService.js";
+import { listarDoPsicologo as listarAgendasDoPsicologo } from "../../services/agendaService.js";
 import { useAuth } from "../../context/AuthContext";
 import { HiOutlineUser } from "react-icons/hi";
 import { toast } from "react-toastify";
@@ -14,7 +14,7 @@ export default function VerPsi({
   open = false, 
   close = () => { }, 
   perfil ,
-  // onConfirm = () => {},
+  onConfirm = () => {},
   modo
 }) {
   const navigate = useNavigate();
@@ -24,8 +24,6 @@ export default function VerPsi({
   const [selecionadoHorario, setSelecionadoHorario] = useState("");
   const [selecionadoHorarioId, setSelecionadoHorarioId] = useState("");
   const [selecionadoSemana, setSelecionadoSemana] = useState("");
-
-  const tags = perfil.tags || ["ansiedade", "depressão", "autoestima", "relacionamentos"];
 
   const [horariosDisponiveis, setHorariosDisponiveis] = useState([]);
   const [datasDisponiveis, setDatasDisponiveis] = useState([]);
@@ -164,14 +162,11 @@ export default function VerPsi({
     try {
       const dados = {
         pacienteId: user.id,
-        psicologoId: perfil.id,
         horarioId: selecionadoHorarioId,
         data: selecionadoData,
         diaDaSemana: selecionadoSemana,
         horaInicio: selecionadoHorario
       };
-
-      await agendar(dados);
 
       setAgenda(prev =>
         prev.map(h =>
@@ -181,23 +176,12 @@ export default function VerPsi({
         )
       );
 
+      onConfirm(dados)
       toast.success("Agendado com sucesso!");
-      setTimeout(() => close(), 1500);
     } catch (err) {
       toast.error(err.message || "Erro ao realizar agendamento");
     }
-    // Dados selecionados para agendamento
-    const dados = {
-      data: selecionadoData,
-      diaDaSemana: selecionadoSemana,
-      horaInicio: selecionadoHorario,
-      psicologoCRP: perfil.crp,
-      ocupado: true
-    }
-
-    // onConfirm(dados)
-    alert("Agendado com sucesso!");
-  };
+  }
 
   // Focus no pop-up
   useEffect(() => {
@@ -269,10 +253,10 @@ export default function VerPsi({
           <div className="container-conhecimentos">
             <h2>Conhecimentos:</h2>
             <div>
-              {tags.length === 0 ? (
+              {perfil.tags?.length === 0 ? (
                 <p style={{ margin: 0 }}>Nenhuma especialidade informada</p>
               ) : (
-                tags.map((t, i) => (
+                perfil.tags?.map((t, i) => (
                   <span key={i} className="tag-chip" data-speciality={t}>{t}</span>
                 ))
               )}
