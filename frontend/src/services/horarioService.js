@@ -1,6 +1,6 @@
 import { authService } from './authService';
 
-const API_URL = (import.meta.env.VITE_API_BASE_URL || "http://localhost:8080") + "/horarios";
+const API_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080') + "/horarios";
 
 // Helper para extrair a mensagem de erro do Spring de forma segura
 async function extrairMensagemErro(res, fallback = "Erro desconhecido") {

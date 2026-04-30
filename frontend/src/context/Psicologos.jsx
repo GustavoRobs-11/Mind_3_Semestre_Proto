@@ -35,8 +35,8 @@ export function PsicologosProvider({ children }) {
           id: p.id,
           nome: `${p.nome} ${p.sobrenome}`.trim(),
           idade: p.idade?.toString() || "N/A",
-          local: p.endereco || "Local não informado",
-          tags: p.especialidades || [],
+          local: p.cidade ? (p.uf ? `${p.cidade} - ${p.uf}` : p.cidade) : (p.endereco || "Local não informado"),
+          tags: p.especialidade ? [p.especialidade] : [],
           foto: p.imgPerfil || null,
           horarios: {}, // Pode ser implementado posteriormente
           // Dados adicionais que podem ser úteis
@@ -79,8 +79,8 @@ export function PsicologosProvider({ children }) {
         id: p.id,
         nome: `${p.nome} ${p.sobrenome}`.trim(),
         idade: p.idade?.toString() || "N/A",
-        local: p.endereco || "Local não informado",
-        tags: p.especialidades || [],
+        local: p.cidade ? (p.uf ? `${p.cidade} - ${p.uf}` : p.cidade) : (p.endereco || "Local não informado"),
+        tags: p.especialidade ? [p.especialidade] : [],
         foto: p.imgPerfil || null,
         horarios: {},
         email: p.email,

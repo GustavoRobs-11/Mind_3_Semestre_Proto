@@ -25,11 +25,11 @@ export default function Apresentacao() {
         <article className="block-right">
 
           <img className="apres-img" src={apresentacao} alt="ilustração - simulando video chamada" />
-          <span className="btn-article">
+          <div className="btn-article">
               <Link to="/sobrenos">
                 <button className="conhecer-btn button-confirm">Conhecer!</button>
               </Link>
-            </span>
+            </div>
         </article>
 
       </section>
