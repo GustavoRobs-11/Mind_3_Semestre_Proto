@@ -4,30 +4,43 @@ import "../../assets/styles/popups/verpsi.css";
 
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
-// import { listarTodosDoPsicologo } from "../../services/horarioService";
+import { listarTodosDoPsicologo } from "../../services/horarioService.js";
+import { listarDoPsicologo as listarAgendasDoPsicologo } from "../../services/agendaService.js";
+import { useAuth } from "../../context/AuthContext";
 import { HiOutlineUser } from "react-icons/hi";
 import { toast } from "react-toastify";
 
-export default function VerPsi({ open = false, close = () => { }, perfil }) {
+export default function VerPsi({ 
+  open = false, 
+  close = () => { }, 
+  perfil ,
+  onConfirm = () => {},
+  modo
+}) {
   const navigate = useNavigate();
+  const { user, isPaciente } = useAuth();
   const inputRef = useRef(null);
   const [selecionadoData, setSelecionadoData] = useState("");
   const [selecionadoHorario, setSelecionadoHorario] = useState("");
+  const [selecionadoHorarioId, setSelecionadoHorarioId] = useState("");
   const [selecionadoSemana, setSelecionadoSemana] = useState("");
-
-  const tags = ["ansiedade", "depressão", "autoestima", "relacionamentos"];
-  const mockHorarios = [
-    { diaDaSemana: "Segunda", horaInicio: "08:00", ocupado: false },
-    { diaDaSemana: "Segunda", horaInicio: "09:30", ocupado: true },
-    { diaDaSemana: "Segunda", horaInicio: "10:00", ocupado: false },
-    { diaDaSemana: "Terca", horaInicio: "08:00", ocupado: true },
-    { diaDaSemana: "Terca", horaInicio: "11:20", ocupado: false },
-  ];
 
   const [horariosDisponiveis, setHorariosDisponiveis] = useState([]);
   const [datasDisponiveis, setDatasDisponiveis] = useState([]);
   const [agenda, setAgenda] = useState([]);
-  const diasUnicos = [...new Set(agenda.map(a => a.diaDaSemana))];
+  const [agendamentosExistentes, setAgendamentosExistentes] = useState([]);
+  const diasUnicos = [...new Set(agenda.map(a => a.diaDaSemana))].sort((a, b) => {
+    const ordem = {
+      "Segunda": 1,
+      "Terca": 2,
+      "Quarta": 3,
+      "Quinta": 4,
+      "Sexta": 5,
+      "Sabado": 6,
+      "Domingo": 7
+    };
+    return (ordem[a] || 0) - (ordem[b] || 0);
+  });
 
   const getDatasPorSemana = (diaSemana) => {
     const diasMap = {
@@ -49,12 +62,13 @@ export default function VerPsi({ open = false, close = () => { }, perfil }) {
     const datas = []; 
 
     while (data <= limite) {
-      if (data.getDay() === diasMap[diaSemana]) { // getDay() irá de 0 a 6 na semana
+      if (data.getDay() === diasMap[diaSemana]) {
         const formatada = data.toLocaleDateString("pt-BR", {
           day: "2-digit",
           month: "2-digit"
         });
-        datas.push(formatada);
+        const iso = data.toISOString().split('T')[0]; // YYYY-MM-DD
+        datas.push({ label: formatada, value: iso });
       }
       data.setDate(data.getDate() + 1);
     }
@@ -66,20 +80,22 @@ export default function VerPsi({ open = false, close = () => { }, perfil }) {
     (async () => {
       try {
         if (perfil?.id) {
-            // const data = await listarTodosDoPsicologo(perfil.id);
-            const data = mockHorarios // Simulando dados usando mock
-
+            const dataHorarios = await listarTodosDoPsicologo(perfil.id);
+            const dataAgendas = await listarAgendasDoPsicologo(perfil.id);
+            
+            setAgendamentosExistentes(dataAgendas);
             setAgenda(
-              data.map(a => ({
+              dataHorarios.map(a => ({
                 ...a,
                 diaDaSemana: a.diaDaSemana,
                 horaInicio: a.horaInicio,
-                ocupado: a.ocupado ?? false,
+                // ocupado: !a.disponivel, // Não usamos mais o ocupado global para bloqueio dinâmico
               }))
             );
         }
       } catch (err) {
           console.log(err)
+          toast.error("Erro ao carregar horários do psicólogo");
       }
     })()
   }, [perfil?.id])
@@ -100,43 +116,72 @@ export default function VerPsi({ open = false, close = () => { }, perfil }) {
 
     const filtrados = agenda.filter(
       (h) => h.diaDaSemana.toLowerCase() === selecionadoSemana.toLowerCase()
-    );
+    ).sort((a, b) => a.horaInicio.localeCompare(b.horaInicio));
 
-    setHorariosDisponiveis(filtrados);
-  }, [selecionadoSemana, agenda]);
+    // Marcar como ocupado se houver agendamento na data selecionada ou se o horário já passou hoje
+    const agora = new Date();
+    const hojeIso = agora.toISOString().split('T')[0];
+
+    const horariosComStatus = filtrados.map(h => {
+        // Verifica se o horário já passou para o dia de hoje
+        let jaPassou = false;
+        if (selecionadoData === hojeIso) {
+            const [horas, minutos] = h.horaInicio.split(':').map(Number);
+            const dataHoraSlot = new Date(agora);
+            dataHoraSlot.setHours(horas, minutos, 0, 0);
+            jaPassou = dataHoraSlot < agora;
+        }
+
+        const estaOcupado = agendamentosExistentes.some(ag => 
+            ag.data === selecionadoData && 
+            ag.horaInicio === h.horaInicio &&
+            ag.status !== "CANCELADO"
+        );
+        return { ...h, ocupado: estaOcupado || !h.disponivel || jaPassou };
+    });
+
+    setHorariosDisponiveis(horariosComStatus);
+  }, [selecionadoSemana, agenda, selecionadoData, agendamentosExistentes]);
 
   useEffect(() => { // Reset das informações
     setSelecionadoData("");
     setSelecionadoHorario("");
   }, [selecionadoSemana]);
 
-  const handleAgendar = () => { // Simulando agendamento usando mock
-    if (!selecionadoData || !selecionadoHorario ) {
-      toast.warn("Selecione semana e horário");
+  const handleAgendar = async () => {
+    if (!isPaciente) {
+      toast.error("Somente pacientes podem realizar agendamentos.");
       return;
     }
 
-    setAgenda(prev =>
-      prev.map(h =>
-        h.horaInicio === selecionadoHorario &&
-        h.diaDaSemana === selecionadoSemana
-          ? { ...h, ocupado: true }
-          : h
-      )
-    );
-
-    // Dados selecionados para agendamento
-    const dados = {
-      data: selecionadoData,
-      diaDaSemana: selecionadoSemana,
-      horaInicio: selecionadoHorario,
-      psicologoCRP: perfil.crp,
-      ocupado: true
+    if (!selecionadoData || !selecionadoHorario) {
+      toast.warn("Selecione o dia e o horário");
+      return;
     }
-    console.log(dados)
 
-    alert("Agendado com sucesso!");
-  };
+    try {
+      const dados = {
+        pacienteId: user.id,
+        horarioId: selecionadoHorarioId,
+        data: selecionadoData,
+        diaDaSemana: selecionadoSemana,
+        horaInicio: selecionadoHorario
+      };
+
+      setAgenda(prev =>
+        prev.map(h =>
+          h.id === selecionadoHorarioId
+            ? { ...h, ocupado: true }
+            : h
+        )
+      );
+
+      onConfirm(dados)
+      toast.success("Agendado com sucesso!");
+    } catch (err) {
+      toast.error(err.message || "Erro ao realizar agendamento");
+    }
+  }
 
   // Focus no pop-up
   useEffect(() => {
@@ -208,10 +253,10 @@ export default function VerPsi({ open = false, close = () => { }, perfil }) {
           <div className="container-conhecimentos">
             <h2>Conhecimentos:</h2>
             <div>
-              {tags.length === 0 ? (
+              {perfil.tags?.length === 0 ? (
                 <p style={{ margin: 0 }}>Nenhuma especialidade informada</p>
               ) : (
-                tags.map((t, i) => (
+                perfil.tags?.map((t, i) => (
                   <span key={i} className="tag-chip" data-speciality={t}>{t}</span>
                 ))
               )}
@@ -220,7 +265,7 @@ export default function VerPsi({ open = false, close = () => { }, perfil }) {
         </div>
         
         <img 
-          src={perfil.foto} 
+          src={perfil.foto || fotoDefault} 
           alt={`Foto de perfil - psicologo: ${perfil.nome || "Sem nome"}`} 
           onError={(e) => {
             e.target.src = fotoDefault;
@@ -240,7 +285,9 @@ export default function VerPsi({ open = false, close = () => { }, perfil }) {
           {diasUnicos.map((semana, i) => (
             <option key={i} value={semana}>{
               (semana || "").charAt(0).toUpperCase() + (semana || "").slice(1)
-            } - feira</option>
+            }{
+              (semana === "Sabado" || semana === "Domingo") ? "" : "-feira"
+            }</option>
           ))}
 
         </select>
@@ -253,15 +300,15 @@ export default function VerPsi({ open = false, close = () => { }, perfil }) {
             <button 
               key={i} 
               className={`btn-data-agenda 
-                ${selecionadoData == d ? "selected" : ""}
+                ${selecionadoData == d.value ? "selected" : ""}
               `}
-              onClick={() => setSelecionadoData(d)} 
-              aria-pressed={selecionadoData === d}>{d}</button>
+              onClick={() => setSelecionadoData(d.value)} 
+              aria-pressed={selecionadoData === d.value}>{d.label}</button>
           ))}
         </div>
       </section>
 
-      <section className="agenda-data-horario">
+    <section className="agenda-data-horario">
         <h3 className="label-agendamento">Horários</h3>
         <div>
           {horariosDisponiveis.map((h, i) => (
@@ -271,7 +318,12 @@ export default function VerPsi({ open = false, close = () => { }, perfil }) {
                 ${selecionadoHorario === h.horaInicio ? "selected" : ""} 
                 ${h.ocupado ? "disabled" : ""}`}
               disabled={h.ocupado}
-              onClick={() => !h.ocupado && setSelecionadoHorario(h.horaInicio)}
+              onClick={() => {
+                if (!h.ocupado) {
+                  setSelecionadoHorario(h.horaInicio);
+                  setSelecionadoHorarioId(h.id);
+                }
+              }}
               aria-pressed={selecionadoHorario === h.horaInicio}>{h.horaInicio}</button>
           ))}
         </div>
@@ -293,7 +345,9 @@ export default function VerPsi({ open = false, close = () => { }, perfil }) {
       </div>
       <div className="btn-agendar-cancelar">
         <button className="button-cancelar" onClick={close} aria-label="Fechar">Cancelar</button>
-        <button className="button-confirm" onClick={() => handleAgendar()}>Agendar</button>
+        <button className="button-confirm" onClick={() => handleAgendar()}>
+          {modo === "remarcar" ? "Remarcar" : "Agendar"}
+        </button>
       </div>
     </div>
     </>

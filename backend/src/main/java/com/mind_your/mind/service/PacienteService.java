@@ -2,81 +2,70 @@ package com.mind_your.mind.service;
 
 import com.mind_your.mind.dto.request.PacienteCadastroRequestDTO;
 import com.mind_your.mind.dto.request.PacienteUpdateRequestDTO;
-import com.mind_your.mind.dto.response.JwtResponseDTO;
-import com.mind_your.mind.dto.response.PacienteCadastroResponseDTO;
-import com.mind_your.mind.dto.response.PacienteResponseDTO;
-import com.mind_your.mind.dto.response.PacienteConfiguracoesResponseDTO;
-import com.mind_your.mind.dto.request.PacienteUpdateRequestDTO;
-import com.mind_your.mind.dto.response.JwtResponseDTO;
-import com.mind_your.mind.dto.response.PacienteCadastroResponseDTO;
-import com.mind_your.mind.dto.response.PacienteResponseDTO;
-import com.mind_your.mind.dto.response.PacienteSessionResponseDTO;
-import com.mind_your.mind.dto.response.PacienteConfiguracoesResponseDTO;
-import com.mind_your.mind.dto.response.UploadImagemResponseDTO;
-import com.mind_your.mind.models.Paciente;
-import com.mind_your.mind.repository.PacienteRepository;
+import com.mind_your.mind.dto.response.*;
 import com.mind_your.mind.mapper.PacienteMapper;
-import com.mind_your.mind.security.UserDetailsImpl;
-import org.springframework.security.core.Authentication;
-
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
+import com.mind_your.mind.models.Paciente;
 import com.mind_your.mind.models.RefreshToken;
-
+import com.mind_your.mind.repository.PacienteRepository;
+import com.mind_your.mind.security.JwtUtil;
+import com.mind_your.mind.security.UserDetailsImpl;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import com.mind_your.mind.security.JwtUtil;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
-public class PacienteService {
+public class PacienteService implements IPacienteService {
 
-    @Autowired
-    private PacienteRepository pacienteRepository;
+    private final PacienteRepository pacienteRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
+    private final IRefreshTokenService refreshTokenService;
+    private final IEnderecoService enderecoService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public PacienteService(PacienteRepository pacienteRepository,
+                           PasswordEncoder passwordEncoder,
+                           JwtUtil jwtUtil,
+                           AuthenticationManager authenticationManager,
+                           IRefreshTokenService refreshTokenService,
+                           IEnderecoService enderecoService) {
+        this.pacienteRepository = pacienteRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
+        this.authenticationManager = authenticationManager;
+        this.refreshTokenService = refreshTokenService;
+        this.enderecoService = enderecoService;
+    }
 
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private RefreshTokenService refreshTokenService;
-
-    @Autowired
-    private EnderecoService enderecoService;
-
+    @Override
     public PacienteCadastroResponseDTO cadastrar(PacienteCadastroRequestDTO dados) {
         Paciente paciente = new Paciente();
 
         paciente.setNome(dados.getNome());
         paciente.setSobrenome(dados.getSobrenome());
         paciente.setEmail(dados.getEmail());
-
         paciente.setGenero(dados.getGenero());
         paciente.setTelefone(dados.getTelefone());
 
-        if(dados.getDtNascimento() != null) {
+        if (dados.getDtNascimento() != null) {
             paciente.setDtNascimento(dados.getDtNascimento());
         }
 
         paciente.setNumeroResidencia(dados.getNumeroResidencia());
 
-        if (dados.getCep() != null){
+        if (dados.getCep() != null) {
             enderecoService.obtemEnderecoPorCep(dados.getCep()).ifPresent(dadosEndereco -> {
                 paciente.setCep(dados.getCep());
                 paciente.setCidade(dadosEndereco.getCidade());
@@ -85,20 +74,17 @@ public class PacienteService {
             });
         }
 
-        if (dados.getLogin() == null || dados.getLogin().isEmpty()) {
-            paciente.setLogin(dados.getEmail());
-        } else {
-            paciente.setLogin(dados.getLogin());
-        }
+        paciente.setLogin((dados.getLogin() == null || dados.getLogin().isEmpty())
+                ? dados.getEmail()
+                : dados.getLogin());
 
         paciente.setSenha(passwordEncoder.encode(dados.getSenha()));
 
         Paciente salvo = pacienteRepository.save(paciente);
-
         return PacienteMapper.toCadastroResponseDTO(salvo);
     }
 
-    // buscar todos
+    @Override
     public List<PacienteResponseDTO> buscarTodos() {
         return pacienteRepository.findAll()
                 .stream()
@@ -106,51 +92,42 @@ public class PacienteService {
                 .toList();
     }
 
-    // buscar por email
+    @Override
     public Optional<PacienteResponseDTO> buscarPorEmail(String email) {
         return pacienteRepository.findByEmail(email)
                 .map(PacienteMapper::toResponseDTO);
     }
 
-    // buscar por Id
+    @Override
     public Optional<PacienteResponseDTO> buscarPorId(String id) {
         return pacienteRepository.findById(id)
                 .map(PacienteMapper::toResponseDTO);
     }
 
-    // buscar configuracoes por Id
+    @Override
     public Optional<PacienteConfiguracoesResponseDTO> buscarConfiguracoesPorId(String id) {
         checarPropriedade(id);
         return pacienteRepository.findById(id)
                 .map(PacienteMapper::toConfiguracoesResponseDTO);
     }
 
-    // buscar por nome
+    @Override
     public Optional<PacienteResponseDTO> buscarPorNome(String nome) {
         return pacienteRepository.findByNome(nome)
                 .map(PacienteMapper::toResponseDTO);
     }
 
-    // buscar por login (email ou login) - Perfil Completo
+    @Override
     public Optional<PacienteResponseDTO> buscarPorLogin(String login) {
-        Optional<Paciente> paciente = buscarPorLoginAuth(login);
-        return paciente.map(PacienteMapper::toResponseDTO);
+        return buscarPorLoginAuth(login).map(PacienteMapper::toResponseDTO);
     }
 
-    // buscar por login (email ou login) - Sessao
+    @Override
     public Optional<PacienteSessionResponseDTO> buscarSessaoPorLogin(String login) {
-        Optional<Paciente> paciente = buscarPorLoginAuth(login);
-        return paciente.map(PacienteMapper::toSessionDTO);
+        return buscarPorLoginAuth(login).map(PacienteMapper::toSessionDTO);
     }
 
-    private Optional<Paciente> buscarPorLoginAuth(String login) {
-        if (login.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
-            return pacienteRepository.findByEmail(login);
-        }
-        return pacienteRepository.findByLogin(login);
-    }
-
-    // atualizar
+    @Override
     public Optional<PacienteResponseDTO> atualizar(String id, PacienteUpdateRequestDTO dados) {
         checarPropriedade(id);
         return pacienteRepository.findById(id).map(paciente -> {
@@ -160,7 +137,7 @@ public class PacienteService {
         });
     }
 
-    // deletar por ID
+    @Override
     public boolean deletarPorId(String id) {
         checarPropriedade(id);
         if (pacienteRepository.existsById(id)) {
@@ -170,7 +147,7 @@ public class PacienteService {
         return false;
     }
 
-    // fazer login com JWT
+    @Override
     public Optional<JwtResponseDTO> fazerLogin(String login, String senha) {
         return buscarPorLoginAuth(login)
                 .filter(p -> passwordEncoder.matches(senha, p.getSenha()))
@@ -185,7 +162,7 @@ public class PacienteService {
                 });
     }
 
-    // upload imagem de perfil
+    @Override
     public Optional<UploadImagemResponseDTO> uploadImagem(String id, MultipartFile file) {
         checarPropriedade(id);
         try {
@@ -193,7 +170,6 @@ public class PacienteService {
             if (contentType == null || !contentType.startsWith("image/")) {
                 throw new RuntimeException("Arquivo deve ser uma imagem");
             }
-
             if (file.getSize() > 5 * 1024 * 1024) {
                 throw new RuntimeException("Imagem deve ter no máximo 5MB");
             }
@@ -204,16 +180,11 @@ public class PacienteService {
             }
 
             Paciente paciente = pacienteOpt.get();
-
-            Path uploadPath = Paths.get("uploads/users-pictures")
-                    .toAbsolutePath()
-                    .normalize();
-
+            Path uploadPath = Paths.get("uploads/users-pictures").toAbsolutePath().normalize();
             Files.createDirectories(uploadPath);
 
             if (paciente.getImgPerfil() != null && !paciente.getImgPerfil().isEmpty()) {
-                Path oldImage = uploadPath.resolve(paciente.getImgPerfil());
-                Files.deleteIfExists(oldImage);
+                Files.deleteIfExists(uploadPath.resolve(paciente.getImgPerfil()));
             }
 
             String originalFilename = file.getOriginalFilename();
@@ -224,23 +195,27 @@ public class PacienteService {
             String filename = "perfil-" + paciente.getLogin() + "-"
                     + UUID.randomUUID().toString().substring(0, 8) + extension;
 
-            Path targetLocation = uploadPath.resolve(filename);
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(file.getInputStream(), uploadPath.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
 
             paciente.setImgPerfil(filename);
             pacienteRepository.save(paciente);
 
             return Optional.of(new UploadImagemResponseDTO("Imagem enviada com sucesso", filename));
-
         } catch (Exception e) {
             throw new RuntimeException("Erro ao fazer upload da imagem", e);
         }
     }
 
+    private Optional<Paciente> buscarPorLoginAuth(String login) {
+        if (login.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
+            return pacienteRepository.findByEmail(login);
+        }
+        return pacienteRepository.findByLogin(login);
+    }
+
     private void checarPropriedade(String id) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.getPrincipal() instanceof UserDetailsImpl) {
-            UserDetailsImpl user = (UserDetailsImpl) auth.getPrincipal();
+        if (auth != null && auth.getPrincipal() instanceof UserDetailsImpl user) {
             if (!user.getId().equals(id)) {
                 throw new RuntimeException("Acesso negado: Você não tem permissão para acessar ou modificar dados de outro usuário.");
             }

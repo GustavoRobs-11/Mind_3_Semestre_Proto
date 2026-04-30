@@ -10,7 +10,6 @@ import com.mind_your.mind.models.Psicologo;
 import com.mind_your.mind.repository.ArtigoRepository;
 import com.mind_your.mind.repository.PsicologoRepository;
 import com.mind_your.mind.security.UserDetailsImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -27,23 +26,22 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-public class ArtigoService {
+public class ArtigoService implements IArtigoService {
 
-    @Autowired
-    private ArtigoRepository artigoRepository;
+    private final ArtigoRepository artigoRepository;
+    private final PsicologoRepository psicologoRepository;
 
-    @Autowired
-    private PsicologoRepository psicologoRepository;
+    public ArtigoService(ArtigoRepository artigoRepository, PsicologoRepository psicologoRepository) {
+        this.artigoRepository = artigoRepository;
+        this.psicologoRepository = psicologoRepository;
+    }
 
-    // Criar artigo
+    @Override
     public ArtigoResponseDTO criarArtigo(ArtigoRequestDTO dados) {
         String psicologoId = getAuthenticatedUserId();
-        
-        Optional<Psicologo> psicologoOpt = psicologoRepository.findById(psicologoId);
-        if (psicologoOpt.isEmpty()) {
-            throw new RuntimeException("Psicólogo não encontrado");
-        }
-        Psicologo psicologo = psicologoOpt.get();
+
+        Psicologo psicologo = psicologoRepository.findById(psicologoId)
+                .orElseThrow(() -> new RuntimeException("Psicólogo não encontrado"));
 
         Artigo artigo = new Artigo();
         artigo.setTitulo(dados.getTitulo());
@@ -60,21 +58,21 @@ public class ArtigoService {
         return ArtigoMapper.toResponseDTO(salvo);
     }
 
-    // Listar todos os artigos publicados (Feed)
+    @Override
     public List<ArtigoResponseDTO> listarPublicados() {
         return artigoRepository.findByPublicadoTrue().stream()
                 .map(ArtigoMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
 
-    // Listar artigos de um psicólogo específico (públicos)
+    @Override
     public List<ArtigoResponseDTO> listarPorPsicologo(String psicologoId) {
         return artigoRepository.findByPsicologoIdAndPublicadoTrue(psicologoId).stream()
                 .map(ArtigoMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
 
-    // Listar MEUS artigos (Todos, inclusive os não publicados)
+    @Override
     public List<ArtigoResponseDTO> listarMeusArtigos() {
         String psicologoId = getAuthenticatedUserId();
         return artigoRepository.findByPsicologoId(psicologoId).stream()
@@ -82,7 +80,7 @@ public class ArtigoService {
                 .collect(Collectors.toList());
     }
 
-    // Buscar um artigo por ID
+    @Override
     public Optional<ArtigoResponseDTO> buscarPorId(String id) {
         return artigoRepository.findById(id).map(artigo -> {
             if (!artigo.isPublicado()) {
@@ -95,7 +93,7 @@ public class ArtigoService {
         });
     }
 
-    // Atualizar artigo
+    @Override
     public Optional<ArtigoResponseDTO> atualizarArtigo(String id, ArtigoUpdateRequestDTO dados) {
         return artigoRepository.findById(id).map(artigo -> {
             checarPropriedade(artigo.getPsicologoId());
@@ -105,7 +103,7 @@ public class ArtigoService {
         });
     }
 
-    // Deletar artigo
+    @Override
     public boolean deletarArtigo(String id) {
         Optional<Artigo> artigoOpt = artigoRepository.findById(id);
         if (artigoOpt.isPresent()) {
@@ -114,9 +112,8 @@ public class ArtigoService {
 
             if (artigo.getImagem() != null && !artigo.getImagem().isEmpty()) {
                 Path uploadPath = Paths.get("uploads/articles-pictures").toAbsolutePath().normalize();
-                Path oldImage = uploadPath.resolve(artigo.getImagem());
                 try {
-                    Files.deleteIfExists(oldImage);
+                    Files.deleteIfExists(uploadPath.resolve(artigo.getImagem()));
                 } catch (Exception e) {
                     System.err.println("Failed to delete article image: " + e.getMessage());
                 }
@@ -128,7 +125,7 @@ public class ArtigoService {
         return false;
     }
 
-    // Alternar status de publicação
+    @Override
     public Optional<ArtigoResponseDTO> alternarPublicacao(String id) {
         return artigoRepository.findById(id).map(artigo -> {
             checarPropriedade(artigo.getPsicologoId());
@@ -139,7 +136,7 @@ public class ArtigoService {
         });
     }
 
-    // Upload de imagem do artigo
+    @Override
     public Optional<UploadImagemResponseDTO> uploadImagem(String id, MultipartFile file) {
         Optional<Artigo> artigoOpt = artigoRepository.findById(id);
         if (artigoOpt.isEmpty()) {
@@ -154,7 +151,6 @@ public class ArtigoService {
             if (contentType == null || !contentType.startsWith("image/")) {
                 throw new RuntimeException("Arquivo deve ser uma imagem");
             }
-
             if (file.getSize() > 5 * 1024 * 1024) {
                 throw new RuntimeException("Imagem deve ter no máximo 5MB");
             }
@@ -162,10 +158,8 @@ public class ArtigoService {
             Path uploadPath = Paths.get("uploads/articles-pictures").toAbsolutePath().normalize();
             Files.createDirectories(uploadPath);
 
-            // Deletar imagem antiga se existir
             if (artigo.getImagem() != null && !artigo.getImagem().isEmpty()) {
-                Path oldImage = uploadPath.resolve(artigo.getImagem());
-                Files.deleteIfExists(oldImage);
+                Files.deleteIfExists(uploadPath.resolve(artigo.getImagem()));
             }
 
             String originalFilename = file.getOriginalFilename();
@@ -174,16 +168,13 @@ public class ArtigoService {
                     : ".png";
 
             String filename = "artigo-" + id + "-" + UUID.randomUUID().toString().substring(0, 8) + extension;
-            Path targetLocation = uploadPath.resolve(filename);
-            
-            Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(file.getInputStream(), uploadPath.resolve(filename), StandardCopyOption.REPLACE_EXISTING);
 
             artigo.setImagem(filename);
             artigo.setDataAtualizacao(LocalDateTime.now());
             artigoRepository.save(artigo);
 
             return Optional.of(new UploadImagemResponseDTO("Imagem enviada com sucesso", filename));
-
         } catch (Exception e) {
             throw new RuntimeException("Erro ao fazer upload da imagem", e);
         }
@@ -191,8 +182,7 @@ public class ArtigoService {
 
     private String getAuthenticatedUserId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.getPrincipal() instanceof UserDetailsImpl) {
-            UserDetailsImpl user = (UserDetailsImpl) auth.getPrincipal();
+        if (auth != null && auth.getPrincipal() instanceof UserDetailsImpl user) {
             return user.getId();
         }
         return null;

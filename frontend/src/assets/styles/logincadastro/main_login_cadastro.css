@@ -171,23 +171,6 @@ input[readonly] {
     font-weight: 500;
 }
 
-/* Botão */
-.button-confirm {
-    background: #2f6f5e;
-    color: white;
-    padding: 13px;
-    border-radius: 12px;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    height: min-content;
-}
-
-.button-confirm:hover {
-    background: #255a4d;
-}
-
 /* ===== Responsivo ===== */
 
 /* Desktop */

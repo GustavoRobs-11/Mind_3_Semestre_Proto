@@ -122,8 +122,6 @@ export default function ArtigosPerfil({ id }) {
                       <HiOutlinePencilAlt />
                     </button>
                   </div>
-                  
-
 
                   {/* <button 
                     className={`button-confirm button-ver-artigo ${artigo.publicado ? 'btn-unpublish' : 'btn-publish'}`}

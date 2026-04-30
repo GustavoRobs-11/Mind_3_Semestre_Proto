@@ -2,8 +2,7 @@ package com.mind_your.mind.controllers;
 
 import com.mind_your.mind.dto.request.AgendaRequestDTO;
 import com.mind_your.mind.dto.response.AgendaResponseDTO;
-import com.mind_your.mind.service.AgendaService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.mind_your.mind.service.IAgendaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +12,11 @@ import java.util.List;
 @RequestMapping("/agendas")
 public class AgendaController {
 
-    @Autowired
-    private AgendaService agendaService;
+    private final IAgendaService agendaService;
+
+    public AgendaController(IAgendaService agendaService) {
+        this.agendaService = agendaService;
+    }
 
     @PostMapping
     public ResponseEntity<AgendaResponseDTO> agendar(@RequestBody AgendaRequestDTO dto) {

@@ -4,7 +4,6 @@ import com.mind_your.mind.dto.request.HorarioRequestDTO;
 import com.mind_your.mind.dto.response.HorarioResponseDTO;
 import com.mind_your.mind.models.Horario;
 import com.mind_your.mind.repository.HorarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,18 +12,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class HorarioService {
+public class HorarioService implements IHorarioService {
 
-    @Autowired
-    private HorarioRepository horarioRepository;
+    private final HorarioRepository horarioRepository;
 
+    public HorarioService(HorarioRepository horarioRepository) {
+        this.horarioRepository = horarioRepository;
+    }
+
+    @Override
     public HorarioResponseDTO criar(HorarioRequestDTO dto) {
-        // Validação: não pode sobrepor um horário existente no mesmo dia da semana
         List<Horario> horariosDoDia = horarioRepository.findByPsicologoIdAndDiaDaSemana(
                 dto.getPsicologoId(), dto.getDiaDaSemana());
 
         for (Horario h : horariosDoDia) {
-            // Comparação de strings no formato "HH:mm" — funciona corretamente em ordem lexicográfica
             boolean isSobreposto = dto.getHoraInicio().compareTo(h.getHoraFim()) < 0
                     && dto.getHoraFim().compareTo(h.getHoraInicio()) > 0;
             if (isSobreposto) {
@@ -45,18 +46,21 @@ public class HorarioService {
         return toDTO(horario);
     }
 
+    @Override
     public List<HorarioResponseDTO> listarTodosDoPsicologo(String psicologoId) {
         return horarioRepository.findByPsicologoId(psicologoId).stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<HorarioResponseDTO> listarDisponiveisDoPsicologo(String psicologoId) {
         return horarioRepository.findByPsicologoIdAndDisponivelTrue(psicologoId).stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
+    @Override
     public void deletar(String id) {
         if (!horarioRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Horário não encontrado.");

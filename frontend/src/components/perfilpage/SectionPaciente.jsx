@@ -3,9 +3,12 @@ import Info from './Info.jsx';
 import Calendario from './Calendario.jsx';
 import Sobre from './Sobre.jsx';
 import Logout from './Logout.jsx';
+import SkipNavigation from "../SkipNavigation.jsx";
 
 export default function SectionPaciente({ profileData }) {
     return (
+        <>
+        < SkipNavigation mainContent="cardPerfilPaciente" />
         <div className="container-section-perfil">
             <div className="sobre-info-container">
                <Info profileData={profileData} />
@@ -16,5 +19,6 @@ export default function SectionPaciente({ profileData }) {
                 <Calendario id={profileData?.id} />
             </div>
         </div>
+        </>
     );
 }

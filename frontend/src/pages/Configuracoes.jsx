@@ -19,8 +19,6 @@ export default function Configuracoes() {
     const { user, loading, updateUser, logout } = useAuth();
 
     const [imgPerfil, setImgPerfil] = useState(getDefaultAvatar());
-    const [erroImgPerfil, setErroImgPerfil] = useState(false);
-    const [erroImage, setErroImage] = useState(false);
     const [novaImagem, setNovaImagem] = useState(null); // Armazena o arquivo selecionado
     const [isOpen, setIsOpen] = useState(false);
     const [salvando, setSalvando] = useState(false);
@@ -94,6 +92,7 @@ export default function Configuracoes() {
                     }));
                 } catch (error) {
                     toast.error("Erro ao carregar configurações completas.");
+                    console.log(error)
                 }
             }
         };
@@ -254,6 +253,7 @@ export default function Configuracoes() {
 
         } catch (error) {
             toast.error('Erro ao fazer upload da imagem');
+            console.log(error)
             return user.imgPerfil;
         }
     };
@@ -299,6 +299,7 @@ export default function Configuracoes() {
 
         } catch (error) {
             toast.error('Erro ao atualizar');
+            console.log(error)
         } finally {
             setSalvando(false);
         }
@@ -322,6 +323,7 @@ export default function Configuracoes() {
             toast.error('Erro ao deletar conta');
             setDeletando(false);
             setIsOpen(false);
+            console.log(error)
         }
     };
 

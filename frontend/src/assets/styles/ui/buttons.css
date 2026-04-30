@@ -40,6 +40,30 @@
     background-color:var(--accent-dark-green-800);
 }
 
+/* Button (confirmação/light-green) */
+
+.button-progress-confirm{
+    background-color: var(--tertiary-light-green-700);
+    color: var(--black-950);
+    padding:10px 20px;
+    font-weight: 500;
+    font-size: 1rem;
+    border: none;
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-sm);
+    text-wrap: nowrap;
+    width: 100%;
+}
+
+.button-progress-confirm:hover{
+    background-color:var(--tertiary-light-green-600);
+}
+
+
 /* Botão (processeguir) */
 
 .button-proceed{
@@ -47,7 +71,7 @@
     color: var(--black-950);
     padding:10px 20px;
     font-weight: 500;
-    font-size: 1.1rem;
+    font-size: 1rem;
     border: none;
     border-radius: var(--border-radius-md);
     display: flex;
@@ -58,7 +82,7 @@
 }
 
 .button-proceed:hover{
-    background-color: var(--primary-orange-700);
+    background-color: var(--accent-mid-orange-700);
 }
 
 /* Botão (atenção) */
@@ -164,23 +188,6 @@
 }
 .button-mais:hover {
     background-color: var(--accent-dark-green-600);
-}
-/* Botão de ("seta-calendario") do Perfil*/
-
-.button-seta-calendario{
-  border: none;
-  background-color: transparent;
-  margin: 18px 0 0 0;
-}
-.button-seta-calendario:hover {
-  transform: scale(1.2);
-  transition: transform 0.2s;
-}
-.seta-calendario {
-  width: 30px;
-  height: 30px;
-  color: #388e3c;
-  cursor: pointer;
 }
 
 /* Botão Skip Navigation (Acessibilidade) */

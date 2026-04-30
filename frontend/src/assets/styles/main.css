@@ -77,8 +77,8 @@
     --accent-mid-orange-300: #f5d6cc;
     --accent-mid-orange-400: #edbcae;
     --accent-mid-orange-500: #e39a86;
-    --accent-mid-orange-600: #d4795f;
-    --accent-mid-orange-700: #c76142; /* default */
+    --accent-mid-orange-600: #d4795f; /* default */
+    --accent-mid-orange-700: #c76142; 
     --accent-mid-orange-800: #a24e33;
     --accent-mid-orange-900: #7a3a25;
     --accent-mid-orange-950: #52261a;
@@ -168,3 +168,100 @@ input[readonly] {
     cursor: text !important;
     background-color: rgba(0, 0, 0, 0.02); /* Slight dim to show it's auto-filled */
 }
+
+
+/*
+# CSS Variables 
+
+// primary-orange 
+--primary-orange-50: #fffdfd; 
+--primary-orange-100: #fef9f5; 
+--primary-orange-200: #fdf0e9; 
+--primary-orange-300: #fce5d8; 
+--primary-orange-400: #fad7c2; 
+--primary-orange-500: #f8c5a7; 
+--primary-orange-600: #f5b088; 
+--primary-orange-700: #f29863; // default
+--primary-orange-800: #a7460e; 
+--primary-orange-900: #4d2006; 
+--primary-orange-950: #2f1404; 
+
+// secondary-cream 
+--secondary-cream-50: #fffffe; 
+--secondary-cream-100: #fefefc; 
+--secondary-cream-200: #fdfcf9; 
+--secondary-cream-300: #fcfaf4; 
+--secondary-cream-400: #faf7ee; 
+--secondary-cream-500: #f8f4e7; 
+--secondary-cream-600: #f5f0de; 
+--secondary-cream-700: #f2ebd4; // default
+--secondary-cream-800: #b09436; 
+--secondary-cream-900: #493d17; 
+--secondary-cream-950: #27210c; 
+
+// tertiary-light-green 
+--tertiary-light-green-50: #fefefd; 
+--tertiary-light-green-100: #fafdf8; 
+--tertiary-light-green-200: #f3faf0; 
+--tertiary-light-green-300: #e9f6e3; 
+--tertiary-light-green-400: #ddf0d4; 
+--tertiary-light-green-500: #ceeac1; 
+--tertiary-light-green-600: #bce2ab; 
+--tertiary-light-green-700: #A6D98F; // default
+--tertiary-light-green-800: #4e8d30; 
+--tertiary-light-green-900: #234016; 
+--tertiary-light-green-950: #15260d; 
+
+// accent-dark-green 
+--accent-dark-green-50: #fafdfc; 
+--accent-dark-green-100: #ecf9f3; 
+--accent-dark-green-200: #d5f1e4; 
+--accent-dark-green-300: #b5e7d0; 
+--accent-dark-green-400: #8bd9b5; 
+--accent-dark-green-500: #58c994; 
+--accent-dark-green-600: #339e6c; 
+--accent-dark-green-700: #1d593d; // default
+--accent-dark-green-800: #143d2a; 
+--accent-dark-green-900: #0e2c1e; 
+--accent-dark-green-950: #0c271a; 
+
+// accent-mid-orange 
+--accent-mid-orange-50: #fefdfc; 
+--accent-mid-orange-100: #fdf5f3; 
+--accent-mid-orange-200: #fae9e5; 
+--accent-mid-orange-300: #f5d7d0; 
+--accent-mid-orange-400: #f0c1b6; 
+--accent-mid-orange-500: #eaa696; 
+--accent-mid-orange-600: #e28570; 
+--accent-mid-orange-700: #d96045; // default
+--accent-mid-orange-800: #812d1a; 
+--accent-mid-orange-900: #40160d; 
+--accent-mid-orange-950: #2a0f09; 
+
+// black 
+--black-50: #fbfbfb; // default
+--black-100: #f0f0f0; 
+--black-200: #dcdedc; 
+--black-300: #c1c5c1; 
+--black-400: #9fa49f; 
+--black-500: #757c75; 
+--black-600: #454a45; 
+--black-700: #0f100f; 
+--black-800: #070707; 
+--black-900: #020202; 
+--black-950: #000000; 
+
+// white 
+--white-50: #ffffff; 
+--white-100: #ffffff; 
+--white-200: #fefefe; 
+--white-300: #fefefe; 
+--white-400: #fdfdfd; 
+--white-500: #fcfcfc; 
+--white-600: #fbfbfb; 
+--white-700: #fafafa; 
+--white-800: #7d7d7d; 
+--white-900: #323232; 
+--white-950: #1a1a1a; // default
+
+*/
