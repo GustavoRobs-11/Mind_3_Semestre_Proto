@@ -1,6 +1,6 @@
 import { authService } from './authService';
 
-const API_URL = import.meta.env.VITE_API_BASE_URL + "/pacientes";
+const API_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080') + "/pacientes";
 
 // Login
 export async function loginUser(login, senha) {

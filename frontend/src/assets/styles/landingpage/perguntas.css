@@ -4,7 +4,8 @@ section.container-questions{
     flex-direction: column;
 }
 section.container-questions > div{
-    width: 60%;
+    width: 100%;
+    padding-inline: 10%;
 }
 section.container-questions .answer{
     display:flex;
@@ -47,10 +48,10 @@ section.container-questions h1{
 }
 button.accordion:focus{
     outline: none;
-    background-color:#f5e0a59f;
+    background-color:var(--tertiary-light-green-400);
 }
 button.accordion:hover{
-    background-color:#f5e0a59f;
+    background-color:var(--tertiary-light-green-400);
 }
 
 .bi-icon{
@@ -61,10 +62,3 @@ button.accordion:hover{
     transform: rotate(180deg);
 }
 
-/* Responsividade ----------------- */
-
-@media(max-width:638px){
-    section.container-questions > div{
-        margin:0 5% 0 5%;
-    }
-}

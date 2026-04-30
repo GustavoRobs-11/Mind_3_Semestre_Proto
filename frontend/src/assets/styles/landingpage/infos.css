@@ -1,25 +1,28 @@
 .section-info{
     background-color: var(--white-200);
+
 }
 .section-info > p{
     text-align: justify;
     padding-inline: 15%;
     padding-bottom: 2rem;
+    color: var(--white-900);
+    font-size: medium;
+    font-weight: 500;
 }
 .section-info h1{
-    padding: 3rem;
+    padding: 1rem;
     width: 100%;
     text-align: center;
+    font-size: 2rem;
 }
 
 .info-grid{
     display: grid;
-    grid-template-columns: repeat(2, 360px);
+    grid-template-columns: repeat(2, 460px);
     gap: var(--spacing-sm);
     justify-content: center;
-    align-content: center;
     padding: 1rem;
-
 }
 
 .info{
@@ -34,13 +37,15 @@
     background-color:#F2F2F2;
 }
 .info-1 > h2{
-    color: var(--accent-dark-green-700)
+    color: var(--accent-dark-green-700);
+    font-size: 2rem;
 }
 
 .info-2 > h2,
 .info-3 > h2,
 .info-4 > h2{
     color: var(--accent-mid-orange-950);
+    font-size: 2rem;
 }
 
 /* Botão --------------------- */
@@ -74,7 +79,7 @@
 
 @media(max-width:900px){
     .section-info > p{
-        padding: 1rem;
+        padding-inline: 10%;
     }
     .info-grid{
         grid-template-columns: auto;
@@ -84,3 +89,4 @@
         padding:5px;
     }
 }
+

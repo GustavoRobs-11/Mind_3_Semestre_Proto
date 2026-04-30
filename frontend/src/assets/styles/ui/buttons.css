@@ -3,18 +3,19 @@
 /* Navbar button */
 .nav-btn-login{
     box-sizing: border-box;
-    background-color: var(--white-200);
-    color: var(--black-950);
-    padding:7px 29px;
+    background-color: var(--accent-dark-green-700);
+    color: var(--black-50);
+    padding: 9px 31px;
+    border: none;
     font-weight: 600;
     font-size: 1.2rem;
-    border: 4px solid var(--accent-dark-green-700);
     border-radius: var(--spacing-xs);
     cursor: pointer;
+    transition: 200ms;
 }
 
 .nav-btn-login:hover{
-    background-color: var(--tertiary-light-green-500);
+    background-color: var(--accent-dark-green-800);
 }
 
 /* Button (confirmação) */
@@ -81,15 +82,16 @@
 
 .button-planos{
     font-size: clamp(1rem, 5vw, 1.4rem);
-    background-color: var(--white-600);
+    background-color: var(--white-200);
     border: none;
     padding:10px 20px;
     border-radius: var(--border-radius-md);
     cursor: pointer;
+    transition: 200ms;
 }
 
 .button-planos:hover{
-    background-color: var(--white-700);
+    background-color: var(--white-500);
 }
 
 /* Botão ("Cancelar") */

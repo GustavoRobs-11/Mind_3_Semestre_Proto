@@ -1,6 +1,6 @@
 import { authService } from './authService';
 
-const API_URL = import.meta.env.VITE_API_BASE_URL + "/artigos";
+const API_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080') + "/artigos";
 
 // Criar novo artigo (com autenticação)
 export async function criarArtigo(dados) {

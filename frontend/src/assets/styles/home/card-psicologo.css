@@ -13,9 +13,8 @@
     border-radius: var(--border-radius-md);
     padding: 10px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(max(180px, calc(25% - 22.5px)), 1fr));
     gap: 30px;
-    flex-wrap: wrap;
     justify-content: center;
     width: 100%;
     align-self: center;
@@ -142,7 +141,7 @@
     background: transparent;
     border-radius: 8px;
     padding: 10px;
-    
+
 
     display: flex;
     flex-direction: column;
@@ -152,7 +151,8 @@
     pointer-events: none;
     transition: 0.2s;
 }
-.tags-tooltip span{
+
+.tags-tooltip span {
     background: var(--white-200);
     color: var(--black-950);
     border: 1px solid var(--white-700);
@@ -234,7 +234,14 @@
     width: 100%;
 }
 
-@media(max-width:716px) {
+@media(max-width:420px) {
+    .area-card-psicologos.col {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+}
+
+@media(max-width:800px) {
     .card-psi.row {
         flex-direction: column;
         align-items: center;
@@ -261,20 +268,3 @@
     }
 }
 
-@media(max-width:925px) {
-    .area-card-psicologos.col {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    }
-}
-@media(max-width:1400px) {
-    .area-card-psicologos.col {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 180px));
-        gap: 0px;
-    }
-}
-@media(min-width:1400px) {
-    .area-card-psicologos.col {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 300px));
-        gap: 0px;
-    }
-}
