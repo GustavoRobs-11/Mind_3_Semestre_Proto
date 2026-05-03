@@ -1,0 +1,8 @@
+# .gitleaksignore
+title = "Gitleaks Ignore File"
+
+[allowlist]
+description = "Ignore default JWT secret used for local development"
+regexes = [
+    "MindYourMindSecretKeyForJWT2024ThisMustBeAtLeast32CharactersLong"
+]
