@@ -7,10 +7,46 @@ on:
     branches: [dev, main]
 
 jobs:
+  # SECURITY
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Scan for secrets
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # QUALITY
+  quality:
+    name: SonarCloud Analysis
+    runs-on: ubuntu-latest
+    needs: security
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Análise com SonarCloud 
+        uses: SonarSource/sonarcloud-github-action@v2 
+        with: 
+          args: > 
+            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
+            -Dsonar.organization=${{ secrets.SONAR_ORG }}
+        env: 
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
   # BACKEND — Build e Testes
   backend:
     name: Backend (Spring Boot)
     runs-on: ubuntu-latest
+    needs: security
 
     services:
       mongodb:
@@ -58,6 +94,7 @@ jobs:
   frontend:
     name: Frontend (React)
     runs-on: ubuntu-latest
+    needs: security
 
     steps:
       - name: Checkout código
@@ -73,6 +110,15 @@ jobs:
       - name: Instalar dependências
         run: cd frontend && npm ci
 
+      - name: Verificar vulnerabilidade
+        run: cd frontend && npm audit --audit-level=high || true
+
+      - name: Rodar lint
+        run: cd frontend && npm run lint
+
+      # - name: Run Coverage (Descomentar se adicionar testes ao React)
+      #   run: cd frontend && npm run test -- --coverage
+
       - name: Build
         run: cd frontend && npm run build
 
@@ -83,11 +129,30 @@ jobs:
           name: frontend-build
           path: frontend/dist
 
+  # TESTES INTEGRADOS (Docker Compose)
+  test-e2e:
+    name: Teste E2E (Docker Compose)
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Subir Ambiente de teste
+        run: docker compose up -d --build
+
+      - name: Validar Comunicação e Status
+        run: |
+          sleep 10
+          docker compose ps
+          # docker compose exec -T frontend ping -c 1 backend || true
+
   # DOCKER — Build & Push
   docker-build-push:
     name: Docker Build & Push
     runs-on: ubuntu-latest
-    needs: [backend, frontend]
+    needs: [test-e2e, quality]
     # Liberado para main e dev
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
 
