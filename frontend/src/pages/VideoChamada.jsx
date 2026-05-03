@@ -157,6 +157,11 @@ export default function VideoChamada() {
         }, 100);
     };
 
+    const startCallWithRoom = (room) => {
+        setRoomName(room);
+        setTimeout(handleStartCall, 100);
+    };
+
     if (loading) {
         return (
             <div style={{ 
