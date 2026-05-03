@@ -18,7 +18,7 @@ jobs:
           fetch-depth: 0
 
       - name: Scan for secrets
-        run: docker run -v ${{ github.workspace }}:/path zricethez/gitleaks:latest detect --source="/path" -v
+        run: docker run -v ${{ github.workspace }}:/path ghcr.io/gitleaks/gitleaks:latest detect --source="/path" -v
 
   # QUALITY
   quality:
