@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1777835303232" clover="3.2.0">
+  <project timestamp="1777835303232" name="All files">
+    <metrics statements="26" coveredstatements="16" conditionals="20" coveredconditionals="14" methods="7" coveredmethods="3" elements="53" coveredelements="33" complexity="0" loc="26" ncloc="26" packages="3" files="4" classes="4"/>
+    <package name="assets.img">
+      <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="perfil-default.png" path="C:\Users\draco\Documents\Github4\Mind\frontend\src\assets\img\perfil-default.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="wallpaper-default.png" path="C:\Users\draco\Documents\Github4\Mind\frontend\src\assets\img\wallpaper-default.png">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+    </package>
+    <package name="components.common">
+      <metrics statements="7" coveredstatements="7" conditionals="4" coveredconditionals="3" methods="2" coveredmethods="2"/>
+      <file name="ProfileImage.jsx" path="C:\Users\draco\Documents\Github4\Mind\frontend\src\components\common\ProfileImage.jsx">
+        <metrics statements="7" coveredstatements="7" conditionals="4" coveredconditionals="3" methods="2" coveredmethods="2"/>
+        <line num="8" count="4" type="stmt"/>
+        <line num="9" count="4" type="stmt"/>
+        <line num="11" count="4" type="stmt"/>
+        <line num="12" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="13" count="1" type="stmt"/>
+        <line num="14" count="1" type="stmt"/>
+        <line num="18" count="4" type="stmt"/>
+      </file>
+    </package>
+    <package name="utils">
+      <metrics statements="19" coveredstatements="9" conditionals="16" coveredconditionals="11" methods="5" coveredmethods="1"/>
+      <file name="imageHelper.js" path="C:\Users\draco\Documents\Github4\Mind\frontend\src\utils\imageHelper.js">
+        <metrics statements="19" coveredstatements="9" conditionals="16" coveredconditionals="11" methods="5" coveredmethods="1"/>
+        <line num="3" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="15" count="5" type="cond" truecount="6" falsecount="0"/>
+        <line num="16" count="2" type="stmt"/>
+        <line num="20" count="3" type="cond" truecount="3" falsecount="1"/>
+        <line num="21" count="0" type="stmt"/>
+        <line num="25" count="3" type="cond" truecount="1" falsecount="1"/>
+        <line num="26" count="0" type="stmt"/>
+        <line num="30" count="3" type="cond" truecount="1" falsecount="1"/>
+        <line num="31" count="0" type="stmt"/>
+        <line num="35" count="3" type="stmt"/>
+        <line num="43" count="0" type="stmt"/>
+        <line num="46" count="0" type="stmt"/>
+        <line num="56" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="57" count="0" type="stmt"/>
+        <line num="65" count="0" type="stmt"/>
+        <line num="66" count="0" type="stmt"/>
+        <line num="67" count="0" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>
