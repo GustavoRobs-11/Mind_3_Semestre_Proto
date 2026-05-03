@@ -10,6 +10,7 @@ public class AgendaResponseDTO {
     private String diaDaSemana;
     private String horaInicio;
     private String status;
+    private Boolean isCallOpen;
 
     // Getters and Setters
 
@@ -75,5 +76,13 @@ public class AgendaResponseDTO {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Boolean getIsCallOpen() {
+        return isCallOpen;
+    }
+
+    public void setIsCallOpen(Boolean isCallOpen) {
+        this.isCallOpen = isCallOpen;
     }
 }

@@ -16,8 +16,8 @@ public class Agenda {
     private String diaDaSemana;
     private String horaInicio;
     
-    // Status can be: AGENDADO, CANCELADO, CONCLUIDO
-    private String status = "AGENDADO";
+    // Status can be: PENDENTE, CONFIRMADO, RECUSADO, CANCELADO, REALIZADO
+    private String status = "PENDENTE";
 
     // Getters and Setters
 

@@ -10,4 +10,8 @@ public interface IAgendaService {
     List<AgendaResponseDTO> listarDoPsicologo(String psicologoId);
     List<AgendaResponseDTO> listarDoPaciente(String pacienteId);
     void cancelar(String id);
+    void confirmar(String id);
+    void recusar(String id);
+    AgendaResponseDTO remarcar(String id, AgendaRequestDTO dto);
+    void finalizar(String id);
 }

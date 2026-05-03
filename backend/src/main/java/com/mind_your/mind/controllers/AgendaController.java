@@ -38,4 +38,27 @@ public class AgendaController {
         agendaService.cancelar(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}/confirmar")
+    public ResponseEntity<Void> confirmar(@PathVariable("id") String id) {
+        agendaService.confirmar(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/recusar")
+    public ResponseEntity<Void> recusar(@PathVariable("id") String id) {
+        agendaService.recusar(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/remarcar")
+    public ResponseEntity<AgendaResponseDTO> remarcar(@PathVariable("id") String id, @RequestBody AgendaRequestDTO dto) {
+        return ResponseEntity.ok(agendaService.remarcar(id, dto));
+    }
+
+    @PutMapping("/{id}/finalizar")
+    public ResponseEntity<Void> finalizar(@PathVariable("id") String id) {
+        agendaService.finalizar(id);
+        return ResponseEntity.noContent().build();
+    }
 }
