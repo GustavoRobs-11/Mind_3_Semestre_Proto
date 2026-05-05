@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,8 +70,8 @@ public class AgendaService implements IAgendaService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Não é possível agendar um horário que já passou.");
         }
 
-        if (agendaRepository.existsByPsicologoIdAndDataAndHoraInicioAndStatusNot(
-                dto.getPsicologoId(), dto.getData(), dto.getHoraInicio(), "CANCELADO")) {
+        if (agendaRepository.existsByPsicologoIdAndDataAndHoraInicioAndStatusNotIn(
+                dto.getPsicologoId(), dto.getData(), dto.getHoraInicio(), Arrays.asList("CANCELADO", "RECUSADO"))) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Este horário já está reservado para esta data.");
         }
 
@@ -122,12 +123,6 @@ public class AgendaService implements IAgendaService {
         agenda.setStatus("CANCELADO");
         agendaRepository.save(agenda);
 
-        // Libera o horário para novos agendamentos
-        horarioRepository.findById(agenda.getHorarioId()).ifPresent(h -> {
-            h.setDisponivel(true);
-            horarioRepository.save(h);
-        });
-
         notificacaoService.criarNotificacaoInterna(
                 agenda.getPsicologoId(),
                 "Agendamento Cancelado",
@@ -166,12 +161,6 @@ public class AgendaService implements IAgendaService {
         }
         agenda.setStatus("RECUSADO");
         agendaRepository.save(agenda);
-
-        // Libera o horário para novos agendamentos
-        horarioRepository.findById(agenda.getHorarioId()).ifPresent(h -> {
-            h.setDisponivel(true);
-            horarioRepository.save(h);
-        });
 
         notificacaoService.criarNotificacaoInterna(
                 agenda.getPacienteId(),

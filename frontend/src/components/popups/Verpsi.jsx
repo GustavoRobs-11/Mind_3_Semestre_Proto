@@ -141,7 +141,8 @@ export default function VerPsi({
         const estaOcupado = agendamentosExistentes.some(ag => 
             ag.data === selecionadoData && 
             ag.horaInicio === h.horaInicio &&
-            ag.status !== "CANCELADO"
+            ag.status !== "CANCELADO" &&
+            ag.status !== "RECUSADO"
         );
         return { ...h, ocupado: estaOcupado || !h.disponivel || jaPassou };
     });

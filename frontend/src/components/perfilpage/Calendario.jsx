@@ -108,7 +108,9 @@ export default function Calendario() {
   }
 
   function getAgendamento(dia, hora) {
-    const STATUS_ATIVOS = ["pendente", "confirmado"];
+    // Apenas consideramos agendamentos que estão bloqueando o horário (pendente, confirmado ou realizado)
+    const STATUS_BLOQUEANTES = ["pendente", "confirmado", "realizado"];
+    
     const matches = agendamentos.filter(a => {
       const data = parseDateBR(a.diaAgendado);
       return (
@@ -117,8 +119,9 @@ export default function Calendario() {
         a.psicologo?.id === user.id
       );
     });
-    const ativo = matches.find(a => STATUS_ATIVOS.includes(a.status.toLowerCase()));
-    return ativo || matches[0] || null;
+
+    // Retorna o agendamento apenas se ele estiver em um estado que "ocupa" o slot
+    return matches.find(a => STATUS_BLOQUEANTES.includes(a.status.toLowerCase())) || null;
   }
 
   function semanaAnterior() {
