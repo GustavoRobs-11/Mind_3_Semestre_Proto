@@ -11,6 +11,8 @@ public class AgendaResponseDTO {
     private String horaInicio;
     private String status;
     private Boolean isCallOpen;
+    private String pacienteNome;
+    private String psicologoNome;
 
     // Getters and Setters
 
@@ -84,5 +86,21 @@ public class AgendaResponseDTO {
 
     public void setIsCallOpen(Boolean isCallOpen) {
         this.isCallOpen = isCallOpen;
+    }
+
+    public String getPacienteNome() {
+        return pacienteNome;
+    }
+
+    public void setPacienteNome(String pacienteNome) {
+        this.pacienteNome = pacienteNome;
+    }
+
+    public String getPsicologoNome() {
+        return psicologoNome;
+    }
+
+    public void setPsicologoNome(String psicologoNome) {
+        this.psicologoNome = psicologoNome;
     }
 }

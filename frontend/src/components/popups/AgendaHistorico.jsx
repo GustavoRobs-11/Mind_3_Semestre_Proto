@@ -2,6 +2,7 @@ import "../../assets/styles/popups/agendaHistorico.css"
 import { HiOutlineX, HiOutlineUser, HiOutlineStatusOffline, HiOutlineStatusOnline} from "react-icons/hi";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react"
+import { toast } from "react-toastify";
 import Verpsi from "./Verpsi"
 import Deletar from "./Deletar"
 
@@ -41,11 +42,14 @@ export default function AgendaHistorico({
 
     const jaPassou = consultaAntiga(agenda);
     const isConfirmado = agenda.status === "Confirmado";
+    const isRealizado = agenda.status === "Realizado";
+    const isRecusado = agenda.status === "Recusado";
+    const isCancelado = agenda.status === "Cancelado";
+    const isPendente = agenda.status === "Pendente";
     const mesNum = (mes + 1).toString().padStart(2, 0);
 
-    // Antigos agendamentos
-    const consultaRealizada = jaPassou && isConfirmado;
-    const consultaCancelada = jaPassou && !isConfirmado;
+    const consultaRealizada = isRealizado || (jaPassou && isConfirmado);
+    const consultaNaoOcorrida = jaPassou && !isConfirmado && !isRealizado && !isCancelado && !isRecusado;
 
     const handleProfile = () => {
         navigate(`/perfil/psicologo/${agenda.psicologo.id}`);
@@ -53,14 +57,12 @@ export default function AgendaHistorico({
 
     const removerSchedule = () => {
         setDeletando(true);
-        onDeletar(agenda)
+        onDeletar(agenda);
     };
 
     const remarcarAgendamento = (dados) => {
-        onRemarcar({
-            agendamentoId: agenda.id_agendamento,
-            ...dados
-        });
+        // Passa apenas os novos dados - o Calendario já sabe qual agenda está selecionada
+        onRemarcar(dados);
     }
 
     if (!open) return null;
@@ -102,16 +104,32 @@ export default function AgendaHistorico({
                     )}
 
                     {/* Consulta anterior não ocorrida */}
-                    {consultaCancelada && (
+                    {consultaNaoOcorrida && (
                         <p className="attention-setence cancel">
                             <span className="icon-attention-setence"><HiOutlineStatusOffline /></span> 
-                            <span>Agendamento cancelado automaticamente devido à ausência de confirmação pelo psicólogo.</span>
+                            <span>Agendamento não realizado ou cancelado automaticamente.</span>
+                        </p>
+                    )}
+
+                    {/* Agendamento recusado pelo psicólogo */}
+                    {isRecusado && (
+                        <p className="attention-setence cancel">
+                            <span className="icon-attention-setence"><HiOutlineStatusOffline /></span>
+                            <span>Agendamento recusado pelo psicólogo.</span>
+                        </p>
+                    )}
+
+                    {/* Agendamento cancelado pelo paciente */}
+                    {isCancelado && !jaPassou && (
+                        <p className="attention-setence cancel">
+                            <span className="icon-attention-setence"><HiOutlineStatusOffline /></span>
+                            <span>Agendamento cancelado.</span>
                         </p>
                     )}
 
                     {/* Consulta atual e futura */}
-                    {!jaPassou && isHoje && isConfirmado && currentlyDay(user)}
-                    {!jaPassou && (!isConfirmado || !isHoje) && randomDay(setOpenReschedule, setOpenCancel)}
+                    {!jaPassou && isHoje && isConfirmado && currentlyDay(agenda.id_agendamento)}
+                    {!jaPassou && (isPendente || (isConfirmado && !isHoje)) && randomDay(setOpenReschedule, setOpenCancel)}
                 </div>
             </div>
             <Deletar
@@ -136,10 +154,10 @@ export default function AgendaHistorico({
     )
 }
 
-function currentlyDay(user){
+function currentlyDay(agendamentoId){
     return (
         <>
-            <a href={`${user.id}/videochamada`} className="wrapped-btn">
+            <a href={`/videochamada/${agendamentoId}`} className="wrapped-btn">
                 <button className="button-progress-confirm">
                     <span className="dot-animated"></span>
                     Começar consulta

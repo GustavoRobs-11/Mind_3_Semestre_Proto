@@ -1,5 +1,7 @@
 import "../../assets/styles/popups/agendaHistorico.css"
 import { HiOutlineX, HiOutlineUser, HiOutlineStatusOffline, HiOutlineStatusOnline} from "react-icons/hi";
+import { toast } from "react-toastify";
+import { confirmarAgendamento, recusarAgendamento } from "../../services/agendaService";
 
 function consultaAntiga(agenda) {
   if (!agenda) return false;
@@ -30,15 +32,35 @@ export default function AgendaHistoricoPsi({
     
     const jaPassou = consultaAntiga(agenda);
     const isConfirmado = agenda.status === "Confirmado";
+    const isRealizado = agenda.status === "Realizado";
+    const isRecusado = agenda.status === "Recusado";
+    const isCancelado = agenda.status === "Cancelado";
+    const isTerminal = isRecusado || isCancelado;
+    const isPendente = agenda.status === "Pendente";
     const mesNum = (mes + 1).toString().padStart(2, 0);
 
-    // Antigos agendamentos
-    const consultaRealizada = jaPassou && isConfirmado;
-    const consultaCancelada = jaPassou && !isConfirmado;
+    const consultaRealizada = isRealizado || (jaPassou && isConfirmado);
+    const consultaNaoOcorrida = jaPassou && !isConfirmado && !isRealizado && !isCancelado && !isRecusado;
 
-    const enviarRespostaPsi = () => { // Enviar informação de status atualizado
-        
-    }
+    const handleConfirmar = async () => {
+        try {
+            await confirmarAgendamento(agenda.id_agendamento);
+            toast.success("Agendamento confirmado!");
+            changeStatus("Confirmado");
+        } catch (error) {
+            toast.error(error.message || "Erro ao confirmar agendamento.");
+        }
+    };
+
+    const handleRecusar = async () => {
+        try {
+            await recusarAgendamento(agenda.id_agendamento);
+            toast.success("Agendamento recusado.");
+            changeStatus("Cancelado");
+        } catch (error) {
+            toast.error(error.message || "Erro ao recusar agendamento.");
+        }
+    };
 
     if (!open) return null;
 
@@ -78,16 +100,32 @@ export default function AgendaHistoricoPsi({
                     )}
 
                     {/* Consulta anterior não ocorrida */}
-                    {consultaCancelada && (
+                    {consultaNaoOcorrida && (
                         <p className="attention-setence cancel">
                             <span className="icon-attention-setence"><HiOutlineStatusOffline /></span> 
-                            <span>Agendamento cancelado automaticamente devido à ausência de confirmação pelo psicólogo.</span>
+                            <span>Agendamento não realizado ou cancelado automaticamente.</span>
+                        </p>
+                    )}
+
+                    {/* Agendamento recusado */}
+                    {isRecusado && (
+                        <p className="attention-setence cancel">
+                            <span className="icon-attention-setence"><HiOutlineStatusOffline /></span>
+                            <span>Agendamento recusado pelo psicólogo.</span>
+                        </p>
+                    )}
+
+                    {/* Agendamento cancelado */}
+                    {isCancelado && !jaPassou && (
+                        <p className="attention-setence cancel">
+                            <span className="icon-attention-setence"><HiOutlineStatusOffline /></span>
+                            <span>Agendamento cancelado.</span>
                         </p>
                     )}
 
                     {/* Consulta atual e futura */}
-                    {!jaPassou && isHoje && isConfirmado && currentlyDay(user)}
-                    {!jaPassou && (!isConfirmado || !isHoje) && randomDay(changeStatus, enviarRespostaPsi)}
+                    {!jaPassou && isHoje && isConfirmado && currentlyDay(agenda.id_agendamento)}
+                    {!jaPassou && isPendente && randomDay(handleConfirmar, handleRecusar)}
 
                 </div>
             </div>
@@ -96,10 +134,10 @@ export default function AgendaHistoricoPsi({
 }
 
 
-function currentlyDay(user){
+function currentlyDay(agendamentoId){
     return (
         <>
-        <a href={`${user.id}/videochamada`} className="wrapped-btn">
+        <a href={`/videochamada/${agendamentoId}`} className="wrapped-btn">
             <button className="button-progress-confirm">
                 <span className="dot-animated"></span>
                 Começar consulta
@@ -109,15 +147,13 @@ function currentlyDay(user){
     )
 }
 
-function randomDay(changeStatus, enviarRespostaPsi){
+function randomDay(handleConfirmar, handleRecusar){
     return (
         <>
         <div className="status-termos">
-            <button className="button-attention btn-pop-up-agendamento-historico" onClick={() => changeStatus("Cancelado")}>Recusar</button>
-            <button className="button-confirm btn-pop-up-agendamento-historico" onClick={() => changeStatus("Confirmado")}>Confirmar</button>
+            <button className="button-attention btn-pop-up-agendamento-historico" onClick={handleRecusar}>Recusar</button>
+            <button className="button-confirm btn-pop-up-agendamento-historico" onClick={handleConfirmar}>Confirmar</button>
         </div>
-        <p>Enviar atualização dos status de agendamento:</p>
-        <button className="button-progress-confirm" onClick={() => enviarRespostaPsi()}>Enviar</button>
         </>
     )
 }

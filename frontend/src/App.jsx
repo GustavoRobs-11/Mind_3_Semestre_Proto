@@ -75,7 +75,7 @@
               }
             />
             <Route
-              path=':tipo/perfil/:id/videochamada'
+              path='videochamada/:agendamentoId'
               element={
                 <ProtectedRoute>
                   <VideoChamada />

@@ -64,3 +64,47 @@ export async function cancelarAgendamento(id) {
 
     return res.status === 204 ? { mensagem: "Agendamento cancelado com sucesso" } : res.json();
 }
+
+// Remarcar agendamento
+export async function remarcarAgendamento(id, agendaData) {
+    const res = await authService.authenticatedFetch(`${API_URL}/${id}/remarcar`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(agendaData),
+    });
+
+    if (!res.ok) {
+        const mensagem = await extrairMensagemErro(res, "Erro ao remarcar agendamento.");
+        throw new Error(mensagem);
+    }
+
+    return res.json();
+}
+
+// Confirmar agendamento
+export async function confirmarAgendamento(id) {
+    const res = await authService.authenticatedFetch(`${API_URL}/${id}/confirmar`, {
+        method: "PUT",
+    });
+
+    if (!res.ok) {
+        const mensagem = await extrairMensagemErro(res, "Erro ao confirmar agendamento");
+        throw new Error(mensagem);
+    }
+
+    return res.status === 204 ? { mensagem: "Agendamento confirmado com sucesso" } : res.json();
+}
+
+// Recusar agendamento
+export async function recusarAgendamento(id) {
+    const res = await authService.authenticatedFetch(`${API_URL}/${id}/recusar`, {
+        method: "PUT",
+    });
+
+    if (!res.ok) {
+        const mensagem = await extrairMensagemErro(res, "Erro ao recusar agendamento");
+        throw new Error(mensagem);
+    }
+
+    return res.status === 204 ? { mensagem: "Agendamento recusado com sucesso" } : res.json();
+}

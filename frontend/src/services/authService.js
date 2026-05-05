@@ -1,5 +1,7 @@
 const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
+let refreshPromise = null;
+
 export const authService = {
 
     // Login — chama o endpoint correto baseado no tipo
@@ -47,24 +49,39 @@ export const authService = {
 
     // Renovar JWT usando o refresh token
     async refreshJwt() {
-        const refreshToken = this.getRefreshToken();
-
-        if (!refreshToken) throw new Error("Sem refresh token");
-
-        const res = await fetch(`${API_URL}/api/auth/refresh`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ refreshToken }),
-        });
-
-        if (!res.ok) {
-            this.logout();
-            throw new Error("Sessão expirada. Faça login novamente.");
+        if (refreshPromise) {
+            return refreshPromise;
         }
 
-        const data = await res.json();
-        localStorage.setItem("token", data.token);
-        return data.token;
+        refreshPromise = (async () => {
+            try {
+                const refreshToken = this.getRefreshToken();
+
+                if (!refreshToken) throw new Error("Sem refresh token");
+
+                const res = await fetch(`${API_URL}/api/auth/refresh`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ refreshToken }),
+                });
+
+                if (!res.ok) {
+                    this.logout();
+                    throw new Error("Sessão expirada. Faça login novamente.");
+                }
+
+                const data = await res.json();
+                localStorage.setItem("token", data.token);
+                if (data.refreshToken) {
+                    localStorage.setItem("refreshToken", data.refreshToken);
+                }
+                return data.token;
+            } finally {
+                refreshPromise = null;
+            }
+        })();
+
+        return refreshPromise;
     },
 
     // Cadastrar paciente

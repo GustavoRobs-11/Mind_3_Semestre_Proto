@@ -67,7 +67,10 @@ export default function VerPsi({
           day: "2-digit",
           month: "2-digit"
         });
-        const iso = data.toISOString().split('T')[0]; // YYYY-MM-DD
+        const year = data.getFullYear();
+        const month = String(data.getMonth() + 1).padStart(2, '0');
+        const day = String(data.getDate()).padStart(2, '0');
+        const iso = `${year}-${month}-${day}`; // YYYY-MM-DD
         datas.push({ label: formatada, value: iso });
       }
       data.setDate(data.getDate() + 1);
@@ -120,7 +123,10 @@ export default function VerPsi({
 
     // Marcar como ocupado se houver agendamento na data selecionada ou se o horário já passou hoje
     const agora = new Date();
-    const hojeIso = agora.toISOString().split('T')[0];
+    const year = agora.getFullYear();
+    const month = String(agora.getMonth() + 1).padStart(2, '0');
+    const day = String(agora.getDate()).padStart(2, '0');
+    const hojeIso = `${year}-${month}-${day}`;
 
     const horariosComStatus = filtrados.map(h => {
         // Verifica se o horário já passou para o dia de hoje

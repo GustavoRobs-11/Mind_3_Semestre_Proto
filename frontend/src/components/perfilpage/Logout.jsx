@@ -9,7 +9,7 @@ export default function Logout({ setDropdownOpen }) {
     const navigate = useNavigate();
     const handleLogout = () => {
         logout();
-        navigate("landing");
+        navigate("/landing");
     };
 
     return (

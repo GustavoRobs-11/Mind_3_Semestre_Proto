@@ -6,7 +6,7 @@ import '../components/videochamada/streaming.css';
 
 export default function VideoChamada() {
     const { user, loading } = useAuth();
-    const { id, tipo } = useParams();
+    const { agendamentoId } = useParams();
     const navigate = useNavigate();
     const jitsiContainerRef = useRef(null);
     const [jitsiApi, setJitsiApi] = useState(null);
@@ -16,6 +16,9 @@ export default function VideoChamada() {
     const [isInCall, setIsInCall] = useState(false);
 
     useEffect(() => {
+        if (agendamentoId) {
+            setRoomName(`MindConsulta_${agendamentoId}`);
+        }
         // Carregar o script do Jitsi apenas uma vez
         if (!window.JitsiMeetExternalAPI) {
             const script = document.createElement('script');
@@ -190,9 +193,22 @@ export default function VideoChamada() {
                     <div className="join-screen">
                         <div className="join-content">
                             <h2> Entrar na Videochamada</h2>
-                            <p>Modo Debug: Entre em qualquer sala</p>
-                            
-                            <div className="form-group">
+                            {agendamentoId ? (
+                                <>
+                                    <p>Sua sala de consulta já está pronta.</p>
+                                    <button 
+                                        className="button-progress-confirm"
+                                        onClick={() => handleStartCall()}
+                                        style={{ marginTop: '20px', padding: '15px 30px', fontSize: '1.2rem', width: '100%' }}
+                                    >
+                                        Entrar na Sala da Consulta
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <p>Modo Debug: Entre em qualquer sala</p>
+                                    
+                                    <div className="form-group">
                                 <label htmlFor="roomName">Nome da Sala:</label>
                                 <input
                                     type="text"
@@ -238,6 +254,8 @@ export default function VideoChamada() {
                             >
                                 Entrar na Sala
                             </button>
+                                </>
+                            )}
                         </div>
                     </div>
                 ) : (

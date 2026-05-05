@@ -1,172 +1,227 @@
-@import url("../main.css");
-@import url("../ui/buttons.css");
-@import url("../ui/icons.css");
-
-/* Container  ====================== */
-
 .container-calendario {
-  background: var(--secondary-cream-700);
-  border-radius: 10px;
+  background-color: var(--secondary-cream-700);
+  border-radius: var(--border-radius-lg);
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  overflow: hidden;
 }
-
-.wrapper-content-calendar{
-  background-color: var(--white-200);
-  border-radius: var(--border-radius-md);
-  margin: var(--spacing-xs);
-  padding: 5px;
-  padding-bottom: var(--spacing-xs)
-}
-
-/* Title ===========================*/
 
 .container-calendario h1 {
+  background-color: var(--tertiary-light-green-500);
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
   text-align: center;
-  background: var(--tertiary-light-green-700);
-  border-radius: 10px 10px 0 0;
-  padding: 5px;
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 600;
+  color: var(--black-950);
 }
 
-/* Month name ====================*/
+.wrapper-content-calendar {
+  padding: 15px;
+  background-color: white;
+  margin: 15px;
+  border-radius: var(--border-radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
 
 .header-calendario {
   display: flex;
-  align-items: center;
   justify-content: center;
-  gap: 10px;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
 .header-calendario h2 {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
+  font-weight: 800;
   text-transform: capitalize;
+  text-align: center;
+  margin: 0;
 }
-
-/* Buttons ======================== */
 
 .button-seta-calendario {
   background: none;
   border: none;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--black-950);
+  padding: 0;
+  transition: all 0.2s ease;
+}
+
+.header-calendario .button-seta-calendario {
+  font-size: 1.2rem;
+}
+
+.seta-semana {
   font-size: 1.5rem;
-  margin-top: 6px;
+  width: 35px;
+  height: 40px;
 }
 
 .button-seta-calendario:hover {
-  transform: scale(1.2);
-  transition: transform 0.2s;
+  color: var(--primary-orange-700);
 }
 
-/* linha de dias da semana */
+/* Unified Grid Logic ======================== */
 
-.linha-semana {
+.calendar-unified-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  text-align: center;
-  padding: 10px 30px;
-  font-weight: 500;
-}
-
-.linha-dias-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.linha-dias {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: 35px repeat(7, 1fr) 35px;
+  gap: var(--spacing-xs);
   width: 100%;
+  align-items: center;
+}
+
+.grid-spacer {
+  /* Apenas para ocupar as colunas das setas nas linhas de labels e slots */
+  width: 35px;
+}
+
+.dia-semana {
   text-align: center;
   font-weight: 600;
+  color: var(--black-950);
+  font-size: 1.1rem;
+  padding: 10px 0;
 }
 
-/* Grid horarios ============================ */
+.dia-numero-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.2rem;
+  height: 40px;
+}
 
-.grid-semana {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  margin: 0 35px;
-  gap: var(--spacing-xs);
+.dia-hoje {
+  background-color: var(--primary-orange-700);
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .coluna-dia {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
+  width: 100%;
+  align-self: start;
+  padding-bottom: 20px;
 }
 
-/* SLOT DE HORÁRIO */
+/* Slots de Horário ========================== */
 
 .slot-horario {
-  padding: 8px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.8rem;
   width: 100%;
+  padding: 10px 5px;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--white-700);
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  height: 50px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background-color: white;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.slot-horario.livre {
-  background: var(--white-200);
-  border: 1px solid var(--white-700);
-  color: var(--black-950)
+.slot-horario.livre:hover {
+  background-color: var(--secondary-cream-700);
+  border-color: var(--primary-orange-700);
 }
 
 .slot-horario.pendente {
-  background: var(--primary-orange-700);
-  color: var(--black-950)
+  background-color: var(--orange-default-100);
+  color: var(--black-950);
 }
 
 .slot-horario.confirmado {
-  background: var(--tertiary-light-green-700);
+  background-color: var(--green-light-default-100);
   color: var(--black-950);
 }
 
-.slot-horario.cancelado {
-  background: var(--accent-mid-orange-600);
-  color: var(--black-950);
+.slot-horario.cancelado,
+.slot-horario.recusado {
+  background-color: var(--red-default-100);
+  color: white;
 }
 
-/* LEGENDA */
+.slot-horario.realizado {
+  background: var(--accent-dark-green-700);
+  color: var(--white-200);
+  border: 1px solid var(--accent-dark-green-800);
+}
+
+/* Legenda ================================= */
 
 .container-legenda-calendario {
-  padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+  padding: 20px 30px;
+  align-items: flex-start;
 }
 
 .block-legenda {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 15px;
 }
 
-.consulta-cancelada,
-.consulta-marcada,
-.consulta-nao-confirmada,
-.consulta-vencida {
-  width: 20px;
-  height: 20px;
-  border-radius: 3px;
+.block-legenda p {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--black-950);
 }
 
-.consulta-marcada {
-  background-color: var(--tertiary-light-green-700);
+.block-legenda span {
+  width: 25px;
+  height: 25px;
+  border-radius: var(--border-radius-sm);
 }
 
-.consulta-nao-confirmada {
-  background-color: var(--primary-orange-700);
+.consulta-marcada { background-color: var(--green-light-default-100); }
+.consulta-nao-confirmada { background-color: var(--orange-default-100); }
+.consulta-cancelada { background-color: var(--red-default-100); }
+
+/* Animação Dot */
+.dot-animated {
+  display: block;
+  width: 6px;
+  height: 6px;
+  background-color: var(--tertiary-light-green-800);
+  border-radius: 50%;
+  margin: 4px auto 0;
+  position: relative;
 }
 
-.consulta-cancelada{
-  background-color: var(--accent-mid-orange-600);
+.dot-animated::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: inherit;
+  border-radius: inherit;
+  animation: ping 1.5s infinite;
+}
+
+@keyframes ping {
+  75%, 100% { transform: scale(2.5); opacity: 0; }
 }

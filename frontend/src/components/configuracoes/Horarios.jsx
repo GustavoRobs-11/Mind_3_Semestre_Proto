@@ -14,6 +14,33 @@ export default function Horarios() {
       try {
           if (user?.id) {
               const data = await listarTodosDoPsicologo(user.id);
+              
+              const diasOrdem = {
+                  "Domingo": 0,
+                  "Segunda": 1,
+                  "Terca": 2,
+                  "Terça": 2,
+                  "Quarta": 3,
+                  "Quinta": 4,
+                  "Sexta": 5,
+                  "Sabado": 6,
+                  "Sábado": 6
+              };
+
+              data.sort((a, b) => {
+                  const diaA = diasOrdem[a.diaDaSemana] ?? 7;
+                  const diaB = diasOrdem[b.diaDaSemana] ?? 7;
+
+                  if (diaA !== diaB) {
+                      return diaA - diaB;
+                  }
+
+                  const horaA = a.horaInicio || "23:59";
+                  const horaB = b.horaInicio || "23:59";
+
+                  return horaA.localeCompare(horaB);
+              });
+
               setHorarios(data);
           }
       } catch (err) {

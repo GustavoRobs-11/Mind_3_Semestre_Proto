@@ -80,6 +80,9 @@
 }
 .attention-setence.done{
     background-color: var(--tertiary-light-green-500);
+    justify-content: center;
+    width: 100%;
+    margin-top: var(--spacing-xs);
 }
 
 .icon-attention-setence{
@@ -147,6 +150,10 @@
 }
 .status-agendamento.cancelado{
     background-color: var(--accent-mid-orange-600);
+}
+.status-agendamento.realizado{
+    background-color: var(--accent-dark-green-700);
+    color: var(--white-200);
 }
 
 /* Animação - chamada de video do dia */

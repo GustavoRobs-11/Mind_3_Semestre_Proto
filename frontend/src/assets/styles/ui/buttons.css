@@ -45,18 +45,22 @@
 .button-progress-confirm{
     background-color: var(--tertiary-light-green-700);
     color: var(--black-950);
-    padding:10px 20px;
-    font-weight: 500;
-    font-size: 1rem;
+    padding:12px 20px;
+    font-weight: 600;
+    font-size: 1.1rem;
     border: none;
     border-radius: var(--border-radius-md);
     cursor: pointer;
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
-    gap: var(--spacing-sm);
+    gap: 10px;
     text-wrap: nowrap;
     width: 100%;
+}
+
+.button-progress-confirm .dot-animated {
+    margin: 0;
 }
 
 .button-progress-confirm:hover{

@@ -122,6 +122,12 @@ public class AgendaService implements IAgendaService {
         agenda.setStatus("CANCELADO");
         agendaRepository.save(agenda);
 
+        // Libera o horário para novos agendamentos
+        horarioRepository.findById(agenda.getHorarioId()).ifPresent(h -> {
+            h.setDisponivel(true);
+            horarioRepository.save(h);
+        });
+
         notificacaoService.criarNotificacaoInterna(
                 agenda.getPsicologoId(),
                 "Agendamento Cancelado",
@@ -160,6 +166,12 @@ public class AgendaService implements IAgendaService {
         }
         agenda.setStatus("RECUSADO");
         agendaRepository.save(agenda);
+
+        // Libera o horário para novos agendamentos
+        horarioRepository.findById(agenda.getHorarioId()).ifPresent(h -> {
+            h.setDisponivel(true);
+            horarioRepository.save(h);
+        });
 
         notificacaoService.criarNotificacaoInterna(
                 agenda.getPacienteId(),
@@ -223,7 +235,7 @@ public class AgendaService implements IAgendaService {
         boolean modificado = false;
 
         if ("PENDENTE".equals(agenda.getStatus())) {
-            if (!agora.toLocalDate().isBefore(dataConsulta)) {
+            if (agora.isAfter(dataHoraAgendamento)) {
                 agenda.setStatus("CANCELADO");
                 modificado = true;
 
@@ -262,6 +274,8 @@ public class AgendaService implements IAgendaService {
         dto.setDiaDaSemana(agenda.getDiaDaSemana());
         dto.setHoraInicio(agenda.getHoraInicio());
         dto.setStatus(agenda.getStatus());
+        dto.setPacienteNome(getNomePaciente(agenda.getPacienteId()));
+        dto.setPsicologoNome(getNomePsicologo(agenda.getPsicologoId()));
 
         if ("CONFIRMADO".equals(agenda.getStatus())) {
             LocalDateTime agora = LocalDateTime.now();
