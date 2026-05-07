@@ -5,13 +5,14 @@ import { HiOutlineSearch, HiOutlineBell, HiOutlineUser } from "react-icons/hi";
 import { useAuth } from '../../context/AuthContext';
 import foto from '../../assets/img/perfil-default.png';
 import Notifications from './Notifications/notifications';
+import { notificacaoService } from '../../services/notificacaoService';
 
 
 export default function NavDesktop() {
     const [isDropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null); // referência para o dropdown
 
-    const { user, isAuthenticated, logout } = useAuth();
+    const { user, isAuthenticated, isPsicologo, logout } = useAuth();
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -35,72 +36,37 @@ export default function NavDesktop() {
 
 
     const [isNotifOpen, setNotifOpen] = useState(false);
+    const [notificacoes, setNotificacoes] = useState([]);
 
-    const notificacoes = [
-        {
-            id: 1,
-            tipo: "mensagem",
-            nome: "Daniel",
-            texto: "Bom dia, precisa de algo?",
-            hora: "19:03",
-            foto: foto
-        },
-        {
-            id: 2,
-            tipo: "confirmacao",
-            nome: "Dra. Lucia Amaral",
-            data: "06/04/2026",
-            horario: "9:00h a.m",
-            status: "Confirmado",
-            foto: "../../assets/img/perfil-default.png"
-        },
-        {
-            id: 3,
-            tipo: "cancelamento",
-            nome: "Daniel",
-            hora: "19:03",
-        },
-        {
-            id: 4,
-            tipo: "cancelamento-agenda",
-            nome: "Luigi",
-            data: "06 de Abril",
-            horario: "9:00",
-            hora: "19:03",
-        },
-        {
-            id: 5,
-            tipo: "reagendamento",
-            nome: "Luigi",
-            dataAnterior: "06 de Abril",
-            dataNova: "10 de Abril",
-            data: "10/04/2026",
-            horario: "9:00h a.m",
-            status: "Pendente",
-            hora: "19:03",
-        },
-        {
-            id: 6,
-            tipo: "solicitacao",
-            nome: "Luigi",
-            data: "16/04/2026",
-            horario: "9:00h a.m",
-            status: "Pendente",
-            hora: "19:03",
-        },
-        {
-            id: 7,
-            tipo: "recusa",
-            nome: "Dra. Lucia Amaral",
-            hora: "19:03",
-        },
-        {
-            id: 8,
-            tipo: "agenda-do-dia",
-            hora: "19:03",
-            horarios: ["9:00", "10:30", "12:00", "16:30", "18:00", "19:30"],
-        },
-    ];
+    useEffect(() => {
+        if (isAuthenticated && user) {
+            const fetchNotificacoes = async () => {
+                try {
+                    const data = await notificacaoService.listarDoUsuario(user.id);
+                    setNotificacoes(data);
+                } catch (error) {
+                    console.error("Erro ao buscar notificações", error);
+                }
+            };
+            fetchNotificacoes();
+            
+            // Polling a cada 30 segundos
+            const interval = setInterval(fetchNotificacoes, 30000);
+            return () => clearInterval(interval);
+        }
+    }, [isAuthenticated, user]);
+
+    const notificacoesNaoLidas = notificacoes.filter(n => !n.lida);
+
+    const handleMarkAsRead = async (id) => {
+        try {
+            await notificacaoService.marcarComoLida(id);
+            setNotificacoes(prev => prev.map(n => n.id === id ? { ...n, lida: true } : n));
+        } catch (error) {
+            console.error("Erro ao marcar como lida", error);
+        }
+    };
+
     return (
         <>
             <nav id="nav-desktop">
@@ -126,7 +92,7 @@ export default function NavDesktop() {
                     </NavLink>
                     {isAuthenticated && (
                         <>
-                            <NavLink to="/home">
+                            <NavLink to={isPsicologo ? "/artigos" : "/home"}>
                                 <HiOutlineSearch id="search-icon-btn" className="icon-ui" />
                             </NavLink>
                             <NavLink to={`/${user.tipo.toLowerCase()}/perfil/${user.id}`}>
@@ -142,15 +108,20 @@ export default function NavDesktop() {
                             >
                                 <HiOutlineBell className="icon-ui" />
 
-                                {notificacoes.length > 0 && (
+                                {notificacoesNaoLidas.length > 0 && (
                                     <span className="notif-badge">
-                                        {notificacoes.length}
+                                        {notificacoesNaoLidas.length}
                                     </span>
                                 )}
                             </button>
 
                             {isNotifOpen && (
-                                <Notifications setNotifOpen={setNotifOpen} notificacoes={notificacoes} />
+                                <Notifications 
+                                    setNotifOpen={setNotifOpen} 
+                                    notificacoes={notificacoes} 
+                                    user={user}
+                                    onMarkAsRead={handleMarkAsRead}
+                                />
                             )}
                         </div>
                     )}

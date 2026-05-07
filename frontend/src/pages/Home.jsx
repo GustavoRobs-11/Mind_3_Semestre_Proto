@@ -7,10 +7,21 @@ import { useState, useEffect } from "react";
 import { usePsicologos } from "../context/Psicologos";
 import { agendar } from "../services/agendaService.js";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import '../assets/styles/home/filtros-home.css';
 import '../assets/styles/home/card-psicologo.css';
 
 export default function Home() {
+  const { isPsicologo } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isPsicologo) {
+      navigate("/artigos", { replace: true });
+    }
+  }, [isPsicologo, navigate]);
+
   // Filtros
   const [selectedSpecialities, setSelectedSpecialities] = useState([]);
   const [selectedLocals, setSelectedLocals] = useState([]);

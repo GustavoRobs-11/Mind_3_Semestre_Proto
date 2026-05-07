@@ -20,6 +20,7 @@ public class Paciente {
     private String nome = "";
     private String sobrenome = "";
     private LocalDate dtNascimento = LocalDate.of(1999, 1, 1);
+    private String cpf = "";
 
     @Transient
     private Integer idade;
@@ -106,4 +107,7 @@ public class Paciente {
 
     public String getEspecialidade() { return  especialidade; }
     public void setEspecialidade(String especialidade) { this.especialidade = especialidade; }
+
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
 }

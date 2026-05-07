@@ -2,12 +2,23 @@ import React, { useState } from 'react';
 import '../../../assets/styles/notificacoes/notificacoes.css'
 import { HiOutlineBell, HiChevronDown, HiOutlineStatusOffline, HiOutlineX, HiOutlineUser } from "react-icons/hi";
 
-export default function Notifications({ setNotifOpen, notificacoes, user }) {
+export default function Notifications({ setNotifOpen, notificacoes, user, onMarkAsRead }) {
     const [openNotif, setOpenNotif] = useState(null);
 
     const handleOpenProfile = () => {
         if (user) {
             window.location.href = `/${user.tipo.toLowerCase()}/perfil/${user.id}`;
+        }
+    };
+
+    const handleNotifClick = (notif) => {
+        if (openNotif === notif.id) {
+            setOpenNotif(null);
+        } else {
+            setOpenNotif(notif.id);
+            if (!notif.lida && onMarkAsRead) {
+                onMarkAsRead(notif.id);
+            }
         }
     };
 
@@ -67,11 +78,7 @@ export default function Notifications({ setNotifOpen, notificacoes, user }) {
                             >
                                 <div
                                     className="notif-confirm-header"
-                                    onClick={() =>
-                                        setOpenNotif(
-                                            openNotif === notif.id ? null : notif.id
-                                        )
-                                    }
+                                    onClick={() => handleNotifClick(notif)}
                                 >
                                     <div className="icon-svg">
                                         <HiOutlineBell />
@@ -117,11 +124,7 @@ export default function Notifications({ setNotifOpen, notificacoes, user }) {
                             <div
                                 key={notif.id}
                                 className={`notif-cancelamento ${openNotif === notif.id ? "active" : ""}`}
-                                onClick={() =>
-                                    setOpenNotif(
-                                        openNotif === notif.id ? null : notif.id
-                                    )
-                                }
+                                onClick={() => handleNotifClick(notif)}
                             >
                                 <div className="notif-cancelamento-header">
                                     <div className="icon-svg">
@@ -157,11 +160,7 @@ export default function Notifications({ setNotifOpen, notificacoes, user }) {
                             <div
                                 key={notif.id}
                                 className={`notif-cancelamento-agenda ${openNotif === notif.id ? "active" : ""}`}
-                                onClick={() =>
-                                    setOpenNotif(
-                                        openNotif === notif.id ? null : notif.id
-                                    )
-                                }
+                                onClick={() => handleNotifClick(notif)}
                             >
                                 <div className="notif-cancelamento-agenda-header">
                                     <div className="icon-svg">
@@ -209,11 +208,7 @@ export default function Notifications({ setNotifOpen, notificacoes, user }) {
                             >
                                 <div
                                     className="notif-reagendamento-header"
-                                    onClick={() =>
-                                        setOpenNotif(
-                                            openNotif === notif.id ? null : notif.id
-                                        )
-                                    }
+                                    onClick={() => handleNotifClick(notif)}
                                 >
                                     <div className="icon-svg">
                                         <HiOutlineBell />
@@ -265,11 +260,7 @@ export default function Notifications({ setNotifOpen, notificacoes, user }) {
                             >
                                 <div
                                     className="notif-solicitacao-header"
-                                    onClick={() =>
-                                        setOpenNotif(
-                                            openNotif === notif.id ? null : notif.id
-                                        )
-                                    }
+                                    onClick={() => handleNotifClick(notif)}
                                 >
                                     <div className="icon-svg">
                                         <HiOutlineBell />
@@ -317,11 +308,7 @@ export default function Notifications({ setNotifOpen, notificacoes, user }) {
                             <div
                                 key={notif.id}
                                 className={`notif-recusa ${openNotif === notif.id ? "active" : ""}`}
-                                onClick={() =>
-                                    setOpenNotif(
-                                        openNotif === notif.id ? null : notif.id
-                                    )
-                                }
+                                onClick={() => handleNotifClick(notif)}
                             >
                                 <div className="notif-recusa-header">
                                     <div className="icon-svg">
@@ -352,11 +339,7 @@ export default function Notifications({ setNotifOpen, notificacoes, user }) {
                             <div
                                 key={notif.id}
                                 className={`notif-agenda-do-dia ${openNotif === notif.id ? "active" : ""}`}
-                                onClick={() =>
-                                    setOpenNotif(
-                                        openNotif === notif.id ? null : notif.id
-                                    )
-                                }
+                                onClick={() => handleNotifClick(notif)}
                             >
                                 <div className="notif-agenda-do-dia-header">
                                     <div className="icon-svg">

@@ -96,22 +96,24 @@
 
 .tags-cards {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 5px;
     width: 100%;
     justify-content: flex-start;
+    align-items: center;
 }
 
-.tags-cards a {
+.tags-cards a.tag-item {
     background: var(--white-200);
     color: var(--black-950);
     border: 1px solid var(--white-700);
     padding: 4px 8px;
     border-radius: 5px;
-    font-size: 70%;
+    font-size: 10px;
     font-weight: 500;
     width: max-content;
     height: max-content;
+    flex-shrink: 0;
 }
 
 .tags-more {
@@ -125,11 +127,15 @@
     border: 1px solid var(--white-700);
     padding: 4px 8px;
     border-radius: 5px;
+    font-size: 10px;
     font-weight: 500;
     width: max-content;
     height: max-content;
-    font-size: 0.8rem;
     cursor: pointer;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .tags-tooltip {
@@ -267,4 +273,3 @@
         padding: 0;
     }
 }
-

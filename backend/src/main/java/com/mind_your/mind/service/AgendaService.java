@@ -4,10 +4,12 @@ import com.mind_your.mind.dto.request.AgendaRequestDTO;
 import com.mind_your.mind.dto.response.AgendaResponseDTO;
 import com.mind_your.mind.models.Agenda;
 import com.mind_your.mind.models.Horario;
+import com.mind_your.mind.models.Notificacao;
 import com.mind_your.mind.models.Paciente;
 import com.mind_your.mind.models.Psicologo;
 import com.mind_your.mind.repository.AgendaRepository;
 import com.mind_your.mind.repository.HorarioRepository;
+import com.mind_your.mind.repository.NotificacaoRepository;
 import com.mind_your.mind.repository.PacienteRepository;
 import com.mind_your.mind.repository.PsicologoRepository;
 import org.springframework.http.HttpStatus;
@@ -29,15 +31,17 @@ public class AgendaService implements IAgendaService {
     private final INotificacaoService notificacaoService;
     private final PacienteRepository pacienteRepository;
     private final PsicologoRepository psicologoRepository;
+    private final NotificacaoRepository notificacaoRepository;
 
     public AgendaService(AgendaRepository agendaRepository, HorarioRepository horarioRepository,
                          INotificacaoService notificacaoService, PacienteRepository pacienteRepository,
-                         PsicologoRepository psicologoRepository) {
+                         PsicologoRepository psicologoRepository, NotificacaoRepository notificacaoRepository) {
         this.agendaRepository = agendaRepository;
         this.horarioRepository = horarioRepository;
         this.notificacaoService = notificacaoService;
         this.pacienteRepository = pacienteRepository;
         this.psicologoRepository = psicologoRepository;
+        this.notificacaoRepository = notificacaoRepository;
     }
 
     private String getNomePaciente(String pacienteId) {
@@ -88,8 +92,13 @@ public class AgendaService implements IAgendaService {
 
         notificacaoService.criarNotificacaoInterna(
                 agenda.getPsicologoId(),
-                "Novo agendamento",
-                getNomePaciente(agenda.getPacienteId()) + " solicitou um agendamento."
+                "solicitacao",
+                getNomePaciente(agenda.getPacienteId()),
+                "Solicitação de Agendamento",
+                "solicitou um agendamento.",
+                agenda.getData(),
+                agenda.getHoraInicio(),
+                "Pendente"
         );
 
         return toDTO(agenda);
@@ -97,7 +106,9 @@ public class AgendaService implements IAgendaService {
 
     @Override
     public List<AgendaResponseDTO> listarDoPsicologo(String psicologoId) {
+        gerarNotificacaoAgendaDoDia(psicologoId);
         return agendaRepository.findByPsicologoId(psicologoId).stream()
+                .peek(this::atualizarStatusDinamico)
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
@@ -105,6 +116,7 @@ public class AgendaService implements IAgendaService {
     @Override
     public List<AgendaResponseDTO> listarDoPaciente(String pacienteId) {
         return agendaRepository.findByPacienteId(pacienteId).stream()
+                .peek(this::atualizarStatusDinamico)
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
@@ -120,18 +132,31 @@ public class AgendaService implements IAgendaService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cancelamento só é permitido até o dia anterior à consulta.");
         }
 
+        String tipoNotif = "CONFIRMADO".equals(agenda.getStatus()) ? "cancelamento-agenda" : "cancelamento";
+        String statusLabel = "Cancelado";
+
         agenda.setStatus("CANCELADO");
         agendaRepository.save(agenda);
 
         notificacaoService.criarNotificacaoInterna(
                 agenda.getPsicologoId(),
+                tipoNotif,
+                getNomePaciente(agenda.getPacienteId()),
                 "Agendamento Cancelado",
-                "O agendamento com " + getNomePaciente(agenda.getPacienteId()) + " foi cancelado."
+                "O agendamento foi cancelado.",
+                agenda.getData(),
+                agenda.getHoraInicio(),
+                statusLabel
         );
         notificacaoService.criarNotificacaoInterna(
                 agenda.getPacienteId(),
+                tipoNotif,
+                getNomePsicologo(agenda.getPsicologoId()),
                 "Agendamento Cancelado",
-                "O agendamento com " + getNomePsicologo(agenda.getPsicologoId()) + " foi cancelado."
+                "O agendamento foi cancelado.",
+                agenda.getData(),
+                agenda.getHoraInicio(),
+                statusLabel
         );
     }
 
@@ -147,8 +172,13 @@ public class AgendaService implements IAgendaService {
 
         notificacaoService.criarNotificacaoInterna(
                 agenda.getPacienteId(),
+                "confirmacao",
                 getNomePsicologo(agenda.getPsicologoId()),
-                "confirmou seu agendamento."
+                "Agendamento Confirmado",
+                "confirmou seu agendamento.",
+                agenda.getData(),
+                agenda.getHoraInicio(),
+                "Confirmado"
         );
     }
 
@@ -164,8 +194,13 @@ public class AgendaService implements IAgendaService {
 
         notificacaoService.criarNotificacaoInterna(
                 agenda.getPacienteId(),
+                "recusa",
                 getNomePsicologo(agenda.getPsicologoId()),
-                "recusou seu agendamento."
+                "Agendamento Recusado",
+                "recusou seu agendamento.",
+                agenda.getData(),
+                agenda.getHoraInicio(),
+                "Recusado"
         );
     }
 
@@ -208,11 +243,47 @@ public class AgendaService implements IAgendaService {
 
         notificacaoService.criarNotificacaoInterna(
                 agenda.getPsicologoId(),
+                "reagendamento",
+                getNomePaciente(agenda.getPacienteId()),
                 "Agendamento Remarcado",
-                getNomePaciente(agenda.getPacienteId()) + " remarcou o agendamento."
+                "remarcou o agendamento.",
+                agenda.getData(),
+                agenda.getHoraInicio(),
+                "Pendente"
         );
 
         return toDTO(agenda);
+    }
+
+    @Override
+    public void gerarNotificacaoAgendaDoDia(String psicologoId) {
+        LocalDate hoje = LocalDate.now();
+        String hojeStr = hoje.toString();
+
+        // Verifica se já gerou hoje
+        if (notificacaoRepository.existsByUsuarioIdAndTipoAndData(psicologoId, "agenda-do-dia", hojeStr)) {
+            return;
+        }
+
+        List<Agenda> agendasHoje = agendaRepository.findByPsicologoIdAndData(psicologoId, hojeStr);
+        List<String> horarios = agendasHoje.stream()
+                .filter(a -> "CONFIRMADO".equals(a.getStatus()))
+                .map(Agenda::getHoraInicio)
+                .sorted()
+                .collect(Collectors.toList());
+
+        if (!horarios.isEmpty()) {
+            Notificacao n = new Notificacao();
+            n.setUsuarioId(psicologoId);
+            n.setTipo("agenda-do-dia");
+            n.setTitulo("Agenda do Dia");
+            n.setMensagem("Sua agenda tem atendimentos marcados para hoje.");
+            n.setData(hojeStr);
+            n.setHorarios(horarios);
+            n.setDataHoraCriacao(LocalDateTime.now());
+            n.setLida(false);
+            notificacaoRepository.save(n);
+        }
     }
 
     private void atualizarStatusDinamico(Agenda agenda) {
@@ -230,13 +301,23 @@ public class AgendaService implements IAgendaService {
 
                 notificacaoService.criarNotificacaoInterna(
                         agenda.getPacienteId(),
+                        "cancelamento",
+                        getNomePsicologo(agenda.getPsicologoId()),
                         "Agendamento Cancelado",
-                        "O agendamento com " + getNomePsicologo(agenda.getPsicologoId()) + " foi cancelado automaticamente por ausência de confirmação."
+                        "Cancelado automaticamente por ausência de confirmação.",
+                        agenda.getData(),
+                        agenda.getHoraInicio(),
+                        "Cancelado"
                 );
                 notificacaoService.criarNotificacaoInterna(
                         agenda.getPsicologoId(),
+                        "cancelamento",
+                        getNomePaciente(agenda.getPacienteId()),
                         "Agendamento Cancelado",
-                        "O agendamento com " + getNomePaciente(agenda.getPacienteId()) + " foi cancelado automaticamente por ausência de confirmação."
+                        "Cancelado automaticamente por ausência de confirmação.",
+                        agenda.getData(),
+                        agenda.getHoraInicio(),
+                        "Cancelado"
                 );
             }
         } else if ("CONFIRMADO".equals(agenda.getStatus())) {
@@ -252,7 +333,7 @@ public class AgendaService implements IAgendaService {
     }
 
     private AgendaResponseDTO toDTO(Agenda agenda) {
-        atualizarStatusDinamico(agenda);
+        // Removido atualizarStatusDinamico daqui para evitar efeitos colaterais em cascata
 
         AgendaResponseDTO dto = new AgendaResponseDTO();
         dto.setId(agenda.getId());

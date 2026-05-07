@@ -19,6 +19,7 @@ public class Psicologo {
     private String nome = "";
     private String sobrenome = "";
     private LocalDate dtNascimento = LocalDate.of(1999, 1, 1);
+    private String cpf = "";
 
     @Transient
     private Integer idade;
@@ -204,4 +205,7 @@ public class Psicologo {
     public void setEspecialidades(List<String> especialidades) {
     this.especialidades = especialidades;
     }
+
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
 }

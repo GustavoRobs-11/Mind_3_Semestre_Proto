@@ -87,7 +87,11 @@ export default function InputLogin() {
     }
 
     toast.success("Logado");
-    navigate("/home");
+    if (user.tipo === "psicologo") {
+        navigate("/artigos");
+    } else {
+        navigate("/home");
+    }
 };
 
     return (

@@ -11,10 +11,10 @@ import { useAuth } from '../../context/AuthContext';
 
 export default function NavMobile() {
   const [activeIndex, setActiveIndex] = useState(2);
-  const { user, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, isPsicologo } = useAuth();
 
   const navItems = [
-    { icon: <HiOutlineSearch />, to: "/home" },
+    { icon: <HiOutlineSearch />, to: isPsicologo ? "/artigos" : "/home" },
     { icon: <HiOutlineNewspaper />, to: "/artigos" },
     { icon: <HiOutlineHome />, to: "/" },
     { 

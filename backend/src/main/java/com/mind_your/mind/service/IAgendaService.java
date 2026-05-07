@@ -14,4 +14,5 @@ public interface IAgendaService {
     void recusar(String id);
     AgendaResponseDTO remarcar(String id, AgendaRequestDTO dto);
     void finalizar(String id);
+    void gerarNotificacaoAgendaDoDia(String psicologoId);
 }
