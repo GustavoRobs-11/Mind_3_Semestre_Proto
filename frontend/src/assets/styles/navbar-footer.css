@@ -145,130 +145,15 @@ a {
   
 }
 
-/* ===== MODAL ===== */
 
-.notif-modal {
-  position: relative;
-  width: 420px;
-  max-height: 80vh;
-  overflow-y: auto;
-  background: #f3f3f3;
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
-}
 
-/* botão fechar */
 
-.notif-close {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  color: #333;
-  transition: .2s;
-}
 
-.notif-close:hover {
-  transform: scale(1.1);
-  color: #000;
-}
 
-/* titulo */
 
-.notif-title {
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: 15px;
-}
 
-/* ===== MENSAGEM ===== */
 
-.notif-msg {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: #e7dfc7;
-  padding: 12px;
-  border-radius: 14px;
-  margin-bottom: 12px;
-}
 
-.notif-avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.notif-msg-text {
-  flex: 1;
-}
-
-.notif-msg-text strong {
-  font-size: 15px;
-  display: block;
-}
-
-.notif-msg-text p {
-  font-size: 14px;
-  margin: 2px 0 0;
-  color: #444;
-}
-
-.notif-hora {
-  font-size: 12px;
-  color: #555;
-}
-
-/* ===== CONFIRMAÇÃO ===== */
-
-.notif-confirm {
-  background: #9dd187;
-  padding: 14px;
-  border-radius: 14px;
-  margin-bottom: 12px;
-}
-
-.notif-confirm-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  font-weight: 500;
-  
-}
-
-.notif-confirm-header svg {
-  font-size: 22px;
-}
-
-.notif-confirm-header p {
-  flex: 1;
-  margin: 0;
-}
-
-.notif-confirm-header span {
-  font-size: 18px;
-}
-
-/* ===== BODY EXPANDIDO ===== */
-
-.notif-confirm-body {
-  background: #cfe8c3;
-  margin-top: 12px;
-  padding: 14px;
-  border-radius: 12px;
-  font-size: 14px;
-  text-align: left;
-}
-
-.notif-confirm-body p {
-  margin: 5px 0;
-}
 
 /* ===== BOTÕES ===== */
 
