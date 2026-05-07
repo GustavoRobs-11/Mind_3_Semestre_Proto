@@ -1,0 +1,458 @@
+.notif-modal {
+  position: relative;
+  width: 420px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: #f3f3f3;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+}
+
+.container-status {
+  display: flex;
+  align-items: start;
+  width: 100%;
+  padding-top: 10px;
+}
+
+.status-notificacoes {
+  display: flex;
+}
+
+/* botão fechar */
+
+.notif-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
+  transition: .2s;
+}
+
+.notif-close:hover {
+  transform: scale(1.1);
+  color: #000;
+}
+
+/* titulo */
+
+.notif-title {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  width: 100%;
+  display: flex;
+}
+
+/* ===== ICON SVG ===== */
+
+.icon-svg {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon-svg svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ===== MENSAGEM ===== */
+
+.notif-msg {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #e7dfc7;
+  padding: 12px;
+  border-radius: 14px;
+  margin-bottom: 12px;
+}
+
+.notif-avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.notif-msg-text {
+  flex: 1;
+}
+
+.notif-msg-text strong {
+  font-size: 15px;
+  display: block;
+  text-align: start;
+}
+
+.notif-msg-text p {
+  font-size: 14px;
+  margin: 2px 0 0;
+  color: #444;
+  text-align: start;
+}
+
+.notif-hora {
+  font-size: 12px;
+  color: #555;
+}
+
+/* ===== CONFIRMAÇÃO ===== */
+
+.notif-confirm {
+  background: #b8eda0;
+  padding: 14px;
+  border-radius: 14px;
+  margin-bottom: 12px;
+}
+
+.notif-confirm.active {
+  background: #d2edc5;
+}
+
+.notif-confirm-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.notif-confirm-header p {
+  flex: 1;
+  margin: 0;
+  text-align: start;
+}
+
+.notif-confirm-header span {
+  font-size: 18px;
+}
+
+.notif-confirm-body {
+  margin-top: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  text-align: left;
+  gap: 10px;
+}
+
+.notif-confirm-body p {
+  margin: 5px 0;
+}
+
+.container-info-icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: #fff;
+  padding: 14px;
+  border-radius: 14px;
+}
+
+.info-nofif-confirmmacao {
+  flex: 1;
+  text-align: left;
+}
+
+/* ===== CANCELAMENTO DE SOLICITAÇÃO ===== */
+
+.notif-cancelamento {
+  cursor: pointer;
+  background: var(--primary-orange-600);
+  padding: 14px;
+  border-radius: 14px;
+  margin-bottom: 12px;
+}
+
+.notif-cancelamento.active {
+  background: #f0c9a0;
+}
+
+.notif-cancelamento-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+
+.notif-cancelamento-header p {
+  flex: 1;
+  margin: 0;
+  text-align: start;
+}
+
+.notif-cancelamento-body {
+  margin-top: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  text-align: left;
+}
+
+.notif-cancelamento-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background: #F29863;
+  padding: 7px;
+  border-radius: 14px;
+  gap: 10px;
+}
+.notif-cancelamento-info svg {
+  width: 4rem;
+  height: 4rem;
+}
+
+.notif-cancelamento-info p {
+  margin: 0;
+  text-align: start;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.notif-link-termos {
+  display: inline-block;
+  margin-top: 10px;
+  color: #1a73e8;
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+/* ===== CANCELAMENTO DA AGENDA ===== */
+
+.notif-cancelamento-agenda {
+  cursor: pointer;
+  background: var(--primary-orange-600);
+  padding: 14px;
+  border-radius: 14px;
+  margin-bottom: 12px;
+}
+
+.notif-cancelamento-agenda.active {
+  background: #f0c9a0;
+}
+
+.notif-cancelamento-agenda-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+
+.notif-cancelamento-agenda-header p {
+  flex: 1;
+  margin: 0;
+  text-align: start;
+}
+
+.notif-cancelamento-agenda-body {
+  margin-top: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  text-align: left;
+}
+
+.notif-cancelamento-agenda-body .container-info-icon {
+  background: #fff;
+}
+
+/* ===== REAGENDAMENTO REALIZADO ===== */
+
+.notif-reagendamento {
+  background: #b8eda0;
+  padding: 14px;
+  border-radius: 14px;
+  margin-bottom: 12px;
+}
+
+.notif-reagendamento.active {
+  background: #d2edc5;
+}
+
+.notif-reagendamento-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.notif-reagendamento-header p {
+  flex: 1;
+  margin: 0;
+  text-align: start;
+}
+
+.notif-reagendamento-body {
+  margin-top: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  text-align: left;
+  gap: 10px;
+}
+
+.notif-reagendamento-body p {
+  margin: 5px 0;
+}
+
+.notif-reagendamento-body .container-info-icon {
+  background: #fff;
+}
+
+/* ===== SOLICITAÇÃO DE CONSULTA ===== */
+
+.notif-solicitacao {
+  background: #b8eda0;
+  padding: 14px;
+  border-radius: 14px;
+  margin-bottom: 12px;
+}
+
+.notif-solicitacao.active {
+  background: #d2edc5;
+}
+
+.notif-solicitacao-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.notif-solicitacao-header p {
+  flex: 1;
+  margin: 0;
+  text-align: start;
+}
+
+.notif-sub-text {
+  font-size: 13px;
+  font-weight: 400;
+  color: #555;
+}
+
+.notif-solicitacao-body {
+  margin-top: 12px;
+  border-radius: 12px;
+  font-size: 14px;
+  text-align: left;
+  gap: 10px;
+}
+
+.notif-solicitacao-body p {
+  margin: 5px 0;
+}
+
+.notif-solicitacao-body .container-info-icon {
+  background: #fff;
+}
+
+/* ===== RECUSA DE SOLICITAÇÃO ===== */
+
+.notif-recusa {
+  cursor: pointer;
+  background: var(--primary-orange-600);
+  padding: 14px;
+  border-radius: 14px;
+  margin-bottom: 12px;
+}
+
+.notif-recusa.active {
+  background: #f0c9a0;
+}
+
+.notif-recusa-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+
+.notif-recusa-header p {
+  flex: 1;
+  margin: 0;
+  text-align: start;
+}
+
+.notif-recusa-body {
+  margin-top: 12px;
+  background: #fff;
+  padding: 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  text-align: left;
+}
+
+.notif-recusa-body p {
+  margin: 0;
+  text-align: start;
+}
+
+/* ===== AGENDA DO DIA ===== */
+
+.notif-agenda-do-dia {
+  cursor: pointer;
+  background: var(--tertiary-light-green-700);
+  padding: 14px;
+  border-radius: 14px;
+  margin-bottom: 12px;
+}
+
+.notif-agenda-do-dia.active {
+  background: #c5e8b8;
+}
+
+.notif-agenda-do-dia-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+
+.notif-agenda-do-dia-header p {
+  flex: 1;
+  margin: 0;
+  text-align: start;
+}
+
+.notif-agenda-do-dia-body {
+  margin-top: 12px;
+  background: #e8f5e3;
+  padding: 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  text-align: left;
+}
+
+.notif-agenda-do-dia-body > p {
+  margin: 0 0 10px 0;
+  text-align: start;
+}
+
+.notif-agenda-horarios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.notif-agenda-horario-item {
+  background: #d2edc5;
+  padding: 20px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+}

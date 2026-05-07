@@ -1,9 +1,10 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
-import { HiOutlineSearch, HiOutlineBell, HiChevronDown, HiChevronRight, HiOutlineX, HiOutlineUser } from "react-icons/hi";
+import { HiOutlineSearch, HiOutlineBell, HiOutlineUser } from "react-icons/hi";
 import { useAuth } from '../../context/AuthContext';
 import foto from '../../assets/img/perfil-default.png';
+import Notifications from './Notifications/notifications';
 
 
 export default function NavDesktop() {
@@ -34,7 +35,6 @@ export default function NavDesktop() {
 
 
     const [isNotifOpen, setNotifOpen] = useState(false);
-    const [openNotif, setOpenNotif] = useState(null);
 
     const notificacoes = [
         {
@@ -49,33 +49,56 @@ export default function NavDesktop() {
             id: 2,
             tipo: "confirmacao",
             nome: "Dra. Lucia Amaral",
-            data: "16/04/2026",
+            data: "06/04/2026",
             horario: "9:00h a.m",
+            status: "Confirmado",
             foto: "../../assets/img/perfil-default.png"
         },
         {
             id: 3,
-            tipo: "mensagem",
+            tipo: "cancelamento",
             nome: "Daniel",
-            texto: "Esta ficando louco?",
-            hora: "19:29",
-            foto: foto
+            hora: "19:03",
         },
         {
             id: 4,
-            tipo: "confirmacao",
-            nome: "Dra. Lucia Amaral",
-            data: "16/04/2026",
-            horario: "9:00h a.m",
-            foto: "../../assets/img/perfil-default.png"
+            tipo: "cancelamento-agenda",
+            nome: "Luigi",
+            data: "06 de Abril",
+            horario: "9:00",
+            hora: "19:03",
         },
         {
             id: 5,
-            tipo: "confirmacao",
-            nome: "Dra. Lucia Amaral",
+            tipo: "reagendamento",
+            nome: "Luigi",
+            dataAnterior: "06 de Abril",
+            dataNova: "10 de Abril",
+            data: "10/04/2026",
+            horario: "9:00h a.m",
+            status: "Pendente",
+            hora: "19:03",
+        },
+        {
+            id: 6,
+            tipo: "solicitacao",
+            nome: "Luigi",
             data: "16/04/2026",
-            horario: "19:00h p.m",
-            foto: "../../assets/img/perfil-default.png"
+            horario: "9:00h a.m",
+            status: "Pendente",
+            hora: "19:03",
+        },
+        {
+            id: 7,
+            tipo: "recusa",
+            nome: "Dra. Lucia Amaral",
+            hora: "19:03",
+        },
+        {
+            id: 8,
+            tipo: "agenda-do-dia",
+            hora: "19:03",
+            horarios: ["9:00", "10:30", "12:00", "16:30", "18:00", "19:30"],
         },
     ];
     return (
@@ -127,113 +150,7 @@ export default function NavDesktop() {
                             </button>
 
                             {isNotifOpen && (
-                                <div
-                                    className="notif-modal-overlay"
-                                    onClick={() => setNotifOpen(false)}
-                                >
-
-                                    <div
-                                        className="notif-modal"
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
-                                        <button
-                                            className="notif-close"
-                                            onClick={() => setNotifOpen(false)}
-                                        >
-                                            <HiOutlineX />
-                                        </button>
-
-                                        <h3 className="notif-title">Notificações</h3>
-
-                                        {notificacoes.length === 0 && (
-                                            <p>Sem notificações</p>
-                                        )}
-
-                                        {notificacoes.map((notif) => {
-
-                                            if (notif.tipo === "mensagem") {
-
-                                                return (
-
-                                                    <div key={notif.id} className="notif-msg">
-
-                                                        <img
-                                                            src={notif.foto}
-                                                            className="notif-avatar"
-                                                        />
-
-                                                        <div className="notif-msg-text">
-                                                            <strong>{notif.nome}</strong>
-                                                            <p>{notif.texto}</p>
-                                                        </div>
-
-                                                        <span className="notif-hora">
-                                                            {notif.hora}
-                                                        </span>
-
-                                                    </div>
-
-                                                )
-
-                                            }
-
-                                            if (notif.tipo === "confirmacao") {
-
-                                                return (
-
-                                                    <div key={notif.id} className="notif-confirm">
-
-                                                        <div
-                                                            className="notif-confirm-header"
-                                                            onClick={() =>
-                                                                setOpenNotif(
-                                                                    openNotif === notif.id
-                                                                        ? null
-                                                                        : notif.id
-                                                                )
-                                                            }
-                                                        >
-
-                                                            <HiOutlineBell />
-
-                                                            <p>
-                                                                {notif.nome} confirmou seu agendamento
-                                                            </p>
-
-                                                            <span>
-                                                                {openNotif === notif.id ? <HiChevronDown ></HiChevronDown> : <HiChevronRight ></HiChevronRight>}
-                                                            </span>
-
-                                                        </div>
-
-                                                        {openNotif === notif.id && (
-                                                            <div className="notif-confirm-body">
-                                                                <p>
-                                                                    <strong>Nome:</strong> {notif.nome}
-                                                                </p>
-                                                                <p>
-                                                                    <strong>Data:</strong> {notif.data}
-                                                                </p>
-                                                                <p>
-                                                                    <strong>Horário:</strong> {notif.horario}
-                                                                </p>
-
-                                                                <button className="btn-remarcar">
-                                                                    Remarcar data/horário
-                                                                </button>
-
-                                                                <button className="btn-cancelar">
-                                                                    Cancelar Agendamento
-                                                                </button>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                )
-                                            }
-                                            return null
-                                        })}
-                                    </div>
-                                </div>
+                                <Notifications setNotifOpen={setNotifOpen} notificacoes={notificacoes} />
                             )}
                         </div>
                     )}
