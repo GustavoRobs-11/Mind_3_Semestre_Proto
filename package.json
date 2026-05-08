@@ -12,7 +12,8 @@
     "start:cliente-api": "cd cliente_api && mvnw.cmd spring-boot:run",
     "start:frontend": "npm run dev --prefix frontend",
     "dev": "concurrently --kill-others --names \"BACK,CLIENTE,FRONT\" -c \"bgBlue.bold,bgGreen.bold,bgMagenta.bold\" \"npm run start:backend\" \"npm run start:cliente-api\" \"npm run start:frontend\"",
-    "reset:db": "node reset-db.js"
+    "reset:db": "node reset-db.js",
+    "db:drop": "node reset-db.js"
   },
   "devDependencies": {
     "concurrently": "^9.2.1",
