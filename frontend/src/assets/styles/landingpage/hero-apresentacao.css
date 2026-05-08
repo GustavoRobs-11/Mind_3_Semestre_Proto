@@ -94,16 +94,6 @@ main.main p {
     gap: var(--spacing-sm);
 }
 
-.btn-hero {
-    background-color: transparent !important;
-}
-
-.btn-hero:hover {
-    background-color: var(--tertiary-light-green-400) !important;
-}
-
-
-
 /* Apresentação Section-------------------- */
 
 #apresentacao {
