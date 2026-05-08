@@ -1,6 +1,6 @@
 .container-calendario {
   background-color: var(--secondary-cream-700);
-  border-radius: var(--border-radius-lg);
+  border-radius: var(--border-radius-md);
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -10,35 +10,35 @@
 .container-calendario h1 {
   background-color: var(--tertiary-light-green-500);
   width: 100%;
-  padding: 10px;
+  padding: var(--spacing-xs);
   border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
   text-align: center;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 600;
   color: var(--black-950);
 }
 
 .wrapper-content-calendar {
-  padding: 15px;
+  padding: var(--spacing-xs) 0px ;
   background-color: white;
-  margin: 15px;
+  margin: var(--spacing-xs);
   border-radius: var(--border-radius-md);
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: var(--spacing-xs);
 }
 
 .header-calendario {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 15px;
+  gap: var(--spacing-xs);
   margin-bottom: 20px;
 }
 
 .header-calendario h2 {
   font-size: 1.4rem;
-  font-weight: 800;
+  font-weight: 600;
   text-transform: capitalize;
   text-align: center;
   margin: 0;
@@ -74,7 +74,10 @@
 
 .calendar-unified-grid {
   display: grid;
-  grid-template-columns: 35px repeat(7, 1fr) 35px;
+  grid-template-columns:
+    30px
+    repeat(7, minmax(50px, 1fr))
+    30px;
   gap: var(--spacing-xs);
   width: 100%;
   align-items: center;
@@ -87,7 +90,7 @@
 
 .dia-semana {
   text-align: center;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--black-950);
   font-size: 1.1rem;
   padding: 10px 0;
@@ -226,4 +229,17 @@
 
 @keyframes ping {
   75%, 100% { transform: scale(2.5); opacity: 0; }
+}
+
+
+/* Responsividade */
+@media (max-width:950px){
+  .container-calendario,
+  .wrapper-content-calendar{
+    max-width: 100%;
+  }
+
+  .calendar-unified-grid{
+    grid-template-columns: 35px repeat(7, 1fr) 35px;
+  }
 }

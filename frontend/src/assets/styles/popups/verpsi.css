@@ -5,7 +5,8 @@
     position: fixed; 
     background-color: var(--secondary-cream-700);
     max-height: 90vh; 
-    overflow-y: auto; 
+    overflow-y: auto;
+    overflow-x: hidden;
     padding: var(--spacing-xs);
     display: flex;
     flex-direction: column;
@@ -18,7 +19,7 @@
     text-align: center;
     gap: 10px;
     z-index: 81;
-    width: 600px;
+    width: max-content;
 }
 
 .container-info-psi{

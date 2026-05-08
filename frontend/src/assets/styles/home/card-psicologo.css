@@ -13,8 +13,8 @@
     border-radius: var(--border-radius-md);
     padding: 10px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(max(180px, calc(25% - 22.5px)), 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, max-content));
+    gap: var(--spacing-xs);
     justify-content: center;
     width: 100%;
     align-self: center;
@@ -51,7 +51,6 @@
             var(--secondary-cream-700) 20%);
     padding: 20px;
     gap: 10px;
-
     height: 350px;
     margin: 0px 5px 15px 5px;
 }

@@ -20,8 +20,8 @@
   border-radius: 12px;
   justify-content: space-between;
   margin-bottom: 2rem;
-  width: 50%;
-  gap: 1rem;
+  /* width: 50%; */
+  gap: var(--spacing-sm);
   flex-direction: column;
   height: 100%;
 }
@@ -31,7 +31,7 @@
 .sobre-info-container{
   width: 100%;
 }
-@media (max-width:1024px){
+@media (max-width:1046px){
   .container-section-perfil{
     padding-inline: 2%;
    
@@ -41,12 +41,13 @@
   .container-section-perfil{
     flex-direction: column;
   }
-}
-@media (max-width:768px){
   .perfil-container{
     width: 100%;
   }
   .container-sair{
     order: 3;
   }
+}
+@media (max-width:768px){
+  
 }
