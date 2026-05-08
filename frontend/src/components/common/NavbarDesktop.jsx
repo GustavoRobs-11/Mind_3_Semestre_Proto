@@ -132,7 +132,7 @@ export default function NavDesktop() {
                             <Link to="login=0">
                                 <button
                                     type="button"
-                                    className="nav-btn-login"
+                                    className="button-confirm nav-btn-login"
                                     onClick={() => setDropdownOpen(prev => !prev)}
                                 >
                                     Login
@@ -140,49 +140,6 @@ export default function NavDesktop() {
                             </Link>
                         </>
                     ) : null}
-
-                    <div className={`nav-login-drop-wrapper ${isAuthenticated && isDropdownOpen ? "show" : ""}`}>
-                        <div className="nav-login-drop">
-                            {isAuthenticated ? (
-                                <>
-                                    {user && (
-                                        <Link
-                                            to={`/${user.tipo.toLowerCase()}/perfil/${user.id}`}
-                                            onClick={() => setDropdownOpen(false)}
-                                        >
-                                            <button type="button">Meu Perfil</button>
-                                        </Link>
-                                    )}
-                                    <Link
-                                        to={`/${user.tipo}/perfil/${user.id}/configuracoes`}
-                                        onClick={() => setDropdownOpen(false)}
-                                    >
-                                        <button type="button">Configurações</button>
-                                    </Link>
-                                    {user.tipo === "psicologo" && (
-                                        <Link
-                                            to="/adicionar-artigos"
-                                            onClick={() => setDropdownOpen(false)}
-                                        >
-                                            <button type="button">Adicionar Artigos</button>
-                                        </Link>
-                                    )}
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            handleLogout();
-                                            setDropdownOpen(false);
-                                        }}
-                                    >
-                                        Sair
-                                    </button>
-                                </>
-                            ) : (
-                                <>
-                                </>
-                            )}
-                        </div>
-                    </div>
                 </div>
             </nav>
         </>

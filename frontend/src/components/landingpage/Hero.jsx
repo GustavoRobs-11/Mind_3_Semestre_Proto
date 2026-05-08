@@ -40,7 +40,7 @@ export default function Hero() {
             {!isAuthenticated ? (<Link
               to="/login=0"
             >
-              <button className="nav-btn-login btn-hero" >Começar</button>
+              <button className="btn-hero-section" >Começar</button>
             </Link>) : (<></>)}
 
 
