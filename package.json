@@ -13,10 +13,12 @@
     "start:frontend": "npm run dev --prefix frontend",
     "dev": "concurrently --kill-others --names \"BACK,CLIENTE,FRONT\" -c \"bgBlue.bold,bgGreen.bold,bgMagenta.bold\" \"npm run start:backend\" \"npm run start:cliente-api\" \"npm run start:frontend\"",
     "reset:db": "node reset-db.js",
-    "db:drop": "node reset-db.js"
+    "db:drop": "node reset-db.js",
+    "reset:all": "node reset-db.js --clear-browser-storage"
   },
   "devDependencies": {
     "concurrently": "^9.2.1",
-    "mongodb": "^7.1.0"
+    "mongodb": "^7.1.0",
+    "playwright": "^1.55.1"
   }
 }
