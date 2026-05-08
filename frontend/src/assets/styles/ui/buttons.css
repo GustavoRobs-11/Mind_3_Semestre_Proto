@@ -2,20 +2,9 @@
 
 /* Navbar button */
 .nav-btn-login{
-    box-sizing: border-box;
-    background-color: var(--accent-dark-green-700);
-    color: var(--black-50);
-    padding: 9px 31px;
-    border: none;
-    font-weight: 600;
-    font-size: 1.2rem;
-    border-radius: var(--spacing-xs);
-    cursor: pointer;
-    transition: 200ms;
-}
-
-.nav-btn-login:hover{
-    background-color: var(--accent-dark-green-800);
+    padding: 9px 31px !important;
+    font-weight: 600 !important;
+    font-size: 1.2rem !important;
 }
 
 /* Button (confirmação) */
@@ -192,6 +181,28 @@
 }
 .button-mais:hover {
     background-color: var(--accent-dark-green-600);
+}
+
+/* Botão de destaque (borda e fundo transparente) */
+
+.btn-hero-section{
+    background-color: #a7e2938c;
+    color: var(--black-950);
+    padding: 7px 20px;
+    font-weight: 600;
+    font-size: 1rem;
+    border: 4px solid var(--accent-dark-green-700);
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-sm);
+    text-wrap: nowrap;
+}
+
+.btn-hero-section:hover{
+    background-color: var(--tertiary-light-green-700);
 }
 
 /* Botão Skip Navigation (Acessibilidade) */
