@@ -54,6 +54,18 @@
   color: #333;
 }
 
+.article-stat-button {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
 .article-stats span {
   display: flex;
   align-items: center;

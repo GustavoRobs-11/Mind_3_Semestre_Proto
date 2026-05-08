@@ -51,20 +51,44 @@ export async function listarPorPsicologo(psicologoId) {
 
 // Buscar artigo por ID (Feed público ou leitura do dono)
 export async function buscarPorId(id) {
-    // Tenta fetch público primeiro. Se der 403 ou 401 (privado e pertence ao dono), tenta autenticado.
-    // Mas o backend devolve 403 se for privado e não tiver token.
-    // O mais seguro é verificar se tem token. Se tiver, manda autenticado. Se não tiver, manda público.
-    const token = authService.getToken();
-    
-    let res;
-    if (token) {
-        res = await authService.authenticatedFetch(`${API_URL}/${id}`);
-    } else {
-        res = await fetch(`${API_URL}/${id}`);
+    let res = await fetch(`${API_URL}/${id}`);
+
+    if (!res.ok) {
+        const token = authService.getToken();
+
+        if (token && (res.status === 401 || res.status === 403 || res.status === 404)) {
+            res = await authService.authenticatedFetch(`${API_URL}/${id}`);
+        }
     }
 
     if (!res.ok) {
         throw new Error("Artigo não encontrado ou sem permissão de acesso");
+    }
+
+    return res.json();
+}
+
+// Curtir artigo (público)
+export async function curtirArtigo(id) {
+    const res = await authService.authenticatedFetch(`${API_URL}/${id}/like`, {
+        method: "POST",
+    });
+
+    if (!res.ok) {
+        throw new Error("Erro ao curtir artigo");
+    }
+
+    return res.json();
+}
+
+// Registrar visualização do artigo (público)
+export async function registrarVisualizacao(id) {
+    const res = await fetch(`${API_URL}/${id}/view`, {
+        method: "POST",
+    });
+
+    if (!res.ok) {
+        throw new Error("Erro ao registrar visualização");
     }
 
     return res.json();

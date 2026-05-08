@@ -48,6 +48,20 @@ public class ArtigoController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PostMapping("/{id}/like")
+    public ResponseEntity<ArtigoResponseDTO> curtirArtigo(@PathVariable("id") String id) {
+        return artigoService.curtirArtigo(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/{id}/view")
+    public ResponseEntity<ArtigoResponseDTO> registrarVisualizacao(@PathVariable("id") String id) {
+        return artigoService.registrarVisualizacao(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ArtigoResponseDTO> atualizarArtigo(
             @PathVariable("id") String id,

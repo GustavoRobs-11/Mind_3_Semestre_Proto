@@ -28,6 +28,14 @@ export default function Artigos() {
     fetchArticles();
   }, []);
 
+  const handleArticleUpdate = (updatedArticle) => {
+    setArticles((currentArticles) =>
+      currentArticles.map((article) =>
+        article.id === updatedArticle.id ? { ...article, ...updatedArticle } : article
+      )
+    );
+  };
+
   const filteredArticles = articles.filter((article) =>
     article.titulo?.toLowerCase().includes(searchText.toLowerCase()) ||
     article.autorNome?.toLowerCase().includes(searchText.toLowerCase())
@@ -65,7 +73,7 @@ export default function Artigos() {
           <div className="articles-list">
             {filteredArticles.length > 0 ? (
               filteredArticles.map((article) => (
-                <ArticleCard key={article.id} article={article} />
+                <ArticleCard key={article.id} article={article} onArticleUpdate={handleArticleUpdate} />
               ))
             ) : (
               <div className="no-results">

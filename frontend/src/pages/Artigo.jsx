@@ -2,8 +2,9 @@ import { HiOutlineReply } from "react-icons/hi";
 import { FaThumbsUp, FaEye } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useRef } from "react";
 import { toast } from "react-toastify";
-import { buscarPorId } from "../services/artigoService";
+import { buscarPorId, curtirArtigo, registrarVisualizacao } from "../services/artigoService";
 import "../assets/styles/artigos/artigo.css";
 import "../assets/styles/artigos/cards-artigos.css";
 import DefaultImg from "../assets/img/articles.png";
@@ -14,12 +15,18 @@ export default function Artigo() {
   const navigate = useNavigate();
   const [artigo, setArtigo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const visualizacaoRegistrada = useRef(false);
 
   useEffect(() => {
     const fetchArtigo = async () => {
       try {
         const data = await buscarPorId(id);
         setArtigo(data);
+        if (!visualizacaoRegistrada.current) {
+          visualizacaoRegistrada.current = true;
+          const atualizado = await registrarVisualizacao(id);
+          setArtigo(atualizado);
+        }
       } catch (error) {
         toast.error("Artigo não encontrado ou sem permissão");
         navigate("/artigos");
@@ -38,6 +45,15 @@ export default function Artigo() {
     ? `http://localhost:8080/api/images/articles/${artigo.imagem}` 
     : DefaultImg;
 
+  const handleLike = async () => {
+    try {
+      const atualizado = await curtirArtigo(id);
+      setArtigo(atualizado);
+    } catch (error) {
+      toast.error("Erro ao curtir artigo");
+    }
+  };
+
   const formattedDate = artigo.dataCriacao 
     ? new Date(artigo.dataCriacao).toLocaleDateString('pt-BR') 
     : "";
@@ -51,6 +67,11 @@ export default function Artigo() {
             src={articleImg}
             alt="banner do artigo"
             className="article-banner"
+            onError={(e) => {
+              if (e.currentTarget.src !== DefaultImg) {
+                e.currentTarget.src = DefaultImg;
+              }
+            }}
           />
 
           <h1>{artigo.titulo}</h1>
@@ -64,7 +85,9 @@ export default function Artigo() {
           <hr />
 
           <div className="article-stats">
-            <span><FaThumbsUp /> {artigo.likes || 0}</span>
+            <button type="button" className="article-stat-button" onClick={handleLike}>
+              <FaThumbsUp /> {artigo.likes || 0}
+            </button>
             <span><FaEye /> {artigo.views || 0}</span>
           </div>
           <hr />

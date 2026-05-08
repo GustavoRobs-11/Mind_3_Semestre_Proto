@@ -15,6 +15,8 @@ public interface IArtigoService {
     List<ArtigoResponseDTO> listarPorPsicologo(String psicologoId);
     List<ArtigoResponseDTO> listarMeusArtigos();
     Optional<ArtigoResponseDTO> buscarPorId(String id);
+    Optional<ArtigoResponseDTO> curtirArtigo(String id);
+    Optional<ArtigoResponseDTO> registrarVisualizacao(String id);
     Optional<ArtigoResponseDTO> atualizarArtigo(String id, ArtigoUpdateRequestDTO dados);
     boolean deletarArtigo(String id);
     Optional<ArtigoResponseDTO> alternarPublicacao(String id);

@@ -24,6 +24,7 @@ public class Artigo {
     private LocalDateTime dataCriacao;
     private LocalDateTime dataAtualizacao;
     private List<Referencia> referencias = new ArrayList<>();
+    private List<String> usuariosQueCurtiram = new ArrayList<>();
 
     public static class Referencia {
         private String nome_referencia;
@@ -142,5 +143,16 @@ public class Artigo {
 
     public void setViews(int views) {
         this.views = views;
+    }
+
+    public List<String> getUsuariosQueCurtiram() {
+        if (usuariosQueCurtiram == null) {
+            usuariosQueCurtiram = new ArrayList<>();
+        }
+        return usuariosQueCurtiram;
+    }
+
+    public void setUsuariosQueCurtiram(List<String> usuariosQueCurtiram) {
+        this.usuariosQueCurtiram = usuariosQueCurtiram;
     }
 }

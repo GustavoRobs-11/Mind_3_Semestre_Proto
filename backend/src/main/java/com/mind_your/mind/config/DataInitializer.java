@@ -6,6 +6,8 @@ import com.mind_your.mind.models.Psicologo;
 import com.mind_your.mind.repository.PsicologoRepository;
 import com.mind_your.mind.models.Horario;
 import com.mind_your.mind.repository.HorarioRepository;
+import com.mind_your.mind.models.Artigo;
+import com.mind_your.mind.repository.ArtigoRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -26,7 +28,8 @@ public class DataInitializer {
     @Bean
     CommandLineRunner initData(PsicologoRepository psiRepo, 
                                PacienteRepository pacRepo, 
-                               HorarioRepository horRepo) {
+                               HorarioRepository horRepo,
+                               ArtigoRepository artigoRepo) {
         return args -> {
             // Inicializar Psicólogos se estiver vazio
             if (psiRepo.count() == 0) {
@@ -101,6 +104,184 @@ public class DataInitializer {
                 pacRepo.saveAll(pacientes);
                 System.out.println("Pacientes de teste criados!");
             }
+
+            // Inicializar Artigos se estiver vazio
+            if (artigoRepo.count() == 0) {
+                System.out.println("Iniciando carga de artigos de exemplo...");
+                List<Artigo> artigos = new ArrayList<>();
+
+                // Buscar psicólogos para associar aos artigos
+                List<Psicologo> psicologos = psiRepo.findAll();
+
+                if (psicologos.size() > 0) {
+                    // Artigo 1 - Ana Silva (Ansiedade)
+                    artigos.add(criarArtigo(psicologos.get(0),
+                        "Entendendo a Ansiedade: Causas e Estratégias de Enfrentamento",
+                        "A ansiedade é uma resposta natural do nosso corpo diante de situações desafiadoras. Porém, quando se torna excessiva, pode impactar significativamente nossa qualidade de vida. " +
+                        "Neste artigo, exploraremos as principais causas da ansiedade, como ela se manifesta no corpo e, mais importante, apresentaremos estratégias práticas e eficazes para lidar com esses sentimentos. " +
+                        "Aprenderemos técnicas de respiração, mindfulness e mudanças de comportamento que podem ajudar você a recuperar o controle e a paz mental. " +
+                        "Lembre-se: procurar ajuda profissional é um sinal de força, não de fraqueza.",
+                        "Artigos sobre ansiedade, técnicas de relaxamento, autocuidado",
+                        "artigo-ansiedade.jpg"
+                    ));
+
+                    // Artigo 2 - Bruno Ferreira (Psicanálise)
+                    artigos.add(criarArtigo(psicologos.get(1),
+                        "O Processo de Luto: Compreendendo as Fases Emocionais",
+                        "O luto é uma experiência universal, mas profundamente pessoal. Perdemos pessoas, relacionamentos, e até mesmo partes de nós mesmos em diferentes momentos da vida. " +
+                        "Este artigo busca iluminar as fases clássicas do luto - negação, raiva, barganha, depressão e aceitação - ajudando você a compreender melhor o que está sentindo. " +
+                        "É importante saber que não há um cronograma 'certo' para o luto, e é completamente normal reviver certas emoções ao longo do tempo. " +
+                        "Compartilharemos também estratégias para honrar a memória de quem perdemos e encontrar significado na continuidade de nossas vidas.",
+                        "Luto, perda, resiliência emocional, apoio psicológico",
+                        "artigo-luto.jpg"
+                    ));
+
+                    // Artigo 3 - Carla Souza (Crianças)
+                    artigos.add(criarArtigo(psicologos.get(2),
+                        "TDAH em Crianças: Sinais, Diagnóstico e Intervenções",
+                        "O Transtorno do Déficit de Atenção com Hiperatividade (TDAH) é uma condição neurodesenvolvimental que afeta milhões de crianças em todo o mundo. " +
+                        "Como pais e educadores, é fundamental reconhecer os sinais precoces para garantir uma intervenção adequada. " +
+                        "Neste artigo, discutiremos os sintomas principais - dificuldade de concentração, impulsividade e hiperatividade - e explicaremos o processo de diagnóstico. " +
+                        "Apresentaremos também estratégias práticas para casa e escola, além de orientações sobre as diferentes abordagens terapêuticas disponíveis. " +
+                        "Lembre-se: uma criança com TDAH pode ter um desenvolvimento saudável e bem-sucedido com o apoio adequado.",
+                        "TDAH, desenvolvimento infantil, educação, estratégias pedagógicas",
+                        "artigo-tdah.jpg"
+                    ));
+
+                    // Artigo 4 - Carla Mendes (Relacionamentos)
+                    artigos.add(criarArtigo(psicologos.get(3),
+                        "Comunicação Efetiva em Relacionamentos: A Base para Conexões Saudáveis",
+                        "Muitos conflitos relacionais surgem não da falta de amor, mas da falta de comunicação clara e empática. " +
+                        "A comunicação efetiva é uma habilidade que pode ser desenvolvida e aperfeiçoada ao longo do tempo. " +
+                        "Neste artigo, aprenderemos sobre: escuta ativa, expressão clara de sentimentos, uso de 'eu' em vez de 'você', e estratégias para resolver conflitos construtivamente. " +
+                        "Discutiremos também a importância da vulnerabilidade emocional e como criar um espaço seguro para seu parceiro expressar suas necessidades. " +
+                        "Relacionamentos saudáveis são construídos dia após dia, através de pequenos atos de compreensão e respeito mútuo.",
+                        "Comunicação, relacionamentos, conflitos, empatia, relacionamentos amorosos",
+                        "artigo-relacionamentos.jpg"
+                    ));
+
+                    // Artigo 5 - Daniel Oliveira (Neuropsicologia)
+                    artigos.add(criarArtigo(psicologos.get(4),
+                        "Reabilitação Cognitiva Após Lesão Cerebral: Recuperando Funções",
+                        "Uma lesão cerebral pode impactar diferentes aspectos da função cognitiva - memória, atenção, linguagem e processamento executivo. " +
+                        "A neuropsicologia oferece avaliações detalhadas que nos ajudam a entender exatamente quais funções foram afetadas e qual é o potencial de recuperação. " +
+                        "Este artigo explora os princípios da reabilitação cognitiva, que se baseia na neuroplasticidade - a capacidade do cérebro de se reorganizar e criar novas conexões. " +
+                        "Apresentaremos exercícios práticos, tecnologias assistivas e a importância do apoio multidisciplinar na jornada de recuperação. " +
+                        "A persistência e um plano individualizado são as chaves para otimizar a recuperação neurológica.",
+                        "Neuropsicologia, reabilitação, cérebro, recuperação, neuroplasticidade",
+                        "artigo-neuropsicologia.jpg"
+                    ));
+
+                    // Artigo 6 - Elisa Costa (Transtornos Alimentares)
+                    artigos.add(criarArtigo(psicologos.get(5),
+                        "Transtornos Alimentares: Uma Abordagem Sistêmica e Compassiva",
+                        "Os transtornos alimentares são condições psicológicas complexas que vão muito além de questões nutricionais. " +
+                        "Eles frequentemente refletem tentativas de lidar com emoções difíceis, baixa autoestima ou problemas de controle na vida. " +
+                        "Uma abordagem sistêmica reconhece que a família, cultura e ambiente desempenham papéis significativos nesses transtornos. " +
+                        "Neste artigo, exploraremos a conexão entre corpo e mente, discutiremos fatores de risco e proteção, e apresentaremos estratégias terapêuticas que funcionam. " +
+                        "A recuperação é possível quando combinamos tratamento nutricionista, psicológico e apoio familiar com compaixão e paciência.",
+                        "Transtornos alimentares, anorexia, bulimia, imagem corporal, saúde mental",
+                        "artigo-alimentares.jpg"
+                    ));
+
+                    // Artigo 7 - Felipe Martins (Reabilitação)
+                    artigos.add(criarArtigo(psicologos.get(6),
+                        "Redescubrindo a Autonomia: Terapia Ocupacional e Qualidade de Vida",
+                        "A terapia ocupacional vai além de exercícios: trata-se de restaurar a capacidade de uma pessoa realizar atividades significativas do dia a dia. " +
+                        "Seja devido a uma lesão, doença crônica ou incapacidade, muitas pessoas enfrentam desafios para manter sua independência e senso de propósito. " +
+                        "Neste artigo, descrevemos como a terapia ocupacional funciona, quais atividades são trabalhadas, e como adaptações do ambiente podem fazer uma grande diferença. " +
+                        "Compartilhamos histórias de clientes que recuperaram não apenas habilidades, mas também a confiança em suas próprias capacidades. " +
+                        "Sua jornada para a autonomia e dignidade é nossa prioridade.",
+                        "Terapia ocupacional, reabilitação, autonomia, qualidade de vida, incapacidade",
+                        "artigo-ocupacional.jpg"
+                    ));
+
+                    // Artigo 8 - Gabriel Ramos (Ansiedade)
+                    artigos.add(criarArtigo(psicologos.get(7),
+                        "Psicoterapia Breve: Resultados Significativos em Menos Tempo",
+                        "Você não precisa de anos de terapia para experimentar mudanças significativas. A psicoterapia breve é uma abordagem focada e eficiente que se concentra em objetivos específicos. " +
+                        "Este artigo explora como, em um número menor de sessões, é possível trabalhar os problemas mais urgentes e desenvolver habilidades práticas. " +
+                        "Discutiremos técnicas cognitivo-comportamentais, resolução de problemas, e como o terapeuta trabalha colaborativamente com você para estabelecer e alcançar metas. " +
+                        "Muitos pacientes encontram que esse formato intensivo e orientado os ajuda a iniciar uma jornada de transformação pessoal. " +
+                        "Qualidade supera quantidade quando há clareza de propósito e comprometimento mútuo.",
+                        "Psicoterapia breve, terapia cognitivo-comportamental, mindfulness, ansiedade",
+                        "artigo-psicoterapia-breve.jpg"
+                    ));
+
+                    // Artigo 9 - Helena Mendes (Desenvolvimento e Carreira)
+                    artigos.add(criarArtigo(psicologos.get(8),
+                        "Orientação Profissional: Encontrando Seu Caminho no Mercado de Trabalho",
+                        "A escolha de uma carreira é uma das decisões mais importantes da vida, mas muitas pessoas sentem-se perdidas ou inseguras nesse processo. " +
+                        "A orientação profissional não é sobre dizer a você qual trabalho fazer, mas sim ajudá-lo a explorar seus valores, habilidades, interesses e aspirações. " +
+                        "Neste artigo, discutiremos como conduzir uma autoavaliação honesta, explorar oportunidades, e navegar transições de carreira com confiança. " +
+                        "Também abordaremos ansiedade relacionada ao trabalho, síndrome do impostor, e como construir uma carreira alinhada com seus valores pessoais. " +
+                        "Seu trabalho deve alimentar sua alma, não apenas sua conta bancária.",
+                        "Orientação profissional, carreira, desenvolvimento pessoal, transição de carreira, escolha profissional",
+                        "artigo-carreira.jpg"
+                    ));
+
+                    // Configurar todos os artigos como publicados e com engajamento inicial
+                    for (int i = 0; i < artigos.size(); i++) {
+                        Artigo artigo = artigos.get(i);
+                        artigo.setPublicado(true);
+                        artigo.setLikes(8 + (i * 3));
+                        artigo.setViews(42 + (i * 11));
+                    }
+
+                    artigoRepo.saveAll(artigos);
+                    System.out.println("Artigos de exemplo criados com sucesso!");
+                }
+            }
+
+            if (artigoRepo.count() > 0) {
+                List<Artigo> artigosExemplo = new ArrayList<>();
+                for (Artigo artigo : artigoRepo.findAll()) {
+                    int[] engajamento = getEngajamentoInicial(artigo.getImagem());
+                    if (engajamento != null && artigo.getLikes() == 0 && artigo.getViews() == 0) {
+                        artigo.setLikes(engajamento[0]);
+                        artigo.setViews(engajamento[1]);
+                        artigosExemplo.add(artigo);
+                    }
+                }
+
+                if (!artigosExemplo.isEmpty()) {
+                    artigoRepo.saveAll(artigosExemplo);
+                    System.out.println("Engajamento inicial dos artigos de exemplo atualizado!");
+                }
+            }
+        };
+    }
+
+    private Artigo criarArtigo(Psicologo psicologo, String titulo, String corpo, String tags, String imagem) {
+        Artigo artigo = new Artigo();
+        artigo.setTitulo(titulo);
+        artigo.setCorpo(corpo);
+        artigo.setAutorNome(psicologo.getNome() + " " + psicologo.getSobrenome());
+        artigo.setAutorAvatar(psicologo.getImgPerfil());
+        artigo.setPsicologoId(psicologo.getId());
+        artigo.setImagem(imagem);
+        artigo.setPublicado(true);
+        artigo.setViews(0);
+        artigo.setLikes(0);
+        return artigo;
+    }
+
+    private int[] getEngajamentoInicial(String imagem) {
+        if (imagem == null) {
+            return null;
+        }
+
+        return switch (imagem) {
+            case "artigo-ansiedade.jpg" -> new int[] {18, 126};
+            case "artigo-luto.jpg" -> new int[] {14, 114};
+            case "artigo-tdah.jpg" -> new int[] {22, 141};
+            case "artigo-relacionamentos.jpg" -> new int[] {17, 132};
+            case "artigo-neuropsicologia.jpg" -> new int[] {12, 98};
+            case "artigo-alimentares.jpg" -> new int[] {15, 109};
+            case "artigo-ocupacional.jpg" -> new int[] {11, 87};
+            case "artigo-psicoterapia-breve.jpg" -> new int[] {19, 145};
+            case "artigo-carreira.jpg" -> new int[] {16, 121};
+            default -> null;
         };
     }
 

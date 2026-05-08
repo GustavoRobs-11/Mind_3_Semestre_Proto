@@ -105,7 +105,8 @@ public class SecurityConfig {
                 
                 // Artigos
                 .requestMatchers(HttpMethod.GET, "/artigos/meus-artigos").authenticated()
-                .requestMatchers(HttpMethod.GET, "/artigos", "/artigos/{id}", "/artigos/psicologo/{psicologoId}").permitAll()
+                .requestMatchers(HttpMethod.GET, "/artigos", "/artigos/*", "/artigos/psicologo/*").permitAll()
+                .requestMatchers(HttpMethod.POST, "/artigos/*/like", "/artigos/*/view").permitAll()
                 
                 .anyRequest().authenticated()
             );

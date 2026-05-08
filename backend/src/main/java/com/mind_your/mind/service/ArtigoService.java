@@ -20,6 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -90,6 +91,42 @@ public class ArtigoService implements IArtigoService {
                 }
             }
             return ArtigoMapper.toResponseDTO(artigo);
+        });
+    }
+
+    @Override
+    public Optional<ArtigoResponseDTO> curtirArtigo(String id) {
+        return artigoRepository.findById(id).map(artigo -> {
+            String usuarioId = getAuthenticatedUserId();
+            if (usuarioId == null) {
+                throw new RuntimeException("É necessário estar autenticado para curtir um artigo.");
+            }
+
+            List<String> usuariosQueCurtiram = artigo.getUsuariosQueCurtiram();
+            if (usuariosQueCurtiram.contains(usuarioId)) {
+                return ArtigoMapper.toResponseDTO(artigo);
+            }
+
+            if (usuariosQueCurtiram == null) {
+                usuariosQueCurtiram = new ArrayList<>();
+                artigo.setUsuariosQueCurtiram(usuariosQueCurtiram);
+            }
+
+            usuariosQueCurtiram.add(usuarioId);
+            artigo.setLikes(artigo.getLikes() + 1);
+            artigo.setDataAtualizacao(LocalDateTime.now());
+            Artigo atualizado = artigoRepository.save(artigo);
+            return ArtigoMapper.toResponseDTO(atualizado);
+        });
+    }
+
+    @Override
+    public Optional<ArtigoResponseDTO> registrarVisualizacao(String id) {
+        return artigoRepository.findById(id).map(artigo -> {
+            artigo.setViews(artigo.getViews() + 1);
+            artigo.setDataAtualizacao(LocalDateTime.now());
+            Artigo atualizado = artigoRepository.save(artigo);
+            return ArtigoMapper.toResponseDTO(atualizado);
         });
     }
 

@@ -2,6 +2,7 @@
   import { AiOutlineEye } from "react-icons/ai";
   import DefaultProfileImg from "../../assets/img/perfil-default.png";
   import { Link } from "react-router-dom";
+  import { getImageUrl, getDefaultAvatar } from "../../utils/imageHelper";
 
   export default function ArticlesMostViewed({ articles }) {
     const topViewed = articles
@@ -18,9 +19,7 @@
 
         <div className="sidebar-articles">
           {topViewed.map((article) => {
-            const authorImg = article.autorAvatar
-              ? `http://localhost:8080/api/images/${article.autorAvatar}`
-              : DefaultProfileImg;
+            const authorImg = getImageUrl(article.autorAvatar) || DefaultProfileImg;
 
             return (
               <Link
@@ -28,7 +27,16 @@
                 to={`/artigo/${article.id}`}
                 className="sidebar-article-card"
               >
-                <img src={authorImg} alt={article.autorNome} className="avatar" />
+                  <img
+                    src={authorImg}
+                    alt={article.autorNome}
+                    className="avatar"
+                    onError={(e) => {
+                      if (e.currentTarget.src !== getDefaultAvatar()) {
+                        e.currentTarget.src = getDefaultAvatar();
+                      }
+                    }}
+                  />
 
                 <div className="sidebar-article-info">
                   <h4>{article.titulo}</h4>
