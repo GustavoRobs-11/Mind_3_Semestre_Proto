@@ -34,7 +34,7 @@
 .button-progress-confirm{
     background-color: var(--tertiary-light-green-700);
     color: var(--black-950);
-    padding:12px 20px;
+    padding:10px 20px;
     font-weight: 600;
     font-size: 1.1rem;
     border: none;
