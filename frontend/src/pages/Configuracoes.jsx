@@ -91,8 +91,16 @@ export default function Configuracoes() {
                         especializacoes: data.especializacoes || [],
                     }));
                 } catch (error) {
-                    toast.error("Erro ao carregar configurações completas.");
-                    console.log(error)
+                    console.error("Erro ao carregar configurações completas:", error);
+                    
+                    // Só desloga se o erro for 404 (usuário sumiu do banco) ou 401 (token inválido/expirado)
+                    if (error.status === 404 || error.status === 401) {
+                        toast.error("Sessão inválida ou usuário não encontrado. Redirecionando...");
+                        logout();
+                        navigate("/login=0");
+                    } else {
+                        toast.error("Erro ao carregar dados. Verifique sua conexão.");
+                    }
                 }
             }
         };

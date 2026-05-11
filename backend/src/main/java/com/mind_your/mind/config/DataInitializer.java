@@ -8,6 +8,8 @@ import com.mind_your.mind.models.Horario;
 import com.mind_your.mind.repository.HorarioRepository;
 import com.mind_your.mind.models.Artigo;
 import com.mind_your.mind.repository.ArtigoRepository;
+import com.mind_your.mind.models.Especialidade;
+import com.mind_your.mind.repository.EspecialidadeRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,8 +31,22 @@ public class DataInitializer {
     CommandLineRunner initData(PsicologoRepository psiRepo, 
                                PacienteRepository pacRepo, 
                                HorarioRepository horRepo,
-                               ArtigoRepository artigoRepo) {
+                               ArtigoRepository artigoRepo,
+                               EspecialidadeRepository espRepo) {
         return args -> {
+            // Inicializar Especialidades se estiver vazio
+            if (espRepo.count() == 0) {
+                List<String> iniciais = List.of(
+                    "Ansiedade", "Depressão", "Terapia Cognitivo-Comportamental", "Psicanálise", "Luto",
+                    "Terapia Infantil", "TDAH", "Autismo", "Terapia de Casal", "Relacionamentos",
+                    "Conflitos Familiares", "Neuropsicologia", "Reabilitação Cognitiva", "Terapia Familiar",
+                    "Transtornos Alimentares", "Terapia Ocupacional", "Reabilitação", "Psicologia Clínica",
+                    "Psicologia do Desenvolvimento", "Orientação Profissional", "Autoestima", "Estresse"
+                );
+                iniciais.forEach(nome -> espRepo.save(new Especialidade(nome)));
+                System.out.println("Especialidades iniciais cadastradas!");
+            }
+
             // Inicializar Psicólogos se estiver vazio
             if (psiRepo.count() == 0) {
                 System.out.println("Iniciando carga de psicólogos (Interior e Capital de SP)...");

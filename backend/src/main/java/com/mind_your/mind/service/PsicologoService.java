@@ -7,6 +7,8 @@ import com.mind_your.mind.mapper.PsicologoMapper;
 import com.mind_your.mind.models.Psicologo;
 import com.mind_your.mind.models.RefreshToken;
 import com.mind_your.mind.repository.PsicologoRepository;
+import com.mind_your.mind.models.Especialidade;
+import com.mind_your.mind.repository.EspecialidadeRepository;
 import com.mind_your.mind.security.JwtUtil;
 import com.mind_your.mind.security.UserDetailsImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +27,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Collection;
+import java.util.Comparator;
+
 @Service
 public class PsicologoService implements IPsicologoService {
 
@@ -34,19 +43,22 @@ public class PsicologoService implements IPsicologoService {
     private final AuthenticationManager authenticationManager;
     private final IRefreshTokenService refreshTokenService;
     private final IEnderecoService enderecoService;
+    private final EspecialidadeRepository especialidadeRepository;
 
     public PsicologoService(PsicologoRepository psicologoRepository,
                             PasswordEncoder passwordEncoder,
                             JwtUtil jwtUtil,
                             AuthenticationManager authenticationManager,
                             IRefreshTokenService refreshTokenService,
-                            IEnderecoService enderecoService) {
+                            IEnderecoService enderecoService,
+                            EspecialidadeRepository especialidadeRepository) {
         this.psicologoRepository = psicologoRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
         this.refreshTokenService = refreshTokenService;
         this.enderecoService = enderecoService;
+        this.especialidadeRepository = especialidadeRepository;
     }
 
     @Override
@@ -125,6 +137,16 @@ public class PsicologoService implements IPsicologoService {
         checarPropriedade(id);
         return psicologoRepository.findById(id).map(psicologo -> {
             PsicologoMapper.updatePsicologoFromDTO(dados, psicologo, passwordEncoder);
+
+            // Salvar novas especialidades que não existem no banco
+            if (dados.getEspecialidades() != null) {
+                dados.getEspecialidades().forEach(nome -> {
+                    if (especialidadeRepository.findByNome(nome).isEmpty()) {
+                        especialidadeRepository.save(new Especialidade(nome));
+                    }
+                });
+            }
+
             Psicologo atualizado = psicologoRepository.save(psicologo);
             return PsicologoMapper.toResponseDTO(atualizado);
         });
@@ -196,6 +218,14 @@ public class PsicologoService implements IPsicologoService {
         } catch (Exception e) {
             throw new RuntimeException("Erro ao fazer upload da imagem", e);
         }
+    }
+
+    @Override
+    public List<String> listarTodasEspecialidades() {
+        return especialidadeRepository.findAll().stream()
+                .map(Especialidade::getNome)
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     private Optional<Psicologo> buscarPorLoginAuth(String login) {

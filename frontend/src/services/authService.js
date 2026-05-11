@@ -31,17 +31,14 @@ export const authService = {
 
     // Busca dados completos do usuário após o login
     async getUserData(username, tipo) {
-        const token = this.getToken();
         const endpoint = tipo === "psicologo" ? "psicologos" : "pacientes";
+        const res = await this.authenticatedFetch(`${API_URL}/${endpoint}/login/${username}`);
 
-        const res = await fetch(`${API_URL}/${endpoint}/login/${username}`, {
-            headers: {
-                "Authorization": `Bearer ${token}`,
-                "Content-Type": "application/json",
-            },
-        });
-
-        if (!res.ok) throw new Error("Erro ao buscar dados do usuário");
+        if (!res.ok) {
+            const error = new Error("Erro ao buscar dados do usuário");
+            error.status = res.status;
+            throw error;
+        }
 
         const data = await res.json();
         return { ...data, tipo };
@@ -66,8 +63,13 @@ export const authService = {
                 });
 
                 if (!res.ok) {
-                    this.logout();
-                    throw new Error("Sessão expirada. Faça login novamente.");
+                    // SÓ desloga se for um erro de autenticação (401/403)
+                    if (res.status === 401 || res.status === 403) {
+                        this.logout();
+                    }
+                    const error = new Error("Sessão expirada. Faça login novamente.");
+                    error.status = res.status;
+                    throw error;
                 }
 
                 const data = await res.json();
@@ -176,8 +178,13 @@ export const authService = {
                 const novoToken = await this.refreshJwt();
                 res = await makeRequest(novoToken);
             } catch (e) {
-                this.logout();
-                throw new Error("Sessão expirada. Faça login novamente.");
+                // Só desloga se o erro do refresh for explicitamente 401/403
+                if (e.status === 401 || e.status === 403) {
+                    this.logout();
+                    throw new Error("Sessão expirada. Faça login novamente.");
+                }
+                // Caso contrário (erro de rede/500), propaga o erro original do primeiro fetch
+                throw e;
             }
         }
 

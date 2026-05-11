@@ -10,13 +10,41 @@ export function AuthProvider({ children }) {
 
     // Recarrega usuário do localStorage no refresh da página
     useEffect(() => {
-        const token = authService.getToken();
-        const savedUser = localStorage.getItem("user");
+        const verifyUser = async () => {
+            const token = authService.getToken();
+            const savedUser = localStorage.getItem("user");
+            const savedUsername = authService.getUsername();
 
-        if (token && savedUser) {
-            setUser(JSON.parse(savedUser));
-        }
-        setLoading(false);
+            if (token && savedUser) {
+                const parsedUser = JSON.parse(savedUser);
+                const username = parsedUser.login || parsedUser.username || savedUsername;
+
+                // Só tenta verificar se tiver um identificador válido
+                if (username && username !== "undefined") {
+                    try {
+                        // Tenta buscar os dados básicos para ver se ainda existe no DB
+                        await authService.getUserData(username, parsedUser.tipo);
+                        setUser(parsedUser);
+                    } catch (err) {
+                        // SÓ desloga se for um erro explícito de "não encontrado" (404) ou "não autorizado" (401)
+                        if (err.status === 404 || err.status === 401) {
+                            console.error("Usuário não encontrado ou sessão inválida (DB reset?):", err);
+                            authService.logout();
+                            setUser(null);
+                        } else {
+                            console.warn("Servidor indisponível ou erro temporário, mantendo sessão local.");
+                            setUser(parsedUser);
+                        }
+                    }
+                } else {
+                    // Se não tem username mas tem token/user, assume que a sessão local é válida (fallback)
+                    setUser(parsedUser);
+                }
+            }
+            setLoading(false);
+        };
+
+        verifyUser();
     }, []);
 
     // Login
@@ -29,10 +57,13 @@ export function AuthProvider({ children }) {
 
             // 2. Busca dados completos do usuário
             const userData = await authService.getUserData(authData.username, authData.tipo);
+            
+            // Garante que o login/username esteja no objeto para persistência
+            const userWithLogin = { ...userData, login: authData.username };
 
-            setUser(userData);
-            localStorage.setItem("user", JSON.stringify(userData));
-            return { success: true, user: userData };
+            setUser(userWithLogin);
+            localStorage.setItem("user", JSON.stringify(userWithLogin));
+            return { success: true, user: userWithLogin };
         } catch (err) {
             const errorMessage = err.message || "Erro ao fazer login";
             setError(errorMessage);

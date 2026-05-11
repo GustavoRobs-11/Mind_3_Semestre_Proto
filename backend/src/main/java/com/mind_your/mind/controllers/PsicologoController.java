@@ -102,4 +102,9 @@ public class PsicologoController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/especialidades")
+    public ResponseEntity<List<String>> listarEspecialidades() {
+        return ResponseEntity.ok(psicologoService.listarTodasEspecialidades());
+    }
 }

@@ -92,7 +92,9 @@ export async function buscarConfiguracoes(id) {
     const res = await authService.authenticatedFetch(`${API_URL}/${id}/configuracoes`);
 
     if (!res.ok) {
-        throw new Error("Erro ao buscar configurações do usuário");
+        const error = new Error("Erro ao buscar configurações do usuário");
+        error.status = res.status;
+        throw error;
     }
 
     return res.json();
@@ -106,7 +108,9 @@ export async function atualizar(id, camposAtualizados) {
     });
 
     if (!res.ok) {
-        throw new Error("Erro ao atualizar usuário");
+        const error = new Error("Erro ao atualizar usuário");
+        error.status = res.status;
+        throw error;
     }
 
     return res.json();
@@ -119,7 +123,9 @@ export async function deletar(id) {
     });
 
     if (!res.ok) {
-        throw new Error("Erro ao deletar usuário");
+        const error = new Error("Erro ao deletar usuário");
+        error.status = res.status;
+        throw error;
     }
 
     return res.status === 204 ? { mensagem: "Usuário deletado com sucesso" } : res.json();

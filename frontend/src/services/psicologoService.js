@@ -92,7 +92,9 @@ export async function buscarConfiguracoes(id) {
     const res = await authService.authenticatedFetch(`${API_URL}/${id}/configuracoes`);
 
     if (!res.ok) {
-        throw new Error("Configurações do psicólogo não encontradas");
+        const error = new Error("Configurações do psicólogo não encontradas");
+        error.status = res.status;
+        throw error;
     }
 
     return res.json();
@@ -106,7 +108,9 @@ export async function atualizar(id, camposAtualizados) {
     });
 
     if (!res.ok) {
-        throw new Error("Erro ao atualizar psicólogo");
+        const error = new Error("Erro ao atualizar psicólogo");
+        error.status = res.status;
+        throw error;
     }
 
     return res.json();
@@ -119,7 +123,9 @@ export async function deletar(id) {
     });
 
     if (!res.ok) {
-        throw new Error("Erro ao deletar psicólogo");
+        const error = new Error("Erro ao deletar psicólogo");
+        error.status = res.status;
+        throw error;
     }
 
     return res.status === 204 ? { mensagem: "Psicólogo deletado com sucesso" } : res.json();
@@ -148,6 +154,19 @@ export async function uploadImagem(id, file) {
     if (!res.ok) {
         const errorText = await res.text();
         throw new Error(errorText || "Erro ao fazer upload da imagem");
+    }
+
+    return res.json();
+}
+
+// Listar especialidades dinâmicas do backend
+export async function listarEspecialidades() {
+    const res = await authService.authenticatedFetch(`${API_URL}/especialidades`);
+
+    if (!res.ok) {
+        const error = new Error("Erro ao listar especialidades");
+        error.status = res.status;
+        throw error;
     }
 
     return res.json();

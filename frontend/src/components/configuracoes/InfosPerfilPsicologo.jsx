@@ -1,5 +1,6 @@
 import { getDefaultWallpaper } from "../../utils/imageHelper";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
+import { listarEspecialidades } from "../../services/psicologoService";
 
 import { HiOutlineX } from "react-icons/hi";
 
@@ -14,13 +15,22 @@ export default function InfosPerfilPsicologo({
     removerEspecializacao,
 }) {
     const inputRef = useRef(null);
-    const tagsEspecializacoes = [
-        "Ansiedade",
-        "Depressão",
-        "Relacionamentos",
-        "Autoestima",
-        "Estresse",
-    ];
+    const [tagsEspecializacoes, setTagsEspecializacoes] = useState([]);
+
+    useEffect(() => {
+        const carregarEspecialidades = async () => {
+            try {
+                const doBackend = await listarEspecialidades();
+                if (doBackend && Array.isArray(doBackend)) {
+                    setTagsEspecializacoes(doBackend);
+                }
+            } catch (error) {
+                console.error("Erro ao carregar especialidades do backend:", error);
+            }
+        };
+
+        carregarEspecialidades();
+    }, []);
 
   return (
     <>

@@ -21,4 +21,5 @@ public interface IPsicologoService {
     boolean deletarPorId(String id);
     Optional<JwtResponseDTO> fazerLogin(String login, String senha);
     Optional<UploadImagemResponseDTO> uploadImagem(String id, MultipartFile file);
+    List<String> listarTodasEspecialidades();
 }

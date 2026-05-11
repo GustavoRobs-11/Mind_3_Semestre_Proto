@@ -26,6 +26,7 @@ public class PsicologoUpdateRequestDTO {
     private String medicamentos;
     private String preferencias;
     private String crp;
+    @JsonAlias({ "especializacoes" })
     private List<String> especialidades;
 
     public String getNome() { return nome; }

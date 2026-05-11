@@ -1,5 +1,6 @@
 package com.mind_your.mind.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class PsicologoConfiguracoesResponseDTO {
     private String imgPerfil;
 
     private String crp;
+    @JsonProperty("especializacoes")
     private List<String> especialidades;
 
 
