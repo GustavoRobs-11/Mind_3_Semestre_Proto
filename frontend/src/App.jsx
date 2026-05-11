@@ -16,6 +16,8 @@
   import SobreNos from "./pages/SobreNos";
   import AddArtigos from "./pages/AddArtigos";
   import Configuracoes from "./pages/Configuracoes";
+  import ListaClientes from "./pages/ListaClientes";
+  import Prontuario from "./pages/Prontuario";
   import TermosCondicoes from "./pages/TermosCondicoes";
   import VideoChamada from "./pages/VideoChamada";
   import Cadastro from "./pages/Cadastro";
@@ -71,6 +73,22 @@
               element={
                 <ProtectedRoute>
                   <Configuracoes />
+                </ProtectedRoute>
+              }
+            />
+             <Route
+              path=':tipo/perfil/:id/clientes/:idProntuario'
+              element={
+                <ProtectedRoute>
+                  <Prontuario />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path=':tipo/perfil/:id/clientes'
+              element={
+                <ProtectedRoute>
+                  <ListaClientes />
                 </ProtectedRoute>
               }
             />

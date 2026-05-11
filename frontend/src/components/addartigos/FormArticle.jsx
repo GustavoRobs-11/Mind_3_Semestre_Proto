@@ -91,7 +91,7 @@ export default function FormArticle({
                 ))}
             </div>
             <div className="containers-articles toggle-container">
-                <label>Visibilidade do artigo</label>
+                <p>Visibilidade do artigo</p>
                 <div className="toggle-switch">
                     <button
                         type="button"

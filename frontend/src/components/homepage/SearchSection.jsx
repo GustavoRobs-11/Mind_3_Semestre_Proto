@@ -6,7 +6,6 @@ import Visualizacao from "./Visualizacao.jsx";
 export default function SearchSection({
     selectedSpecialities, setSelectedSpecialities, // para filtro de especialidades
     selectedLocals, setSelectedLocals, locais,     // para filtro de localidades
-    selectedRatings, setSelectedRatings,           // para filtro de notas
     selectedDays, setSelectedDays,                 // para filtro de dias da semana
     visualizacao, setVisualizacao,                 // para visualizacao da posicao dos cards
     searchText, setSearchText                      // para busca por texto
@@ -35,18 +34,12 @@ export default function SearchSection({
         setSearchText(e.target.value);
     };
 
-    const handleSearchSubmit = (e) => {
-        e.preventDefault();
-        // A busca já acontece automaticamente via onChange
-        // Mas podemos adicionar lógica adicional aqui se necessário
-    };
-
     return (
         <>
             <section className="section-filter">
                 <div className="section-filters-searchbox">
                     <div className="search-boxes">
-                        <form onSubmit={handleSearchSubmit} style={{ display: 'flex', width: '100%' }}>
+                        <form className="search-form">
                             <input
                                 type="text"
                                 id="search-input"
@@ -54,8 +47,8 @@ export default function SearchSection({
                                 value={searchText}
                                 onChange={handleSearch}
                             />
-                            <button type="submit" style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-                                <HiOutlineSearch className="icon-ui button-search" />
+                            <button type="submit" className="button-confirm button-search">
+                                <HiOutlineSearch className="icon-ui-button-search"/>
                             </button>
                         </form>
                     </div>

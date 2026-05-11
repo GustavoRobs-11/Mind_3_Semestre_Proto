@@ -84,19 +84,23 @@ section.config h1 {
   flex-direction: column;
   gap: 10px;
   padding: 10px;
-  border: 1px solid black;
+  border: 1px solid var(--white-800);
   border-radius: 12px;
 }
 
 .atalhos li {
-  color: black;
+  color: var(--white-800);
   padding: 5px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid var(--white-800);
   cursor: pointer;
 }
 
+.atalhos li:last-child{
+  border-bottom: none;
+};
+
 #Deletar {
-  color: red;
+  color: var(--accent-mid-orange-950);
 }
 
 .atalhos li:hover {
