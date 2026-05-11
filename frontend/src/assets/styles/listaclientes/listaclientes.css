@@ -94,6 +94,7 @@ p.status-tag{
     font-weight: 500;
     height: fit-content;
     color: var(--black-950);
+    width: fit-content;
 }
 
 .status-tag.status-ativo{
@@ -109,4 +110,32 @@ p.status-tag{
 .button-prontuario{
     padding: 5px !important;
     font-size: 1.5rem !important;
+}
+
+@media(max-width: 1160px){
+    .container-search-clientes{
+        padding-inline: var(--spacing-xs);
+    }
+}
+@media(max-width: 950px){
+    main.list-clientes{
+        overflow-x: auto;
+    }
+    .card-cliente,
+    .cabecalho-lista-clientes{
+        width: 1100px
+    }
+}
+@media(max-width: 500px){
+    section.search-boxes{
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-xs)
+    }
+    section.search-boxes .button-confirm{
+        width: auto;
+    }
+    section.search-boxes .filtro {
+        width: 100%;
+    }
 }

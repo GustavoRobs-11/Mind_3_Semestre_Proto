@@ -47,7 +47,7 @@ export default function HistoricoAtendimentos({
 
     return (
         <>
-        <section className="historico-atendimentos">
+        <section className="historico-atendimentos" id="historicoAtendimentoInfo">
             <section className="search-prontuario">
                 <form className="search-form">
                     <input

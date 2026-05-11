@@ -8,6 +8,11 @@
     align-items: start;
 }
 
+/* Indice */
+nav.indice-prontuario{
+    display: none;
+}
+
 /* Area sem prontuario adicionado */
 .paciente-prontuario-view{
     display: flex;
@@ -151,10 +156,30 @@ main.container-prontuario{
 
 /* Responsividade ------------------------ */
 @media (max-width: 950px){
-    .container-prontuario-page{
-        grid-template-columns: 1fr;
+    nav.indice-prontuario{
+        display: block;
     }
 
+    .search-form .button-confirm{
+        width: 50px;
+    }
+    .container-prontuario-page{
+        grid-template-columns: 1fr;
+        padding-inline: var(--spacing-xs);
+    }
+    .dados-paciente{
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto;
+    }
+    .dados-paciente > p.status-tag{
+        grid-column: 2;
+        justify-items: end
+    }
+
+    .actions-prontuario div{
+        flex-wrap: wrap;
+    }
+    
     main.container-prontuario,
     section.historico-atendimentos{
         width: 100%;

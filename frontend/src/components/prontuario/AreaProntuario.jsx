@@ -48,7 +48,7 @@ export default function AreaProntuario({
         {
             id: 2,
             titulo: "Avaliação da demanda e definição de objetivos",
-            descricao: "Descrição das razões que motivaram a busca pelo serviço ou assistência psicológica, juntamente a aparesentção da modalidade de assistência prestada.",
+            descricao: "Descrição das razões que motivaram a busca pelo serviço ou assistência psicológica, juntamente a apresentação da modalidade de assistência prestada.",
             informacoes: ""
         },
         {
@@ -67,7 +67,7 @@ export default function AreaProntuario({
 
     return (
         <>
-        <div className="paciente-prontuario">
+        <div className="paciente-prontuario" id="pacienteProntuarioInfo">
             {}
             <h3>Prontuario: {formatarData(prontuarioAtual.data, "longa")}</h3>
             <p>Informações requeridas pelo CFP</p>

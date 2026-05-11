@@ -202,7 +202,16 @@ export default function Prontuario() {
     return (
     <>
         <div className="container-prontuario-page">
-            <main className="container-prontuario">
+
+            <nav aria-label="Seções das configurações" className="indice-prontuario">
+                <ul className="atalhos">
+                    <li><a href="#dadosPacienteInfo" >Info</a></li>
+                    <li><a href="#pacienteProntuarioInfo">Prontuário</a></li>
+                    <li><a href="#historicoAtendimentoInfo">Histórico de atendimentos</a></li>
+                </ul>
+            </nav>
+
+            <main className="container-prontuario" id="#dadosPacienteInfo">
                 <div className="dados-paciente">
                     <img 
                         src={cliente.foto || perfil} 
