@@ -1,10 +1,13 @@
 import { useAuth } from '../context/AuthContext';
 import { useParams, Navigate, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
+import { HiChevronLeft, HiChevronRight} from "react-icons/hi";
 import { Video, VideoOff, Mic, MicOff, PhoneOff } from 'lucide-react';
-import '../components/videochamada/streaming.css';
+import '../assets/styles/videochamada/streaming.css';
 
 export default function VideoChamada() {
+    const [open, setOpen] = useState(true);
+    const [openInfoNote, setOpenInfoNote] = useState(false);
     const { user, loading } = useAuth();
     const { agendamentoId } = useParams();
     const navigate = useNavigate();
@@ -14,6 +17,12 @@ export default function VideoChamada() {
     const [isVideoOn, setIsVideoOn] = useState(true);
     const [roomName, setRoomName] = useState('');
     const [isInCall, setIsInCall] = useState(false);
+    const [notes, setNotes] = useState("");
+
+    const notesPsicologo = (e) => {
+        setNotes(e.target.value);
+        // Implementar a lógica para salvar as anotações
+    }
 
     useEffect(() => {
         if (agendamentoId) {
@@ -187,8 +196,10 @@ export default function VideoChamada() {
 
     return (
         <section className="section-stream">
+
             <div className="container-psi">
                 {!isInCall ? (
+
                     // Tela de entrada - escolher sala
                     <div className="join-screen">
                         <div className="join-content">
@@ -258,7 +269,9 @@ export default function VideoChamada() {
                             )}
                         </div>
                     </div>
+
                 ) : (
+                    
                     // Container do Jitsi Meet
                     <>
                         <div 
@@ -310,28 +323,52 @@ export default function VideoChamada() {
             </div>
 
             {/* Área lateral */}
-            <div className="container-paciente">
-                <div className="info-sessao">
-                    <h3>Informações</h3>
-                    <p><strong>Usuário:</strong> {user.nome}</p>
-                    <p><strong>Tipo:</strong> {user.tipo}</p>
-                    {isInCall && (
-                        <>
-                            <p><strong>Sala:</strong></p>
-                            <p className="room-code">{roomName}</p>
-                            <div className="info-tip">
-                                Compartilhe este nome de sala com a outra pessoa para entrarem juntos!
-                            </div>
-                        </>
-                    )}
-                    {!isInCall && (
-                        <div className="info-tip">
-                            Modo Debug Ativo<br/>
-                            Você pode entrar em qualquer sala sem restrições.
+            <aside className={`container-paciente ${ open ? "open" : "closed"}`}>
+                <button
+                    className="toggle-btn"
+                    onClick={() => setOpen(!open)}>
+                    {open ? <HiChevronLeft className="arrow-note"/> : <HiChevronRight className="arrow-note"/>}
+                </button>
+                {open && (
+                    <>
+                    <div className="info-sessao">
+                        <div 
+                            className={`header-sessao-info ${openInfoNote ? "open" : "closed"}`} 
+                            onClick={() => setOpenInfoNote(!openInfoNote)}>
+                            <h3>Informações</h3>
+                            <HiChevronRight className="arrow-note-info"/>
                         </div>
-                    )}
-                </div>
-            </div>
+                        <div className={`body-sessao-info ${openInfoNote ? "open-info-note" : "closed-info-note"}`}>
+                            <hr className={`${openInfoNote ? "view" : ""}`}/>
+                            <p><strong>Usuário:</strong> {user.nome}</p>
+                            <p><strong>Tipo:</strong> {user.tipo}</p>
+                            {isInCall && (
+                                <>
+                                    <p><strong>Sala:</strong></p>
+                                    <p className="room-code">{roomName}</p>
+                                    <div className="info-tip">
+                                        Compartilhe este nome de sala com a outra pessoa para entrarem juntos!
+                                    </div>
+                                </>
+                            )}
+                            {!isInCall && (
+                                <div className="info-tip">
+                                    Modo Debug Ativo<br/>
+                                    Você pode entrar em qualquer sala sem restrições.
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <div className="anotacoes-content">
+                        <p>Anotações são salvas automaticamente</p>
+                        <textarea 
+                            placeholder="Escreva suas anotações..."
+                            onChange={(e) => notesPsicologo(e)}
+                            value={notes}/>
+                    </div>
+                    </>
+                )}
+            </aside>
         </section>
     );
 }

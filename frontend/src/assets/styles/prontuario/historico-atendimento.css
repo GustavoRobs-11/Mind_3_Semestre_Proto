@@ -1,0 +1,204 @@
+section.historico-atendimentos {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    overflow-y: auto;
+    background-color: var(--white-400);
+    padding: var(--spacing-xs);
+    border-radius: var(--border-radius-md);
+    gap: var(--spacing-sm);
+    height: fit-content;
+    max-height: 1042px;
+}
+
+/* Area de pesquisa */
+section.search-prontuario{
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+section.search-prontuario .search-form input{
+    width: 100%;
+    padding: var(--spacing-xs);
+    border-radius: 10px 0px 0px 10px;
+    border: 1px solid var(--white-600);
+    border-right: none;
+    box-shadow: 0 0px 10px rgba(0,0,0,0.1);
+}
+
+/* Linha vertical */
+.timeline-line {
+  position: absolute;
+  left: 15px;
+  top: 0;
+  bottom: 0;
+  height: auto;
+  width: 4px;
+  background: var(--white-600);
+  border-radius: 999px;
+}
+
+.timeline-item {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 16px;
+  align-items: flex-start;
+  position: relative;
+}
+
+.timeline-date {
+  width: 50px;
+  min-height: 55px;
+  background: var(--tertiary-light-green-700);
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  padding: 5px;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  text-wrap: wrap;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--black-950);
+  z-index: 2;
+  position: relative;
+}
+
+/* Cards ---------------------------------*/
+.accordion-card {
+  width: 100%;
+  background: var(--white-100);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+}
+
+/* Head card */
+.accordion-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-xs);
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.accordion-header:hover {
+  background: var(--white-500);
+}
+
+.accordion-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.accordion-title span {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+.icon-header {
+  font-size: 1.2rem;
+  color: var(--black-950);
+  border-radius: 5px;
+  margin: 0;
+  height: 35px;
+  padding: 5px;
+  cursor: pointer;
+}
+.icon-header.add-prontuario{
+    border: 1px solid var(--primary-orange-900);
+    background-color: var(--primary-orange-300);
+}
+.icon-header.view-prontuario{
+    border: 1px solid var(--accent-dark-green-900);
+    background-color: var(--accent-dark-green-300);
+}
+
+.icon-header.add-prontuario ~ span {
+    color: var(--primary-orange-950);
+}
+.icon-header.view-prontuario ~ span {
+    color: var(--accent-dark-green-900);
+}
+
+/* Icon arrow */
+.accordion-arrow {
+    font-size: 1.4rem;
+    color: var(--white-800);
+    transition: transform 0.3s ease;
+}
+
+.accordion-header.open .accordion-arrow {
+  transform: rotate(180deg);
+}
+
+/* Anotações por atendimento */
+.accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition:
+    max-height 0.4s ease,
+    padding 0.3s ease;
+  padding: 0 15px;
+}
+
+.accordion-content.show {
+  max-height: 500px;
+  padding: 15px;
+}
+
+/* Toolbar */
+.toolbar-editor {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.toolbar-editor button {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #cfcfcf;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+}
+
+/* Textarea */
+.accordion-content textarea {
+  width: 100%;
+  min-height: 180px;
+  resize: vertical;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.accordion-content textarea:focus {
+  border-color: #4f8f5c;
+}
+
+/* Scroll */
+.historico-atendimentos::-webkit-scrollbar {
+  width: 8px;
+}
+
+.historico-atendimentos::-webkit-scrollbar-thumb {
+  background: #c4c4c4;
+  border-radius: 999px;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .historico-atendimentos {
+    padding-left: 55px;
+  }
+
+  .timeline-date {
+    width: 42px;
+    font-size: 0.75rem;
+  }
+}

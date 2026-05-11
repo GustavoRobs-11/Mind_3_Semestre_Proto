@@ -24,35 +24,68 @@ section.section-filter{
     ;
 }
 
-/*-----------SEARCH-------------- */
-
 .search-boxes {
     grid-area: search;
-    flex-direction: row;
-    justify-items: space-between;
     width: 100%;
     display: flex;
     align-items: center;
 }
 
+/* Search section */
+.search-form {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
 .search-boxes input {
     width: 100%;
-    padding: 11px;
+    padding: var(--spacing-xs);
     border-radius: 10px 0px 0px 10px;
     border: 1px solid var(--white-600);
+    border-right: none;
 }
-.search-boxes input:focus{
+
+.search-boxes input:focus {
     outline: none;
     border: 1px solid var(--accent-dark-green-700);
+    border-right: none;
 }
+
 .search-boxes input::placeholder {
     color: var(--white-700);
     font-size: 1rem;
 }
 
-.button-search{
-    border-radius: 0 10px 10px 0 !important;
-    transform: translateY(-1px) 
+.search-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 16px;
+    background: none;
+    border: 1px solid var(--white-600);
+    border-left: none;
+    border-radius: 0 10px 10px 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-button:hover {
+    background-color: rgba(0,0,0,0.03);
+}
+
+.button-search {
+    padding: var(--spacing-xs) !important;
+    padding-top: 8px !important;
+    border-radius: 
+        0 
+        var(--border-radius-md)
+        var(--border-radius-md)
+        0 !important;
+}
+
+.button-search .icon-ui-button-search{
+    font-size: 1.5rem;
 }
 
 /*-----------FILTER------------ */
@@ -94,8 +127,8 @@ button.btn-searchbox{
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--accent-dark-green-700);
-  color: var(--white-200);
+  background: var(--tertiary-light-green-700);
+  color: var(--black-950);
   border: none;
   border-radius: 8px;
   padding: 10px 14px;
@@ -106,7 +139,7 @@ button.btn-searchbox{
 }
 
 .btn-searchbox:hover {
-  background: var(--tertiary-light-green-700);
+  background: var(--tertiary-light-green-800);
 }
 
 .seta-filtro {
@@ -121,7 +154,7 @@ button.btn-searchbox{
     left: 0;  
     display: flex;
     flex-direction: column;
-    background: var(--accent-dark-green-700);
+    background: var(--tertiary-light-green-700);
     border-radius: var(--border-radius-md);
     gap: 8px;
     padding: 10px 12px;
@@ -130,6 +163,7 @@ button.btn-searchbox{
     opacity: 0;
     transition: transform 0.3s ease, opacity 0.3s ease;
     overflow: hidden;
+    width: 100%;
 }
 
 .filtro .checkbox-filter {
@@ -155,32 +189,27 @@ button.btn-searchbox{
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 2px solid var(--tertiary-light-green-700);
+  border: 2px solid var(--tertiary-light-green-800);
   margin-right: 6px;
   vertical-align: middle;
   transition: background 0.2s ease;
 }
 
 .checkbox-input input:checked + span::before {
-  background-color: var(--tertiary-light-green-700);
+  background-color: var(--tertiary-light-green-800);
 }
 
 .titulo-checkbox {
-  font-size: 0.8rem;
-  color: var(--white-200);
+  font-size: 0.9rem;
+  color: var(--black-950);
   font-family: "Poppins", sans-serif;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   background: transparent;
   white-space: nowrap;
   width: 100%;
   transition: color 0.15s ease;
 }
-
-.titulo-checkbox:hover {
-  color: var(--tertiary-light-green-700);
-}
-
 
 /*-------VISUALIZACAO---------- */
 
@@ -207,6 +236,12 @@ button.btn-searchbox{
 .col-and-row {
     display: flex;
     gap: var(--spacing-xs);
+}
+
+.button-col,
+.button-row{
+    padding: 5px !important;
+    font-size: 1.5rem !important;
 }
 
 .button-col:not(.active),

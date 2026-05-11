@@ -22,7 +22,7 @@ export default function Filtro({
   
     return (
       <div className="filtro">
-        <button type="button" className="button-confirm btn-searchbox" onClick={toggleFilter}>
+        <button type="button" className="button-progress-confirm btn-searchbox" onClick={toggleFilter}>
           {titulo}
           <HiChevronRight
             className="seta-filtro"

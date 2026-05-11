@@ -7,8 +7,6 @@ export default function ActiveFilters({
     setSelectedSpecialities,
     selectedLocals,
     setSelectedLocals,
-    selectedRatings,
-    setSelectedRatings,
     selectedDays,
     setSelectedDays,
     totalResults
@@ -17,14 +15,12 @@ export default function ActiveFilters({
         searchText.trim() !== "" ||
         selectedSpecialities.length > 0 ||
         selectedLocals.length > 0 ||
-        selectedRatings.length > 0 ||
         selectedDays.length > 0;
 
     const clearAllFilters = () => {
         setSearchText("");
         setSelectedSpecialities([]);
         setSelectedLocals([]);
-        setSelectedRatings([]);
         setSelectedDays([]);
     };
 
@@ -38,9 +34,6 @@ export default function ActiveFilters({
                 break;
             case 'local':
                 setSelectedLocals(prev => prev.filter(item => item !== value));
-                break;
-            case 'rating':
-                setSelectedRatings(prev => prev.filter(item => item !== value));
                 break;
             case 'day':
                 setSelectedDays(prev => prev.filter(item => item !== value));
@@ -109,13 +102,6 @@ export default function ActiveFilters({
                         key={local}
                         label={local}
                         onRemove={() => removeFilter('local', local)}
-                    />
-                ))}
-                {selectedRatings.map(rating => (
-                    <FilterTag
-                        key={rating}
-                        label={rating}
-                        onRemove={() => removeFilter('rating', rating)}
                     />
                 ))}
                 {selectedDays.map(day => (

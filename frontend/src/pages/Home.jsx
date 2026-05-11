@@ -27,7 +27,6 @@ export default function Home() {
   const [selectedLocals, setSelectedLocals] = useState([]);
   const [visualizacao, setVisualizacao] = useState("col");
   const [selectedDays, setSelectedDays] = useState([]);
-  const [selectedRatings, setSelectedRatings] = useState([]);
   const [searchText, setSearchText] = useState(""); // Texto de busca
   // Cards
   const [openPsi, setOpenPsi] = useState(false);
@@ -65,21 +64,42 @@ export default function Home() {
 
   // Aplicar filtros
   const perfisFiltrados = perfis.filter(perfil => {
-      // Filtro de texto (busca por nome, especialidade, local)
-      const matchTexto = searchText.trim() === "" || 
+
+    // Pesquisa
+    const matchTexto =
+        searchText.trim() === "" ||
         perfil.nome.toLowerCase().includes(searchText.toLowerCase()) ||
         perfil.local.toLowerCase().includes(searchText.toLowerCase()) ||
-        perfil.tags.some(tag => tag.toLowerCase().includes(searchText.toLowerCase())) ||
-        (perfil.sobreMim && perfil.sobreMim.toLowerCase().includes(searchText.toLowerCase())) ||
-        (perfil.crp && perfil.crp.toLowerCase().includes(searchText.toLowerCase()));
-      
-      const matchEspecialidade = selectedSpecialities.length === 0
-          || perfil.tags.some(tag => selectedSpecialities.includes(tag));
-      const matchLocal = selectedLocals.length === 0
-          || selectedLocals.includes(perfil.local);
-      
-      return matchTexto && matchEspecialidade && matchLocal;
-  });
+        perfil.tags.some(tag =>
+            tag.toLowerCase().includes(searchText.toLowerCase())
+        );
+
+    // Especialidade
+    const matchEspecialidade =
+        selectedSpecialities.length === 0 ||
+        perfil.tags.some(tag =>
+            selectedSpecialities.includes(tag)
+        );
+
+    // Local
+    const matchLocal =
+        selectedLocals.length === 0 ||
+        selectedLocals.includes(perfil.local);
+
+    // Semana
+    const matchDias =
+        selectedDays.length === 0 ||
+        selectedDays.some(dia =>
+            Object.keys(perfil.horarios || {}).includes(dia)
+        );
+
+    return (
+        matchTexto &&
+        matchEspecialidade &&
+        matchLocal &&
+        matchDias 
+    );
+});
 
   const handleAgendamento = async (dados) => { // Guardar agendamento feito
     try{
@@ -105,8 +125,6 @@ export default function Home() {
           selectedLocals={selectedLocals}
           setSelectedLocals={setSelectedLocals}
           locais={locais}
-          selectedRatings={selectedRatings}
-          setSelectedRatings={setSelectedRatings}
           selectedDays={selectedDays}
           setSelectedDays={setSelectedDays}
           visualizacao={visualizacao}
@@ -137,8 +155,6 @@ export default function Home() {
           selectedLocals={selectedLocals}
           setSelectedLocals={setSelectedLocals}
           locais={locais}
-          selectedRatings={selectedRatings}
-          setSelectedRatings={setSelectedRatings}
           selectedDays={selectedDays}
           setSelectedDays={setSelectedDays}
           visualizacao={visualizacao}
@@ -167,8 +183,6 @@ export default function Home() {
         selectedLocals={selectedLocals}
         setSelectedLocals={setSelectedLocals}
         locais={locais}
-        selectedRatings={selectedRatings}
-        setSelectedRatings={setSelectedRatings}
         selectedDays={selectedDays}
         setSelectedDays={setSelectedDays}
         visualizacao={visualizacao}
