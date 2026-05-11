@@ -338,7 +338,9 @@ export default function Configuracoes() {
     if (loading) return <div>Carregando...</div>;
     if (!user) return <Navigate to="/login" replace />;
 
-    if (user.id !== id || user.tipo !== tipo) {
+    const resolvedId = id || user.id;
+
+    if (user.id !== resolvedId || user.tipo !== tipo) {
         return (
             <div style={{ padding: "2rem", textAlign: "center" }}>
                 <h2>Acesso Negado</h2>

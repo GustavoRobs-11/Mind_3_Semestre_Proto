@@ -43,7 +43,7 @@ export default function ErrorPage( {error}) {
                 
                 {user && (
                     <Link 
-                        to={`/${user.tipo}/perfil/${user.id}`} 
+                        to={`/${user.tipo}/perfil`} 
                         className="button-proceed"
                     >
                         Ir para meu perfil

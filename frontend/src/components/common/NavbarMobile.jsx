@@ -19,7 +19,7 @@ export default function NavMobile() {
     { icon: <HiOutlineHome />, to: "/" },
     { 
       icon: <HiOutlineUser />, 
-      to: isAuthenticated ? `/${user.tipo}/perfil/${user.id}` : `/login=0` 
+      to: isAuthenticated ? `/${user.tipo}/perfil` : `/login=0` 
     },
     { icon: <HiOutlineQuestionMarkCircle />, to: "/sobrenos" },
   ];

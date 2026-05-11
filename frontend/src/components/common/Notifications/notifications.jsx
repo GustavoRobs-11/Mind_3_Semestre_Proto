@@ -7,7 +7,7 @@ export default function Notifications({ setNotifOpen, notificacoes, user, onMark
 
     const handleOpenProfile = () => {
         if (user) {
-            window.location.href = `/${user.tipo.toLowerCase()}/perfil/${user.id}`;
+            window.location.href = `/${user.tipo.toLowerCase()}/perfil`;
         }
     };
 

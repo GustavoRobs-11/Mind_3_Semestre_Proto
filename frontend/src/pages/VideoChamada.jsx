@@ -147,7 +147,7 @@ export default function VideoChamada() {
             setJitsiApi(null);
         }
         setIsInCall(false);
-        navigate(`/${user.tipo}/perfil/${user.id}`);
+        navigate(`/${user.tipo}/perfil`);
     };
 
     const handleStartCall = () => {

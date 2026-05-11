@@ -95,7 +95,7 @@ export default function NavDesktop() {
                             <NavLink to={isPsicologo ? "/artigos" : "/home"}>
                                 <HiOutlineSearch id="search-icon-btn" className="icon-ui" />
                             </NavLink>
-                            <NavLink to={`/${user.tipo.toLowerCase()}/perfil/${user.id}`}>
+                            <NavLink to={`/${user.tipo.toLowerCase()}/perfil`}>
                                 <HiOutlineUser id="search-icon-btn" className="icon-ui" />
                             </NavLink>
                         </>

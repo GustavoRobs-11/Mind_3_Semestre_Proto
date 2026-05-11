@@ -23,7 +23,7 @@ export default function CardClientes({cliente}) {
                 <p>{cliente.dataInicio}</p>
                 <Link 
                     className="icon-edit button-prontuario" 
-                    to={`/psicologo/perfil/${user.id}/clientes/${cliente.idProntuario}`}>
+                    to={`/psicologo/perfil/clientes/prontuario/${cliente.idProntuario}`}>
                     <HiOutlineClipboardList />
                 </Link>
             </div>

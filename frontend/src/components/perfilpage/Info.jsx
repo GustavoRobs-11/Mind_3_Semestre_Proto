@@ -128,7 +128,7 @@ export default function Info({ profileData }) {
                 </div>
 
                 <div className="container-config-artigos">
-                    <Link to={`/${user.tipo}/perfil/${user.id}/configuracoes`} className="button-config btn-mob">
+                    <Link to={`/${user.tipo}/perfil/configuracoes`} className="button-config btn-mob">
                         Configurações
                     </Link>
                 </div>

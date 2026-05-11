@@ -61,23 +61,15 @@
 
             {/* Rotas protegidas - QUALQUER tipo de usuário */}
             <Route
-              path=':tipo/perfil/:id'
-              element={
-                <ProtectedRoute>
-                  <Perfil />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path=':tipo/perfil/:id/configuracoes'
+              path=':tipo/perfil/configuracoes/:id?'
               element={
                 <ProtectedRoute>
                   <Configuracoes />
                 </ProtectedRoute>
               }
             />
-             <Route
-              path=':tipo/perfil/:id/clientes/:idProntuario'
+            <Route
+              path=':tipo/perfil/clientes/prontuario/:idProntuario/:id?'
               element={
                 <ProtectedRoute>
                   <Prontuario />
@@ -85,10 +77,18 @@
               }
             />
             <Route
-              path=':tipo/perfil/:id/clientes'
+              path=':tipo/perfil/clientes/:id?'
               element={
                 <ProtectedRoute>
                   <ListaClientes />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path=':tipo/perfil/:id?'
+              element={
+                <ProtectedRoute>
+                  <Perfil />
                 </ProtectedRoute>
               }
             />

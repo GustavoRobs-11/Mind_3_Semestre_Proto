@@ -10,7 +10,8 @@ import { useState, useEffect } from "react";
 
 export default function Perfil() {
   const { user, loading } = useAuth();
-  const { id, tipo } = useParams();
+  const { id: paramId, tipo } = useParams();
+  const id = paramId || user?.id;
   const [profileData, setProfileData] = useState(null);
   const [loadingProfile, setLoadingProfile] = useState(true);
 
@@ -50,7 +51,7 @@ export default function Perfil() {
       <div style={{ padding: "2rem", textAlign: "center" }}>
         <h2>Acesso Negado</h2>
         <p>Você só pode acessar seu próprio perfil.</p>
-        <a href={`/${user.tipo}/perfil/${user.id}`}>
+        <a href={`/${user.tipo}/perfil`}>
           Ir para meu perfil
         </a>
       </div>
