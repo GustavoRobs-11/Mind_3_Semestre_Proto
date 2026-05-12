@@ -12,9 +12,10 @@
     "start:cliente-api": "cd cliente_api && mvnw.cmd spring-boot:run",
     "start:frontend": "npm run dev --prefix frontend",
     "dev": "concurrently --kill-others --names \"BACK,CLIENTE,FRONT\" -c \"bgBlue.bold,bgGreen.bold,bgMagenta.bold\" \"npm run start:backend\" \"npm run start:cliente-api\" \"npm run start:frontend\"",
-    "reset:db": "node reset-db.js",
-    "db:drop": "node reset-db.js",
-    "reset:all": "node reset-db.js --clear-browser-storage"
+    "reset:db": "node scripts/reset-db.js",
+    "db:drop": "node scripts/reset-db.js",
+    "reset:all": "node scripts/reset-db.js --clear-browser-storage",
+    "simular:agendamento": "node scripts/tests/simular-agendamento.js"
   },
   "devDependencies": {
     "concurrently": "^9.2.1",

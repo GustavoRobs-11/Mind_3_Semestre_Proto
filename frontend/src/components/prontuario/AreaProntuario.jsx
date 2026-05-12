@@ -5,6 +5,8 @@ import CardProntuario from "../cards/CardProntuario";
 export default function AreaProntuario({
     formatarData,
     prontuarioAtual,
+    setProntuarioAtual,
+    salvarProntuario
 }) {
     const [openCard, setOpenCard] = useState(null);
     const [loadingTransition, setLoadingTransition] = useState(false);
@@ -85,12 +87,23 @@ export default function AreaProntuario({
                                     (p) => p.sessaoId === sessao.id
                                 ) || null
                             }
+                            updateSessao={(val) => {
+                                setProntuarioAtual(prev => ({
+                                    ...prev,
+                                    prontuario: prev.prontuario.map(p => 
+                                        p.sessaoId === sessao.id ? { ...p, informacoes: val } : p
+                                    )
+                                }));
+                            }}
                         />
                     ))}
                 </div>
                 <p className="info-add">Informações adicionais</p>
                 <div className="card-prontuario-notes">
-                    <textarea name="" id=""></textarea>
+                    <textarea 
+                        value={prontuarioAtual.informacoesAdicionais || ""}
+                        onChange={(e) => setProntuarioAtual(prev => ({ ...prev, informacoesAdicionais: e.target.value }))}
+                    ></textarea>
                 </div>
             </div>
             <a href="https://site.cfp.org.br/wp-content/uploads/2025/11/Manual_Orientativo.pdf" target="_blank">
@@ -102,7 +115,7 @@ export default function AreaProntuario({
                         className="button-progress-confirm">Registrar assinatura eletrônica</button>
                     <button className="button-progress-confirm">Baixar documento</button>
                 </div>
-                <button className="button-confirm">Salvar Sessão</button>
+                <button className="button-confirm" onClick={salvarProntuario}>Salvar Sessão</button>
             </div>
         </div>
         </>

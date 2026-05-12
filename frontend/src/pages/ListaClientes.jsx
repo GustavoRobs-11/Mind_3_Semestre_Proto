@@ -1,81 +1,55 @@
 import "../assets/styles/listaclientes/listaclientes.css";
 import "../assets/styles/home/filtros-home.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import CardClientes from "../components/cards/CardClientes";
 import Filtro from "../components/homepage/Filtro";
+import { useAuth } from "../context/AuthContext";
+import { listarClientesDoPsicologo } from "../services/prontuarioService";
 
 export default function ListaClientes() {
+    const { user } = useAuth();
     const [searchText, setSearchText] = useState("");
     const [statusSelecionados, setStatusSelecionados] = useState([]);
+    const [clientes, setClientes] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Mock de dados de clientes
-    const clientes = [
-        {
-            idProntuario: 1,
-            foto: "/path/to/foto.jpg",
-            nome: "Amara Silva",
-            status: "Ativo",
-            email: "amara.silva@example.com",
-            dataInicio: "2023-01-01"
-        },
-        {
-            idProntuario: 2,
-            foto: "/path/to/foto.jpg",
-            nome: "Lira Costa",
-            status: "Inativo",
-            email: "lira.costa@example.com",
-            dataInicio: "2023-01-01"
-        },
-        {
-            idProntuario: 3,
-            foto: "/path/to/foto.jpg",
-            nome: "Snoopy",
-            status: "Ativo",
-            email: "snoopy@example.com",
-            dataInicio: "2023-01-01"
-        },
-        {
-            idProntuario: 4,
-            foto: "/path/to/foto.jpg",
-            nome: "Marcos Silva",
-            status: "Pendente",
-            email: "marcos.silva@example.com",
-            dataInicio: "2023-01-01"
-        },
-        {
-            idProntuario: 5,
-            foto: "/path/to/foto.jpg",
-            nome: "Carlos Matheus",
-            status: "Ativo",
-            email: "carlos.matheus@example.com",
-            dataInicio: "2023-01-01"
-        },
-        {
-            idProntuario: 6,
-            foto: "/path/to/foto.jpg",
-            nome: "Luis Alcantara",
-            status: "Inativo",
-            email: "luis.alcantara@example.com",
-            dataInicio: "2023-01-01"
-        },
-        {
-            idProntuario: 7,
-            foto: "/path/to/foto.jpg",
-            nome: "Heugenia Silva",
-            status: "Ativo",
-            email: "heugenia.silva@example.com",
-            dataInicio: "2023-01-01"
-        },
-        {
-            idProntuario: 8,
-            foto: "/path/to/foto.jpg",
-            nome: "Marcos Santos",
-            status: "Inativo",
-            email: "marcos.santos@example.com",
-            dataInicio: "2023-01-01"
-        },
-    ];
+    useEffect(() => {
+        const fetchClientes = async () => {
+            if (!user) return;
+            try {
+                setLoading(true);
+                const data = await listarClientesDoPsicologo(user.id);
+                
+                // Ordenar no frontend: mais recentes primeiro
+                const sortedData = [...data].sort((a, b) => {
+                    const dateA = a.primeiraConsulta || "";
+                    const dateB = b.primeiraConsulta || "";
+                    return dateB.localeCompare(dateA);
+                });
+
+                // Mapear campos do DTO para o que o componente espera
+                const mappedData = sortedData.map(c => ({
+                    idProntuario: c.pacienteId,
+                    foto: c.imgPerfil,
+                    nome: c.nome,
+                    status: c.status,
+                    email: c.email,
+                    dataInicio: c.primeiraConsulta ? c.primeiraConsulta.split("-").reverse().join("/") : "N/A"
+                }));
+                setClientes(mappedData);
+            } catch (err) {
+                console.error("Erro ao carregar clientes:", err);
+                setError("Não foi possível carregar a lista de clientes.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchClientes();
+    }, [user]);
+
     const statusOptions = ["Ativo", "Pendente", "Inativo"];
 
     const handleSearch = (e) => {
@@ -128,12 +102,20 @@ export default function ListaClientes() {
                     </div>
 
                     <div className="clientes-container">
-                        {clientesFiltrados.map((cliente, index) => (
-                            <CardClientes
-                                key={index}
-                                cliente={cliente}
-                            />
-                        ))}
+                        {loading ? (
+                            <div className="loading-container"><p>Carregando clientes...</p></div>
+                        ) : error ? (
+                            <div className="error-container"><p>{error}</p></div>
+                        ) : clientesFiltrados.length === 0 ? (
+                            <div className="empty-container"><p>Nenhum cliente encontrado.</p></div>
+                        ) : (
+                            clientesFiltrados.map((cliente, index) => (
+                                <CardClientes
+                                    key={index}
+                                    cliente={cliente}
+                                />
+                            ))
+                        )}
                     </div>
                 </main>
             </div>

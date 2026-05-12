@@ -128,7 +128,12 @@ export default function AgendaHistorico({
                     )}
 
                     {/* Consulta atual e futura */}
-                    {!jaPassou && isHoje && isConfirmado && currentlyDay(agenda.id_agendamento)}
+                    {!jaPassou && isHoje && isConfirmado && (
+                        <button className="button-progress-confirm" onClick={() => navigate('/videochamada', { state: { agendamentoId: agenda.id_agendamento } })}>
+                            <span className="dot-animated"></span>
+                            Começar consulta
+                        </button>
+                    )}
                     {!jaPassou && (isPendente || (isConfirmado && !isHoje)) && randomDay(setOpenReschedule, setOpenCancel)}
                 </div>
             </div>
@@ -154,18 +159,7 @@ export default function AgendaHistorico({
     )
 }
 
-function currentlyDay(agendamentoId){
-    return (
-        <>
-            <a href={`/videochamada/${agendamentoId}`} className="wrapped-btn">
-                <button className="button-progress-confirm">
-                    <span className="dot-animated"></span>
-                    Começar consulta
-                </button>
-            </a>
-        </>
-    )
-}
+
 
 function randomDay(setOpenReschedule, setOpenCancel){
     return (

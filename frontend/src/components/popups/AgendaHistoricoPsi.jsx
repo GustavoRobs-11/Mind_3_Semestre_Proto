@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import "../../assets/styles/popups/agendaHistorico.css"
 import { HiOutlineX, HiOutlineUser, HiOutlineStatusOffline, HiOutlineStatusOnline} from "react-icons/hi";
 import { toast } from "react-toastify";
@@ -26,6 +27,7 @@ export default function AgendaHistoricoPsi({
     agenda,
     changeStatus = () => {}
 }) {
+    const navigate = useNavigate();
     const hoje = new Date();
     const dataCompletaSelecionada = new Date(ano, mes, dia);
     const isHoje = dataCompletaSelecionada.toDateString() === hoje.toDateString();
@@ -60,6 +62,10 @@ export default function AgendaHistoricoPsi({
         } catch (error) {
             toast.error(error.message || "Erro ao recusar agendamento.");
         }
+    };
+
+    const handleIniciarChamada = () => {
+        navigate("/videochamada", { state: { agendamentoId: agenda.id_agendamento } });
     };
 
     if (!open) return null;
@@ -124,7 +130,12 @@ export default function AgendaHistoricoPsi({
                     )}
 
                     {/* Consulta atual e futura */}
-                    {!jaPassou && isHoje && isConfirmado && currentlyDay(agenda.id_agendamento)}
+                    {!jaPassou && isHoje && isConfirmado && (
+                        <button className="button-progress-confirm" onClick={handleIniciarChamada}>
+                            <span className="dot-animated"></span>
+                            Começar consulta
+                        </button>
+                    )}
                     {!jaPassou && isPendente && randomDay(handleConfirmar, handleRecusar)}
 
                 </div>
@@ -133,19 +144,6 @@ export default function AgendaHistoricoPsi({
     )
 }
 
-
-function currentlyDay(agendamentoId){
-    return (
-        <>
-        <a href={`/videochamada/${agendamentoId}`} className="wrapped-btn">
-            <button className="button-progress-confirm">
-                <span className="dot-animated"></span>
-                Começar consulta
-            </button>
-        </a>
-        </>
-    )
-}
 
 function randomDay(handleConfirmar, handleRecusar){
     return (

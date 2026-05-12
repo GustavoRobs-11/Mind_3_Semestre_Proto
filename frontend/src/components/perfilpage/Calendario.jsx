@@ -94,10 +94,10 @@ export default function Calendario() {
   useEffect(() => {
     carregarDados();
 
-    // Polling automático a cada 30 segundos para sincronizar com o backend
+    // Polling automático a cada 3 segundos para sincronizar com o backend (tempo real)
     const interval = setInterval(() => {
       carregarDados();
-    }, 30000);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [user, dataAtual]);

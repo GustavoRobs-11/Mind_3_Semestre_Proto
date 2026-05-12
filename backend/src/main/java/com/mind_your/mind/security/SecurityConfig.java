@@ -44,6 +44,9 @@ public class SecurityConfig {
     UserDetailsServiceImpl userDetailsService;
 
     @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
     private AuthEntryPointJwt unauthorizedHandler;
 
     @Bean
@@ -91,14 +94,19 @@ public class SecurityConfig {
                 // Swagger/OpenAPI
                 .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**", "/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
 
+                // Agendas e Horários (PRIORIDADE)
+                .requestMatchers("/horarios", "/horarios/**").authenticated()
+                .requestMatchers(HttpMethod.POST, "/horarios", "/horarios/**").hasRole("PSICOLOGO")
+                .requestMatchers(HttpMethod.DELETE, "/horarios", "/horarios/**").hasRole("PSICOLOGO")
+                .requestMatchers("/agendas", "/agendas/**").authenticated()
+
                 // OPTIONS para CORS
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 
-                // Agendas e Horários
-                .requestMatchers(HttpMethod.POST, "/horarios/**").hasRole("PSICOLOGO")
-                .requestMatchers(HttpMethod.DELETE, "/horarios/**").hasRole("PSICOLOGO")
-                .requestMatchers("/horarios/**").authenticated()
-                .requestMatchers("/agendas/**").authenticated()
+                // Prontuários
+                .requestMatchers("/prontuarios", "/prontuarios/**").authenticated()
+                .requestMatchers(HttpMethod.POST, "/prontuarios", "/prontuarios/**").hasRole("PSICOLOGO")
+
                 
                 // Endereços (ViaCEP)
                 .requestMatchers(HttpMethod.GET, "/enderecos/**").permitAll()

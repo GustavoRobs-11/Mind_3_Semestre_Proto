@@ -13,7 +13,7 @@ export default function HistoricoAtendimentos({
     criarProntuario,
     formatarData,
     atendimentos,
-    setAtendimento
+    setAtendimentos
 }) {
     const [openId, setOpenId] = useState(1);
     const [searchText, setSearchText] = useState("");
@@ -23,7 +23,7 @@ export default function HistoricoAtendimentos({
     };
 
     const handleTextoChange = (id, value) => {
-        setAtendimento((prev) =>
+        setAtendimentos((prev) =>
             prev.map((at) =>
                 at.id === id
                     ? { ...at, relatorioTecnico: value }
@@ -94,6 +94,10 @@ export default function HistoricoAtendimentos({
                                         <span >Adicionar prontuário do dia</span>
                                         </>
                                 )}
+
+                                <span className={`status-tag status-${item.status.toLowerCase()}`} style={{ fontSize: '0.7rem', padding: '2px 8px', marginLeft: '10px' }}>
+                                    {item.status}
+                                </span>
 
                                 <span>{item.titulo}</span>
                             </div>

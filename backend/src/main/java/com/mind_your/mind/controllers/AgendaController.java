@@ -33,6 +33,13 @@ public class AgendaController {
         return ResponseEntity.ok(agendaService.listarDoPaciente(pacienteId));
     }
 
+    @GetMapping("/paciente/{pacienteId}/psicologo/{psicologoId}")
+    public ResponseEntity<List<AgendaResponseDTO>> listarDoPacienteEPsicologo(
+            @PathVariable("pacienteId") String pacienteId,
+            @PathVariable("psicologoId") String psicologoId) {
+        return ResponseEntity.ok(agendaService.listarDoPacienteEPsicologo(pacienteId, psicologoId));
+    }
+
     @PutMapping("/{id}/cancelar")
     public ResponseEntity<Void> cancelar(@PathVariable("id") String id) {
         agendaService.cancelar(id);

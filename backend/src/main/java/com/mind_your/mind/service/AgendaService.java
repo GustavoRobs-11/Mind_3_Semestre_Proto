@@ -122,6 +122,14 @@ public class AgendaService implements IAgendaService {
     }
 
     @Override
+    public List<AgendaResponseDTO> listarDoPacienteEPsicologo(String pacienteId, String psicologoId) {
+        return agendaRepository.findByPacienteIdAndPsicologoId(pacienteId, psicologoId)
+                .stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public void cancelar(String id) {
         Agenda agenda = agendaRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Agendamento não encontrado."));

@@ -50,8 +50,8 @@ export default function NavDesktop() {
             };
             fetchNotificacoes();
             
-            // Polling a cada 30 segundos
-            const interval = setInterval(fetchNotificacoes, 30000);
+            // Polling a cada 3 segundos para parecer em tempo real
+            const interval = setInterval(fetchNotificacoes, 3000);
             return () => clearInterval(interval);
         }
     }, [isAuthenticated, user]);

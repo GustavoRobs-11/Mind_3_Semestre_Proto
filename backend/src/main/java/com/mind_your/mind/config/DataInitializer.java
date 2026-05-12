@@ -10,6 +10,10 @@ import com.mind_your.mind.models.Artigo;
 import com.mind_your.mind.repository.ArtigoRepository;
 import com.mind_your.mind.models.Especialidade;
 import com.mind_your.mind.repository.EspecialidadeRepository;
+import com.mind_your.mind.models.Agenda;
+import com.mind_your.mind.repository.AgendaRepository;
+import com.mind_your.mind.models.Prontuario;
+import com.mind_your.mind.repository.ProntuarioRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -28,11 +32,13 @@ public class DataInitializer {
     private PasswordEncoder passwordEncoder;
 
     @Bean
-    CommandLineRunner initData(PsicologoRepository psiRepo, 
-                               PacienteRepository pacRepo, 
+    CommandLineRunner initData(PsicologoRepository psiRepo,
+                               PacienteRepository pacRepo,
                                HorarioRepository horRepo,
                                ArtigoRepository artigoRepo,
-                               EspecialidadeRepository espRepo) {
+                               EspecialidadeRepository espRepo,
+                               AgendaRepository agendaRepo,
+                               ProntuarioRepository prontuarioRepo) {
         return args -> {
             // Inicializar Especialidades se estiver vazio
             if (espRepo.count() == 0) {
@@ -114,7 +120,15 @@ public class DataInitializer {
                 List<Paciente> pacientes = List.of(
                     createPaciente("gabriel", "2000", "gabriel@gmail.com", "Gabriel", "Santos", "Masculino", "2000-09-13", "(12) 92959-7375", "12245-000", "São José dos Campos", "SP", "789.012.345-67", "perfil-snoopy.png"),
                     createPaciente("snoopy", "1950", "snoopy@gmail.com", "Snoopy", "Dog", "Masculino", "1969-09-13", "(11) 92337-2615", "01310-100", "São Paulo", "SP", "890.123.456-78", "perfil-snoopy.png"),
-                    createPaciente("scooby", "1950", "scooby@gmail.com", "Scoobert", "Cornelius Doo", "Masculino", "1950-10-04", "(11) 93070-0787", "07010-000", "Guarulhos", "SP", "901.234.567-89", "perfil-scooby.png")
+                    createPaciente("scooby", "1950", "scooby@gmail.com", "Scoobert", "Cornelius Doo", "Masculino", "1950-10-04", "(11) 93070-0787", "07010-000", "Guarulhos", "SP", "901.234.567-89", "perfil-scooby.png"),
+                    // Pacientes da lista de clientes da Ana Silva
+                    createPaciente("amara", "amara123", "amara.silva@email.com", "Amara", "Silva", "Feminino", "1998-03-22", "(11) 98765-1234", "01310-100", "São Paulo", "SP", "111.222.333-44", ""),
+                    createPaciente("lira", "lira123", "lira.costa@email.com", "Lira", "Costa", "Feminino", "1995-07-15", "(11) 97654-3210", "04040-000", "São Paulo", "SP", "222.333.444-55", ""),
+                    createPaciente("marcos_silva", "marcos123", "marcos.silva@email.com", "Marcos", "Silva", "Masculino", "1990-11-05", "(11) 96543-2109", "09090-000", "São Paulo", "SP", "333.444.555-66", ""),
+                    createPaciente("carlos_mat", "carlos123", "carlos.matheus@email.com", "Carlos", "Matheus", "Masculino", "1988-05-18", "(11) 95432-1098", "08080-000", "São Paulo", "SP", "444.555.666-77", ""),
+                    createPaciente("luis_alc", "luis123", "luis.alcantara@email.com", "Luis", "Alcantara", "Masculino", "2001-02-28", "(11) 94321-0987", "07070-000", "Guarulhos", "SP", "555.666.777-88", ""),
+                    createPaciente("heugenia", "heugenia123", "heugenia.silva@email.com", "Heugenia", "Silva", "Feminino", "1993-09-10", "(11) 93210-9876", "06060-000", "Osasco", "SP", "666.777.888-99", ""),
+                    createPaciente("marcos_santos", "marcos456", "marcos.santos@email.com", "Marcos", "Santos", "Masculino", "1985-12-01", "(11) 92109-8765", "05050-000", "São Paulo", "SP", "777.888.999-00", "")
                 );
 
                 pacRepo.saveAll(pacientes);
@@ -265,6 +279,98 @@ public class DataInitializer {
                     System.out.println("Engajamento inicial dos artigos de exemplo atualizado!");
                 }
             }
+
+            // Inicializar agendas e prontuários históricos se não existirem
+            if (agendaRepo.count() == 0) {
+                List<Psicologo> psicologos = psiRepo.findAll();
+                List<Paciente> pacientes = pacRepo.findAll();
+
+                if (!psicologos.isEmpty() && !pacientes.isEmpty()) {
+                    // Ana Silva = psicologos.get(0)
+                    Psicologo ana = psicologos.get(0);
+
+                    // Busca pacientes pelos logins criados
+                    Paciente amara = pacientes.stream().filter(p -> "amara".equals(p.getLogin())).findFirst().orElse(null);
+                    Paciente lira = pacientes.stream().filter(p -> "lira".equals(p.getLogin())).findFirst().orElse(null);
+                    Paciente marcos = pacientes.stream().filter(p -> "marcos_silva".equals(p.getLogin())).findFirst().orElse(null);
+                    Paciente carlos = pacientes.stream().filter(p -> "carlos_mat".equals(p.getLogin())).findFirst().orElse(null);
+                    Paciente luis = pacientes.stream().filter(p -> "luis_alc".equals(p.getLogin())).findFirst().orElse(null);
+                    Paciente heugenia = pacientes.stream().filter(p -> "heugenia".equals(p.getLogin())).findFirst().orElse(null);
+                    Paciente marcosSantos = pacientes.stream().filter(p -> "marcos_santos".equals(p.getLogin())).findFirst().orElse(null);
+
+                    LocalDate hoje = LocalDate.now();
+                    List<Agenda> agendas = new ArrayList<>();
+
+                    if (amara != null) {
+                        agendas.add(criarAgendaRealizada(ana.getId(), amara.getId(), hoje.minusDays(28).toString(), "08:00"));
+                        agendas.add(criarAgendaRealizada(ana.getId(), amara.getId(), hoje.minusDays(21).toString(), "09:00"));
+                        agendas.add(criarAgendaRealizada(ana.getId(), amara.getId(), hoje.minusDays(14).toString(), "08:00"));
+                        // Agenda futura confirmada (Amara = Ativo)
+                        agendas.add(criarAgendaFutura(ana.getId(), amara.getId(), hoje.plusDays(7).toString(), "09:00"));
+                    }
+                    if (lira != null) {
+                        agendas.add(criarAgendaRealizada(ana.getId(), lira.getId(), hoje.minusDays(35).toString(), "10:00"));
+                        agendas.add(criarAgendaRealizada(ana.getId(), lira.getId(), hoje.minusDays(14).toString(), "10:00"));
+                        // Sem futuro = Inativo
+                    }
+                    if (marcos != null) {
+                        // Apenas pendente = Pendente
+                        agendas.add(criarAgendaPendente(ana.getId(), marcos.getId(), hoje.plusDays(3).toString(), "14:00"));
+                    }
+                    if (carlos != null) {
+                        agendas.add(criarAgendaRealizada(ana.getId(), carlos.getId(), hoje.minusDays(10).toString(), "15:00"));
+                        agendas.add(criarAgendaRealizada(ana.getId(), carlos.getId(), hoje.minusDays(3).toString(), "16:00"));
+                        agendas.add(criarAgendaFutura(ana.getId(), carlos.getId(), hoje.plusDays(4).toString(), "15:00"));
+                    }
+                    if (luis != null) {
+                        agendas.add(criarAgendaRealizada(ana.getId(), luis.getId(), hoje.minusDays(60).toString(), "11:00"));
+                        // Inativo
+                    }
+                    if (heugenia != null) {
+                        agendas.add(criarAgendaRealizada(ana.getId(), heugenia.getId(), hoje.minusDays(7).toString(), "17:00"));
+                        agendas.add(criarAgendaFutura(ana.getId(), heugenia.getId(), hoje.plusDays(14).toString(), "17:00"));
+                    }
+                    if (marcosSantos != null) {
+                        agendas.add(criarAgendaRealizada(ana.getId(), marcosSantos.getId(), hoje.minusDays(45).toString(), "09:00"));
+                        // Inativo
+                    }
+
+                    agendaRepo.saveAll(agendas);
+                    System.out.println("Agendas históricas criadas para Ana Silva!");
+
+                    // Prontuários para as agendas realizadas
+                    if (prontuarioRepo.count() == 0) {
+                        List<Prontuario> prontuarios = new ArrayList<>();
+                        List<Agenda> realizadas = agendaRepo.findByPsicologoId(ana.getId())
+                                .stream().filter(a -> "REALIZADO".equals(a.getStatus())).toList();
+
+                        for (int i = 0; i < realizadas.size(); i++) {
+                            Agenda ag = realizadas.get(i);
+                            Paciente pac = pacientes.stream()
+                                    .filter(p -> p.getId().equals(ag.getPacienteId()))
+                                    .findFirst().orElse(null);
+                            if (pac == null) continue;
+
+                            String nomePac = pac.getNome();
+                            Prontuario pr = new Prontuario();
+                            pr.setAgendaId(ag.getId());
+                            pr.setPsicologoId(ag.getPsicologoId());
+                            pr.setPacienteId(ag.getPacienteId());
+                            pr.setData(ag.getData());
+                            pr.setSessao1(nomePac + " busca acompanhamento psicológico por queixas de ansiedade e dificuldades no ambiente de trabalho. Hipótese inicial: Transtorno de Ansiedade Generalizada.");
+                            pr.setSessao2("Demanda centrada em manejo emocional e redução de estresse. Objetivo: desenvolver estratégias de enfrentamento e autoregulação emocional com sessões semanais.");
+                            pr.setSessao3("Realizada escuta ativa com abordagem cognitivo-comportamental. Identificados pensamentos automaticos negativos relacionados a desempenho. Proposta de registro de pensamentos diário.");
+                            pr.setSessao4("");
+                            pr.setRelatorioTecnico("Sessão " + (i + 1) + ": " + nomePac + " demonstrou boa adesao ao processo terapêutico. Relata melhora parcial nas queixas iniciais.");
+                            pr.setInformacoesAdicionais(i % 2 == 0 ? "Paciente demonstrou boa adesao às orientações propostas." : "");
+                            prontuarios.add(pr);
+                        }
+
+                        prontuarioRepo.saveAll(prontuarios);
+                        System.out.println("Prontuários históricos criados!");
+                    }
+                }
+            }
         };
     }
 
@@ -364,4 +470,37 @@ public class DataInitializer {
         p.setSobreMim(sobreMim);
         return p;
     }
-}
+
+    private Agenda criarAgendaRealizada(String psicologoId, String pacienteId, String data, String hora) {
+        Agenda a = new Agenda();
+        a.setPsicologoId(psicologoId);
+        a.setPacienteId(pacienteId);
+        a.setData(data);
+        a.setHoraInicio(hora);
+        a.setDiaDaSemana("Segunda");
+        a.setStatus("REALIZADO");
+        return a;
+    }
+
+    private Agenda criarAgendaFutura(String psicologoId, String pacienteId, String data, String hora) {
+        Agenda a = new Agenda();
+        a.setPsicologoId(psicologoId);
+        a.setPacienteId(pacienteId);
+        a.setData(data);
+        a.setHoraInicio(hora);
+        a.setDiaDaSemana("Segunda");
+        a.setStatus("CONFIRMADO");
+        return a;
+    }
+
+    private Agenda criarAgendaPendente(String psicologoId, String pacienteId, String data, String hora) {
+        Agenda a = new Agenda();
+        a.setPsicologoId(psicologoId);
+        a.setPacienteId(pacienteId);
+        a.setData(data);
+        a.setHoraInicio(hora);
+        a.setDiaDaSemana("Segunda");
+        a.setStatus("PENDENTE");
+        return a;
+    }
+}

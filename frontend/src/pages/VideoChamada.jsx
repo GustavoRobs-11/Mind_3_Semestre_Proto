@@ -1,15 +1,18 @@
 import { useAuth } from '../context/AuthContext';
-import { useParams, Navigate, useNavigate } from 'react-router-dom';
+import { useLocation, Navigate, useNavigate } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { HiChevronLeft, HiChevronRight} from "react-icons/hi";
 import { Video, VideoOff, Mic, MicOff, PhoneOff } from 'lucide-react';
+import { toast } from 'react-toastify';
 import '../assets/styles/videochamada/streaming.css';
+import { finalizarAgendamento } from '../services/agendaService';
 
 export default function VideoChamada() {
     const [open, setOpen] = useState(true);
     const [openInfoNote, setOpenInfoNote] = useState(false);
     const { user, loading } = useAuth();
-    const { agendamentoId } = useParams();
+    const location = useLocation();
+    const agendamentoId = location.state?.agendamentoId;
     const navigate = useNavigate();
     const jitsiContainerRef = useRef(null);
     const [jitsiApi, setJitsiApi] = useState(null);
@@ -18,6 +21,7 @@ export default function VideoChamada() {
     const [roomName, setRoomName] = useState('');
     const [isInCall, setIsInCall] = useState(false);
     const [notes, setNotes] = useState("");
+    const [isJitsiLoading, setIsJitsiLoading] = useState(false);
 
     const notesPsicologo = (e) => {
         setNotes(e.target.value);
@@ -27,6 +31,17 @@ export default function VideoChamada() {
     useEffect(() => {
         if (agendamentoId) {
             setRoomName(`MindConsulta_${agendamentoId}`);
+            
+            // Marcar como realizado ao entrar na sala (pedido do usuário)
+            const marcarComoRealizado = async () => {
+                try {
+                    await finalizarAgendamento(agendamentoId);
+                    console.log("Agendamento marcado como realizado automaticamente.");
+                } catch (error) {
+                    console.error("Erro ao marcar agendamento como realizado:", error);
+                }
+            };
+            marcarComoRealizado();
         }
         // Carregar o script do Jitsi apenas uma vez
         if (!window.JitsiMeetExternalAPI) {
@@ -41,7 +56,7 @@ export default function VideoChamada() {
 
             script.onerror = () => {
                 console.error('Erro ao carregar Jitsi');
-                alert('Erro ao carregar videochamada. Verifique sua conexão.');
+                toast.error('Erro ao carregar videochamada. Verifique sua conexão.');
             };
         }
 
@@ -51,11 +66,11 @@ export default function VideoChamada() {
                 jitsiApi.dispose();
             }
         };
-    }, []);
+    }, [agendamentoId]);
 
     const initJitsi = () => {
         if (!roomName.trim()) {
-            alert('Digite o nome da sala!');
+            toast.warning('Digite o nome da sala!');
             return;
         }
 
@@ -110,6 +125,7 @@ export default function VideoChamada() {
         const api = new window.JitsiMeetExternalAPI(domain, options);
         setJitsiApi(api);
         setIsInCall(true);
+        setIsJitsiLoading(false);
 
         // Event listeners
         api.addEventListener('videoConferenceLeft', () => {
@@ -152,12 +168,11 @@ export default function VideoChamada() {
 
     const handleStartCall = () => {
         if (!window.JitsiMeetExternalAPI) {
-            alert('Aguarde o Jitsi carregar...');
-            setTimeout(handleStartCall, 1000); // Tentar novamente em 1s
+            toast.info('Carregando sistema de vídeo, aguarde um momento...');
             return;
         }
         
-        // Aguardar o container estar pronto
+        setIsJitsiLoading(true);
         setIsInCall(true);
         setTimeout(() => {
             if (jitsiContainerRef.current) {
@@ -165,8 +180,9 @@ export default function VideoChamada() {
             } else {
                 console.error('Container ainda não está pronto');
                 setIsInCall(false);
+                setIsJitsiLoading(false);
             }
-        }, 100);
+        }, 300);
     };
 
     const startCallWithRoom = (room) => {
@@ -191,9 +207,6 @@ export default function VideoChamada() {
         return <Navigate to="/login=0" replace />;
     }
 
-    // Modo debug: permite acesso mesmo com IDs diferentes
-    // if (user.id !== id || user.tipo !== tipo) { ... }
-
     return (
         <section className="section-stream">
 
@@ -210,9 +223,10 @@ export default function VideoChamada() {
                                     <button 
                                         className="button-progress-confirm"
                                         onClick={() => handleStartCall()}
+                                        disabled={isJitsiLoading}
                                         style={{ marginTop: '20px', padding: '15px 30px', fontSize: '1.2rem', width: '100%' }}
                                     >
-                                        Entrar na Sala da Consulta
+                                        {isJitsiLoading ? 'Carregando sala...' : 'Entrar na Sala da Consulta'}
                                     </button>
                                 </>
                             ) : (

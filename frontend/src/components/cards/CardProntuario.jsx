@@ -5,7 +5,8 @@ export default function CardProntuario({
     openCard,
     setOpenCard,
     index,
-    prontuarioAtual
+    prontuarioAtual,
+    updateSessao
 }) {
 
     const isOpen = openCard === index;
@@ -29,7 +30,7 @@ export default function CardProntuario({
             <div className={`card-prontuario-notes ${isOpen ? "open" : "closed"}`}>
                 <textarea value={prontuarioAtual?.informacoes || ""}
                     placeholder="Digite as anotações..."
-                    onChange={() => {}}>
+                    onChange={(e) => updateSessao(e.target.value)}>
                 </textarea>
             </div>
         </div>

@@ -93,7 +93,7 @@
               }
             />
             <Route
-              path='videochamada/:agendamentoId'
+              path='videochamada'
               element={
                 <ProtectedRoute>
                   <VideoChamada />

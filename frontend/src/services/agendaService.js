@@ -52,6 +52,17 @@ export async function listarDoPaciente(pacienteId) {
     return res.json();
 }
 
+// Listar agendas de um paciente com um psicólogo específico
+export async function listarDoPacienteEPsicologo(pacienteId, psicologoId) {
+    const res = await authService.authenticatedFetch(`${API_URL}/paciente/${pacienteId}/psicologo/${psicologoId}`);
+
+    if (!res.ok) {
+        throw new Error("Erro ao buscar histórico de agendamentos");
+    }
+
+    return res.json();
+}
+
 // Cancelar agendamento
 export async function cancelarAgendamento(id) {
     const res = await authService.authenticatedFetch(`${API_URL}/${id}/cancelar`, {
@@ -107,4 +118,17 @@ export async function recusarAgendamento(id) {
     }
 
     return res.status === 204 ? { mensagem: "Agendamento recusado com sucesso" } : res.json();
+}
+// Finalizar agendamento (marcar como realizado)
+export async function finalizarAgendamento(id) {
+    const res = await authService.authenticatedFetch(`${API_URL}/${id}/finalizar`, {
+        method: "PUT",
+    });
+
+    if (!res.ok) {
+        const mensagem = await extrairMensagemErro(res, "Erro ao finalizar agendamento");
+        throw new Error(mensagem);
+    }
+
+    return res.status === 204 ? { mensagem: "Agendamento finalizado com sucesso" } : res.json();
 }

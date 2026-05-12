@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../../../assets/styles/notificacoes/notificacoes.css'
 import { HiOutlineBell, HiChevronDown, HiOutlineStatusOffline, HiOutlineX, HiOutlineUser } from "react-icons/hi";
+import fotoPadrao from '../../../assets/img/perfil-default.png';
 
 export default function Notifications({ setNotifOpen, notificacoes, user, onMarkAsRead }) {
     const [openNotif, setOpenNotif] = useState(null);
@@ -51,9 +52,10 @@ export default function Notifications({ setNotifOpen, notificacoes, user, onMark
                         return (
                             <div key={notif.id} className="notif-msg">
                                 <img
-                                    src={notif.foto}
+                                    src={notif.foto || fotoPadrao}
                                     className="notif-avatar"
                                     alt="avatar"
+                                    onError={(e) => { e.target.onerror = null; e.target.src = fotoPadrao; }}
                                 />
                                 <div className="notif-msg-text">
                                     <strong>{notif.nome}</strong>
