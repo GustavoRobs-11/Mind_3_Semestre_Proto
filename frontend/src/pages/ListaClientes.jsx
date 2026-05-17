@@ -3,7 +3,7 @@ import "../assets/styles/home/filtros-home.css";
 import { useState, useEffect } from "react";
 import { HiOutlineSearch } from "react-icons/hi";
 import CardClientes from "../components/cards/CardClientes";
-import Filtro from "../components/homepage/Filtro";
+import Filtro from "../components/homepage/Filtro.jsx";
 import { useAuth } from "../context/AuthContext";
 import { listarClientesDoPsicologo } from "../services/prontuarioService";
 

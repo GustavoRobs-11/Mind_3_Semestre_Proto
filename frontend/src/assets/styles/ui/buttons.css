@@ -1,7 +1,7 @@
 @import url("../main.css");
 
 /* Navbar button */
-.nav-btn-login{
+.nav-btn-login {
     padding: 9px 31px !important;
     font-weight: 600 !important;
     font-size: 1.2rem !important;
@@ -9,32 +9,32 @@
 
 /* Button (confirmação) */
 
-.button-confirm{
+.button-confirm {
     background-color: var(--accent-dark-green-700);
     color: var(--white-50);
-    padding:10px 20px;
+    padding: clamp(0.6rem, 1.8vw, 1rem) clamp(1rem, 3vw, 1.6rem);
     font-weight: 400;
     font-size: 1rem;
     border: none;
     border-radius: var(--border-radius-md);
     cursor: pointer;
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
     gap: var(--spacing-sm);
     text-wrap: nowrap;
 }
 
-.button-confirm:hover{
-    background-color:var(--accent-dark-green-800);
+.button-confirm:hover {
+    background-color: var(--accent-dark-green-800);
 }
 
 /* Button (confirmação/light-green) */
 
-.button-progress-confirm{
+.button-progress-confirm {
     background-color: var(--tertiary-light-green-700);
     color: var(--black-950);
-    padding:10px 20px;
+    padding: 10px 20px;
     font-weight: 600;
     font-size: 1.1rem;
     border: none;
@@ -52,17 +52,17 @@
     margin: 0;
 }
 
-.button-progress-confirm:hover{
-    background-color:var(--tertiary-light-green-600);
+.button-progress-confirm:hover {
+    background-color: var(--tertiary-light-green-600);
 }
 
 
 /* Botão (processeguir) */
 
-.button-proceed{
+.button-proceed {
     background-color: var(--accent-mid-orange-600);
     color: var(--black-950);
-    padding:10px 20px;
+    padding: 10px 20px;
     font-weight: 500;
     font-size: 1rem;
     border: none;
@@ -74,16 +74,19 @@
     cursor: pointer;
 }
 
-.button-proceed:hover{
+.button-proceed:hover {
     background-color: var(--accent-mid-orange-700);
+}
+.btn-add-dia, .btn-add-artigo{
+    width: max-content;
 }
 
 /* Botão (atenção) */
 
-.button-attention{
+.button-attention {
     background-color: var(--accent-mid-orange-900);
     color: var(--white-50);
-    padding:10px 20px;
+    padding: 10px 20px;
     font-weight: 500;
     font-size: 1.1rem;
     border: none;
@@ -91,32 +94,32 @@
     cursor: pointer;
 }
 
-.button-attention:hover{
+.button-attention:hover {
     background-color: var(--accent-mid-orange-950);
 }
 
 /* Botão ("Planos")  */
 
-.button-planos{
+.button-planos {
     font-size: clamp(1rem, 5vw, 1.4rem);
     background-color: var(--white-200);
     border: none;
-    padding:10px 20px;
+    padding: 10px 20px;
     border-radius: var(--border-radius-md);
     cursor: pointer;
     transition: 200ms;
 }
 
-.button-planos:hover{
+.button-planos:hover {
     background-color: var(--white-500);
 }
 
 /* Botão ("Cancelar") */
 
-.button-cancelar{
-    background-color: var(--white-800);
-    color: var(--white-50);
-    padding:10px 20px;
+.button-cancelar {
+    background-color: var(--primary-orange-950);
+    color: var(--white-200);
+    padding: 10px 20px;
     font-weight: 500;
     font-size: 1.1rem;
     border: none;
@@ -124,28 +127,32 @@
     cursor: pointer;
 }
 
-.button-cancelar:hover{
-    background-color: var(--white-900);
+.button-cancelar:hover {
+    background-color: var(--primary-orange-700);
+    color: var(--black-700);
+}
+.button-cancelar:focus {
+    border: 2px solid var(--primary-orange-700);
 }
 
 /* Botão de ("Voltar") e ("Mais") */
 
-.button-open-pop-up{
+.button-open-pop-up {
     background-color: var(--white-600);
     color: var(--black-900);
-    padding:10px 20px;
+    padding: 10px 20px;
     font-weight: 500;
     font-size: 1rem;
     border: none;
     border-radius: var(--border-radius-md);
     cursor: pointer;
-    display:flex;
+    display: flex;
     gap: var(--spacing-xs);
     align-items: center;
     width: max-content;
 }
 
-.button-open-pop-up:hover{
+.button-open-pop-up:hover {
     background-color: var(--white-500);
 }
 
@@ -154,12 +161,13 @@
     cursor: pointer;
     color: var(--white-50);
     background-color: var(--accent-dark-green-700);
-    padding:10px 20px;
+    padding: 10px 20px;
     font-weight: 500;
     font-size: 1rem;
     border: none;
     border-radius: var(--border-radius-md);
 }
+
 .button-ver-card-psi:hover {
     background-color: var(--accent-dark-green-600);
 }
@@ -168,42 +176,50 @@
 .button-mais {
     background-color: var(--accent-dark-green-700);
     color: var(--white-50);
-    padding:10px 25px;
+    padding: 10px 25px;
     font-weight: 500;
     font-size: 1.1rem;
     border: none;
     border-radius: var(--border-radius-md);
     cursor: pointer;
-    display:flex;
+    display: flex;
     gap: var(--spacing-xs);
     display: flex;
     align-content: center;
 }
+
 .button-mais:hover {
     background-color: var(--accent-dark-green-600);
 }
 
 /* Botão de destaque (borda e fundo transparente) */
 
-.btn-hero-section{
-    background-color: #a7e2938c;
+.btn-hero-section {
+    background-color: color-mix(in srgb, var(--tertiary-light-green-700) 55%, transparent);
+    ;
     color: var(--black-950);
-    padding: 7px 20px;
+    padding: clamp(0.6rem, 1.8vw, 1rem) clamp(1rem, 3vw, 1.6rem);
     font-weight: 600;
     font-size: 1rem;
-    border: 4px solid var(--accent-dark-green-700);
+    border: 3px solid var(--accent-dark-green-700);
     border-radius: var(--border-radius-md);
     cursor: pointer;
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
     gap: var(--spacing-sm);
     text-wrap: nowrap;
 }
 
-.btn-hero-section:hover{
+.btn-hero-section:hover {
     background-color: var(--tertiary-light-green-700);
 }
+
+.btn-hero-section:focus {
+    background-color: color-mix(in srgb, var(--tertiary-light-green-700) 55%, transparent);
+    border: 3px solid var(--primary-orange-700);
+}
+
 
 /* Botão Skip Navigation (Acessibilidade) */
 
@@ -232,7 +248,45 @@
     color: var(--black-950);
     font-weight: 500;
     background-color: var(--tertiary-light-green-700);
-    padding: 0.5rem 1rem; 
-    border-radius: var(--border-radius-sm); 
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius-sm);
     z-index: 50;
+}
+
+/* Filtro Home */
+
+.btn-searchbox {
+    color: var(--black-950);
+    padding: 10px 10px;
+    font-weight: 300;
+    font-size: 0.9rem;
+    border: none;
+    border: 2px solid var(--white-800);
+    border-radius: var(--border-radius-md);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    text-wrap: nowrap;
+    width: 100%;
+    transition: 0.3s ease;
+}
+
+.btn-searchbox:hover {
+    background-color: var(--tertiary-light-green-600);
+}
+
+.btn-searchbox.listaclientes{
+    width: 100px;
+}
+
+.button-sidebar{
+    background-color: var(--tertiary-light-green-700)!important;
+    color: var(--black-700)!important;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+.button-sidebar:hover{
+    background-color: var(--tertiary-light-green-600)!important;
 }

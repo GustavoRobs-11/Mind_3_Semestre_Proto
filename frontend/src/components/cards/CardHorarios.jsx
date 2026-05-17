@@ -1,71 +1,139 @@
-import { HiChevronDown } from "react-icons/hi";
-import { useState } from "react"
-import { criarHorario, deletarHorario } from "../../services/horarioService";
+import {
+    HiChevronDown,
+    HiOutlineTrash,
+    HiPlus
+} from "react-icons/hi";
+
+import { useState } from "react";
+
+import {
+    criarHorario,
+    deletarHorario
+} from "../../services/horarioService";
+
 import { useAuth } from "../../context/AuthContext";
 
-export default function CardHorarios({ horario, onSaved, onDeleted, onRemoveTemp }) {
+export default function CardHorarios({
+    horario,
+    onSaved,
+    onDeleted,
+    onRemoveTemp
+}) {
+
     const { user } = useAuth();
-    const [isDropdownOpen, setDropdownOpen] = useState(false);
-    
+
+    const [isDropdownOpen, setDropdownOpen] = useState(true);
+
     const isExisting = !!horario?.id;
 
-    const [diaDaSemana, setDiaDaSemana] = useState(horario?.diaDaSemana || "Segunda");
-    const [horaInicio, setHoraInicio] = useState(horario?.horaInicio || "");
-    const [horaFim, setHoraFim] = useState(horario?.horaFim || "");
+    const [diaDaSemana, setDiaDaSemana] = useState(
+        horario?.diaDaSemana || "Segunda"
+    );
+
+    // LISTA DE HORÁRIOS
+    const [horarios, setHorarios] = useState([
+        {
+            horaInicio: horario?.horaInicio || "",
+            horaFim: horario?.horaFim || ""
+        }
+    ]);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    // Calcula os 40 min extras quando a hora de início muda
-    const calculateHour = (hour) => {
-        setHoraInicio(hour);
-        const [hh, mm] = hour.split(":").map(Number)
+    // CALCULAR +40MIN
+    const calculateHour = (hour, index) => {
+
+        const [hh, mm] = hour.split(":").map(Number);
+
         if (isNaN(hh) || isNaN(mm)) return;
 
         const data = new Date();
-        data.setHours(hh, mm, 0, 0)
+
+        data.setHours(hh, mm, 0, 0);
         data.setMinutes(data.getMinutes() + 40);
 
-        setHoraFim(data.toTimeString().slice(0,5))
-    }
-    
+        const novoHorario = [...horarios];
+
+        novoHorario[index] = {
+            horaInicio: hour,
+            horaFim: data.toTimeString().slice(0, 5)
+        };
+
+        setHorarios(novoHorario);
+    };
+
+    // ADICIONAR NOVO HORÁRIO
+    const adicionarHorario = () => {
+
+        setHorarios([
+            ...horarios,
+            {
+                horaInicio: "",
+                horaFim: ""
+            }
+        ]);
+    };
+
+    // REMOVER HORÁRIO
+    const removerHorario = (index) => {
+
+        const novaLista = horarios.filter((_, i) => i !== index);
+
+        setHorarios(novaLista);
+    };
+
+    // SALVAR TODOS
     const handleConfirmar = async () => {
-        if (!horaInicio || !horaFim) {
-            setError("Por favor, preencha o horário inicial.");
-            return;
-        }
 
         setLoading(true);
         setError("");
+
         try {
-            if (!isExisting) {
+
+            for (const item of horarios) {
+
+                if (!item.horaInicio || !item.horaFim) continue;
+
                 await criarHorario({
                     psicologoId: user.id,
                     diaDaSemana,
-                    horaInicio,
-                    horaFim
+                    horaInicio: item.horaInicio,
+                    horaFim: item.horaFim
                 });
-                onSaved();
-            } else {
-                // Não temos rota de PUT ainda. Confirmar não faz nada em já existentes para este escopo.
-                setDropdownOpen(false);
             }
+
+            onSaved();
+
         } catch (err) {
+
             setError(err.message);
+
         } finally {
+
             setLoading(false);
         }
     };
 
+    // DELETAR CARD
     const handleCancelarOuDeletar = async () => {
+
         if (!isExisting) {
+
             onRemoveTemp();
+
         } else {
+
             setLoading(true);
+
             try {
+
                 await deletarHorario(horario.id);
+
                 onDeleted();
+
             } catch (err) {
+
                 setError(err.message);
                 setLoading(false);
             }
@@ -73,83 +141,151 @@ export default function CardHorarios({ horario, onSaved, onDeleted, onRemoveTemp
     };
 
     return (
-    <>
         <div className="container-agendamento">
-            {error && <div role="alert" style={{color: "red", fontSize: "14px", marginBottom: "5px"}}>{error}</div>}
+
+            {error && (
+                <div
+                    role="alert"
+                    style={{
+                        color: "red",
+                        fontSize: "14px",
+                        marginBottom: "5px"
+                    }}
+                >
+                    {error}
+                </div>
+            )}
+
+            {/* TOPO */}
             <div className="container-horario">
+
                 <div className="inputs-horarios">
-                    <label className="sr-only" htmlFor={`dia-${horario.id || horario.tempId}`}>
-                        Dia da semana
-                    </label>
-                    <select 
-                        value={diaDaSemana} 
-                        onChange={e => setDiaDaSemana(e.target.value)}
-                        disabled={isExisting}>
-                        <option disabled hidden>Segunda</option>
+
+                    <select
+                        value={diaDaSemana}
+                        onChange={(e) => setDiaDaSemana(e.target.value)}
+                        disabled={isExisting}
+                    >
                         <option value="Domingo">Domingo</option>
-                        <option value="Segunda">Segunda</option>
-                        <option value="Terca">Terça</option>
-                        <option value="Quarta">Quarta</option>
-                        <option value="Quinta">Quinta</option>
-                        <option value="Sexta">Sexta</option>
+                        <option value="Segunda">Segunda-feira</option>
+                        <option value="Terca">Terça-feira</option>
+                        <option value="Quarta">Quarta-feira</option>
+                        <option value="Quinta">Quinta-feira</option>
+                        <option value="Sexta">Sexta-feira</option>
                         <option value="Sabado">Sábado</option>
                     </select>
 
-                    <label className="sr-only" htmlFor={`inicio-${horario.id || horario.tempId}`}>
-                        Hora de início
-                    </label>
-                    <input 
-                        type="time" 
-                        value={horaInicio}
-                        disabled={isExisting}
-                        onChange={(e) => calculateHour(e.target.value)}/>
-                    <label className="sr-only" htmlFor={`inicio-${horario.id || horario.tempId}`}>
-                        Hora de início
-                    </label>
-                    <input 
-                        type="time" 
-                        disabled={true}
-                        value={horaFim}/>
                 </div>
+
                 <div className="arrow-options">
 
-                    <button 
-                        type="button" 
+
+
+                    {/* DROPDOWN */}
+                    <button
+                        type="button"
                         id="abrir-options-agendamento"
                         onClick={() => setDropdownOpen(!isDropdownOpen)}
-                        className={isDropdownOpen ? "" : "active" }
-                        aria-expanded={!isDropdownOpen}>
-
+                        className={isDropdownOpen ? "" : "active"}
+                        aria-expanded={!isDropdownOpen}
+                    >
                         <HiChevronDown />
-                        <span className="sr-only">Abrir opções do horário</span>
                     </button>
 
                 </div>
-            </div>
-            
-            <div 
-                className="container-confirmar" 
-                id="options-agendamento" 
-                style={{ display: isDropdownOpen ? 'none' : 'flex' }}
-                aria-hidden={isDropdownOpen}>
 
-                <button 
-                  className="cancelar-agendamento button-cancelar" 
-                  onClick={handleCancelarOuDeletar}
-                  disabled={loading}>
-                   {!isExisting ? "Cancelar" : (loading ? "Deletando..." : "Deletar")}
+            </div>
+
+
+            {/* LISTA DE HORÁRIOS */}
+            <div
+                className="container-confirmar"
+                style={{
+                    display: isDropdownOpen ? "none" : "flex"
+                }}
+            >
+                <div className="container-add-horarios">
+                    {/* BOTÃO + */}
+
+                    <button
+                        type="button"
+                        className="btn-add-horario"
+                        onClick={adicionarHorario}
+                    >
+                        <HiPlus />
+                    </button>
+
+                    <div className="lista-horarios">
+
+                        {horarios.map((item, index) => (
+
+                            <div
+                                className="linha-horario"
+                                key={index}
+                            >
+
+                                <input
+                                    type="time"
+                                    value={item.horaInicio}
+                                    disabled={isExisting}
+                                    onChange={(e) =>
+                                        calculateHour(e.target.value, index)
+                                    }
+                                />
+
+                                <input
+                                    type="time"
+                                    value={item.horaFim}
+                                    disabled
+                                />
+
+                                {/* REMOVER LINHA */}
+                                
+                                    <button
+                                        className="icon-attention"
+                                        onClick={() => removerHorario(index)}
+                                    >
+                                        <HiOutlineTrash />
+                                    </button>
+                                
+
+                            </div>
+                        ))}
+
+                    </div>
+                </div>
+            </div>
+
+            {/* BOTÕES */}
+            <div
+                className="container-confirmar"
+                style={{
+                    display: isDropdownOpen ? "none" : "flex"
+                }}
+            >
+
+                <button
+                    className="cancelar-agendamento button-cancelar"
+                    onClick={handleCancelarOuDeletar}
+                    disabled={loading}
+                >
+                    {!isExisting
+                        ? (loading ? "Deletando..." : "Deletar")
+                        : (loading ? "Deletando..." : "Deletar")}
                 </button>
 
                 {!isExisting && (
-                  <button 
-                    className="confirmar-agendamento button-confirm" 
-                    onClick={handleConfirmar}
-                    disabled={loading}>
-                     {loading ? "Salvando..." : "Confirmar"}
-                  </button>
+                    <button
+                        className="confirmar-agendamento button-confirm"
+                        onClick={handleConfirmar}
+                        disabled={loading}
+                    >
+                        {loading ? "Salvando..." : "Confirmar"}
+                    </button>
                 )}
+
             </div>
+
         </div>
-    </>
-  )
+    );
 }

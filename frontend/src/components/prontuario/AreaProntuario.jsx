@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { HiOutlineClipboardList } from "react-icons/hi";
 import CardProntuario from "../cards/CardProntuario";
+import React from "react";
 
 export default function AreaProntuario({
     formatarData,
@@ -10,9 +11,11 @@ export default function AreaProntuario({
 }) {
     const [openCard, setOpenCard] = useState(null);
     const [loadingTransition, setLoadingTransition] = useState(false);
+    const [abaAtiva, setAbaAtiva] = useState("prontuario");
 
     useEffect(() => {
         if (!prontuarioAtual) return;
+
         setLoadingTransition(true);
 
         const timer = setTimeout(() => {
@@ -25,7 +28,7 @@ export default function AreaProntuario({
     if (!prontuarioAtual) {
         return (
             <div className="paciente-prontuario-view">
-                <HiOutlineClipboardList size="2.2rem"/>
+                <HiOutlineClipboardList size="2.2rem" />
                 <p>Selecione um prontuário</p>
             </div>
         );
@@ -34,7 +37,7 @@ export default function AreaProntuario({
     if (loadingTransition) {
         return (
             <div className="paciente-prontuario-view">
-                <HiOutlineClipboardList size="2.2rem"/>
+                <HiOutlineClipboardList size="2.2rem" />
                 <p>Carregando prontuário...</p>
             </div>
         );
@@ -44,80 +47,245 @@ export default function AreaProntuario({
         {
             id: 1,
             titulo: "Identificação do usuário/instituição",
-            descricao: "Descrição da queixa inicial, motivos da busca pelo atendimento e hipótese diagnóstica inicial, se houver.",
+            descricao:
+                "Descrição da queixa inicial, motivos da busca pelo atendimento e hipótese diagnóstica inicial, se houver.",
             informacoes: ""
         },
         {
             id: 2,
             titulo: "Avaliação da demanda e definição de objetivos",
-            descricao: "Descrição das razões que motivaram a busca pelo serviço ou assistência psicológica, juntamente a apresentação da modalidade de assistência prestada.",
+            descricao:
+                "Descrição das razões que motivaram a busca pelo serviço ou assistência psicológica, juntamente a apresentação da modalidade de assistência prestada.",
             informacoes: ""
         },
         {
             id: 3,
             titulo: "Registro de evolução e Procedimentos técnico-científicos",
-            descricao: "Descrição das atividades realizadas, bem como intervenções, técnicas e abordagens teóricas utilizadas.",
+            descricao:
+                "Descrição das atividades realizadas, bem como intervenções, técnicas e abordagens teóricas utilizadas.",
             informacoes: ""
         },
         {
             id: 4,
             titulo: "Registro de encaminhamento ou encerramento",
-            descricao: "Registro sobre encaminhamentos para outros profissionais ou o motivo do encerramento do caso.",
+            descricao:
+                "Registro sobre encaminhamentos para outros profissionais ou o motivo do encerramento do caso.",
             informacoes: ""
         }
-    ]
+    ];
 
     return (
         <>
-        <div className="paciente-prontuario" id="pacienteProntuarioInfo">
-            {}
-            <h3>Prontuario: {formatarData(prontuarioAtual.data, "longa")}</h3>
-            <p>Informações requeridas pelo CFP</p>
-            <div className="area-prontuario">
-                <div>
-                    {sessoesProntuario.map((sessao, index) => (
-                        <CardProntuario
-                            key={index}
-                            sessoesProntuario={sessao}
-                            openCard={openCard}
-                            setOpenCard={setOpenCard}
-                            index={index}
-                            prontuarioAtual={
-                                prontuarioAtual.prontuario.find(
-                                    (p) => p.sessaoId === sessao.id
-                                ) || null
-                            }
-                            updateSessao={(val) => {
-                                setProntuarioAtual(prev => ({
-                                    ...prev,
-                                    prontuario: prev.prontuario.map(p => 
-                                        p.sessaoId === sessao.id ? { ...p, informacoes: val } : p
-                                    )
-                                }));
-                            }}
-                        />
-                    ))}
-                </div>
-                <p className="info-add">Informações adicionais</p>
-                <div className="card-prontuario-notes">
-                    <textarea 
-                        value={prontuarioAtual.informacoesAdicionais || ""}
-                        onChange={(e) => setProntuarioAtual(prev => ({ ...prev, informacoesAdicionais: e.target.value }))}
-                    ></textarea>
-                </div>
+            {/* NAVBAR ABAS */}
+            <div className="navbar-pruntuario-diario">
+                <button
+                    className={abaAtiva === "prontuario" ? "active" : "desactive"}
+                    onClick={() => setAbaAtiva("prontuario")}
+                >
+                    Prontuário
+                </button>
+
+                <button
+                    className={abaAtiva === "diario" ? "active" : "desactive"}
+                    onClick={() => setAbaAtiva("diario")}
+                >
+                    Diário
+                </button>
             </div>
-            <a href="https://site.cfp.org.br/wp-content/uploads/2025/11/Manual_Orientativo.pdf" target="_blank">
-                <p className="link-manual">Manual Orientativo</p>
-            </a>
-            <div className="actions-prontuario">
-                <div>
-                    <button 
-                        className="button-progress-confirm">Registrar assinatura eletrônica</button>
-                    <button className="button-progress-confirm">Baixar documento</button>
+
+            {/* PRONTUÁRIO */}
+            {abaAtiva === "prontuario" && (
+                <div className="paciente-prontuario" id="pacienteProntuarioInfo">
+                    <h3>
+                        Prontuario:{" "}
+                        {formatarData(prontuarioAtual.data, "longa")}
+                    </h3>
+
+                    <p>Informações requeridas pelo CFP</p>
+
+                    <div className="area-prontuario">
+                        <div>
+                            {sessoesProntuario.map((sessao, index) => (
+                                <CardProntuario
+                                    key={index}
+                                    sessoesProntuario={sessao}
+                                    openCard={openCard}
+                                    setOpenCard={setOpenCard}
+                                    index={index}
+                                    prontuarioAtual={
+                                        prontuarioAtual.prontuario.find(
+                                            (p) => p.sessaoId === sessao.id
+                                        ) || null
+                                    }
+                                    updateSessao={(val) => {
+                                        setProntuarioAtual((prev) => ({
+                                            ...prev,
+                                            prontuario: prev.prontuario.map((p) =>
+                                                p.sessaoId === sessao.id
+                                                    ? { ...p, informacoes: val }
+                                                    : p
+                                            )
+                                        }));
+                                    }}
+                                />
+                            ))}
+                        </div>
+
+                        <p className="info-add">Informações adicionais</p>
+
+                        <div className="card-prontuario-notes">
+                            <textarea
+                                value={
+                                    prontuarioAtual.informacoesAdicionais ||
+                                    ""
+                                }
+                                onChange={(e) =>
+                                    setProntuarioAtual((prev) => ({
+                                        ...prev,
+                                        informacoesAdicionais:
+                                            e.target.value
+                                    }))
+                                }
+                            />
+                        </div>
+                    </div>
+
+                    <a
+                        href="https://site.cfp.org.br/wp-content/uploads/2025/11/Manual_Orientativo.pdf"
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        <p className="link-manual">
+                            Manual Orientativo
+                        </p>
+                    </a>
+
+                    <div className="actions-prontuario">
+                        <div>
+                            <button className="button-progress-confirm">
+                                Registrar assinatura eletrônica
+                            </button>
+
+                            <button className="button-progress-confirm">
+                                Baixar documento
+                            </button>
+                        </div>
+
+                        <button
+                            className="button-confirm"
+                            onClick={salvarProntuario}
+                        >
+                            Salvar Sessão
+                        </button>
+                    </div>
                 </div>
-                <button className="button-confirm" onClick={salvarProntuario}>Salvar Sessão</button>
-            </div>
-        </div>
+            )}
+
+            {/* DIÁRIO */}
+            {abaAtiva === "diario" && (
+                <div className="container">
+                    {/* TOP SECTION */}
+                    <div className="top-grid">
+                        {/* GERENCIAMENTO DIÁRIO */}
+                        <div className="card">
+                            <h3>Gerenciamento diário</h3>
+
+                            <div className="mood-bar">
+                                <div className="segment green">16%</div>
+                                <div className="segment yellow">25%</div>
+                                <div className="segment orange">40%</div>
+                                <div className="segment red">19%</div>
+                            </div>
+
+                            <div className="emoji-grid">
+                                <span>😄</span>
+                                <span>😐</span>
+                                <span>🙂</span>
+                                <span>😡</span>
+                                <span>😶</span>
+                            </div>
+                        </div>
+
+                        {/* POR HUMOR */}
+                        <div className="card">
+                            <h3>Por humor</h3>
+
+                            <select className="select">
+                                <option>Neutro</option>
+                                <option>Feliz</option>
+                                <option>Triste</option>
+                            </select>
+
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th>Ações</th>
+                                        <th>Frequência</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>🔗 Trabalho</td>
+                                        <td>20x</td>
+                                    </tr>
+                                    <tr>
+                                        <td>🎵 Música</td>
+                                        <td>15x</td>
+                                    </tr>
+                                    <tr>
+                                        <td>🧹 Faxina</td>
+                                        <td>10x</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    {/* BOTTOM SECTION */}
+                    <div className="bottom-grid">
+                        {/* DIÁRIO MAIS RECENTES */}
+                        <div className="card">
+                            <h3>Diário mais recentes</h3>
+
+                            <div className="note">
+                                <span>🙂</span>
+                                <p>
+                                    Indica um estado de humor positivo e estável, demonstrando bem-estar...
+                                </p>
+                            </div>
+
+                            <h4>Atividades recentes:</h4>
+                            <div className="tags">
+                                <span>🛒 Compra</span>
+                                <span>🍽️ Boa refeição</span>
+                                <span>🛏️ Descanso</span>
+                            </div>
+                        </div>
+
+                        {/* MELHOR SEQUÊNCIA */}
+                        <div className="card">
+                            <h3>Melhor sequência de dias</h3>
+
+                            <div className="streak">
+                                <span>🙂</span>
+                                <div>
+                                    <strong>3 dias</strong>
+                                    <p>1 de Abril - 3 de Abril</p>
+                                </div>
+                            </div>
+
+                            <h4>Atividades durante a sequência de dias</h4>
+                            <div className="tags">
+                                <span>🛒 Compra</span>
+                                <span>🛏️ Descanso</span>
+                                <span>📖 Leitura</span>
+                                <span>🎵 Música</span>
+                                <span>🍽️ Boa refeição</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
-    )
+    );
 }

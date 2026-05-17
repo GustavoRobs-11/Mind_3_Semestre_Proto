@@ -2,8 +2,8 @@ import { useAuth } from "../context/AuthContext";
 import { useParams, Navigate } from "react-router-dom";
 
 // importa as sections específicas
-import SectionPsicologo from "../components/perfilpage/SectionPsicologo";
-import SectionPaciente from "../components/perfilpage/SectionPaciente";
+import SectionPsicologo from "../components/perfilpage/psicologos/SectionPsicologo";
+import SectionPaciente from "../components/perfilpage/pacientes/SectionPaciente";
 import { buscarPorId as buscarPaciente } from "../services/pacienteService";
 import { buscarPorId as buscarPsicologo } from "../services/psicologoService";
 import { useState, useEffect } from "react";

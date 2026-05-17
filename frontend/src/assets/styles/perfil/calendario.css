@@ -1,245 +1,334 @@
 .container-calendario {
-  background-color: var(--secondary-cream-700);
-  border-radius: var(--border-radius-md);
-  display: flex;
-  flex-direction: column;
   width: 100%;
-  overflow: hidden;
-}
-
-.container-calendario h1 {
-  background-color: var(--tertiary-light-green-500);
-  width: 100%;
-  padding: var(--spacing-xs);
-  border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
-  text-align: center;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--black-950);
-}
-
-.wrapper-content-calendar {
-  padding: var(--spacing-xs) 0px ;
-  background-color: white;
-  margin: var(--spacing-xs);
-  border-radius: var(--border-radius-md);
+  background: var(--white-400);
+  border-radius: 20px;
+  padding: 40px;
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: 40px;
+  overflow-x: auto;
+  align-items: flex-start;
 }
 
-.header-calendario {
+/* =========================
+   ÁREA PRINCIPAL
+========================= */
+
+.calendar-content {
+  flex: 1;
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: var(--spacing-xs);
-  margin-bottom: 20px;
+  justify-content: center;
+  gap: 40px;
 }
 
-.header-calendario h2 {
-  font-size: 1.4rem;
+/* =========================
+   TOPO
+========================= */
+
+.calendar-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 35px;
+}
+
+.calendar-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.calendar-month {
+  font-size: 2.3rem;
   font-weight: 600;
+  color: var(--black-700);
   text-transform: capitalize;
-  text-align: center;
-  margin: 0;
 }
 
-.button-seta-calendario {
-  background: none;
+.month-arrow {
   border: none;
+  background: transparent;
+  font-size: 2.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.month-arrow:hover {
+  transform: scale(1.08);
+}
+
+/* =========================
+   SETAS LATERAIS
+========================= */
+
+.side-arrow {
+  border: none;
+  background: transparent;
+  font-size: 4rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--black-950);
-  padding: 0;
-  transition: all 0.2s ease;
+  transition: 0.2s;
+  margin-top: -380px;
 }
 
-.header-calendario .button-seta-calendario {
-  font-size: 1.2rem;
+.side-arrow:hover {
+  transform: scale(1.1);
 }
 
-.seta-semana {
-  font-size: 1.5rem;
-  width: 35px;
-  height: 40px;
+/* =========================
+   GRID
+========================= */
+
+.calendar-grid-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
 }
 
-.button-seta-calendario:hover {
-  color: var(--primary-orange-700);
-}
-
-/* Unified Grid Logic ======================== */
-
-.calendar-unified-grid {
+.calendar-header-row {
   display: grid;
-  grid-template-columns:
-    30px
-    repeat(7, minmax(50px, 1fr))
-    30px;
-  gap: var(--spacing-xs);
-  width: 100%;
-  align-items: center;
+  grid-template-columns: repeat(7, 110px);
+  gap: 18px;
 }
 
-.grid-spacer {
-  /* Apenas para ocupar as colunas das setas nas linhas de labels e slots */
-  width: 35px;
+.calendar-body {
+  display: grid;
+  grid-template-columns: repeat(7, 110px);
+  gap: 18px;
 }
 
-.dia-semana {
-  text-align: center;
-  font-weight: 700;
-  color: var(--black-950);
-  font-size: 1.1rem;
-  padding: 10px 0;
-}
-
-.dia-numero-container {
+.calendar-column {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 600;
-  font-size: 1.2rem;
-  height: 40px;
+  flex-direction: column;
+  gap: 18px;
 }
 
-.dia-hoje {
-  background-color: var(--primary-orange-700);
-  color: white;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+/* =========================
+   HEADER DIA
+========================= */
 
-.coluna-dia {
+.calendar-header-day {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  width: 100%;
-  align-self: start;
-  padding-bottom: 20px;
+  gap: 10px;
 }
 
-/* Slots de Horário ========================== */
+.day-name {
+  font-size: 1.7rem;
+  font-weight: 500;
+  color: var(--black-700);
+}
+
+.day-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--black-700);
+}
+
+.day-number.today {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--tertiary-light-green-700);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =========================
+   SLOT
+========================= */
 
 .slot-horario {
-  width: 100%;
-  padding: 15px 5px 10px 5px;
-  min-height: 70px;
-  border-radius: var(--border-radius-md);
-  border: 1px solid var(--white-700);
-  text-align: center;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background-color: white;
+  width: 110px;
+  height: 78px;
+  border-radius: 14px;
+  border: 2px solid #cfcfcf;
+  background: white;
+
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
   align-items: center;
-  gap: 5px;
+  justify-content: center;
+
+  font-size: 1.5rem;
+  font-weight: 500;
+
+  position: relative;
+
+  transition: 0.2s;
+  cursor: pointer;
 }
 
-.slot-horario.livre:hover {
-  background-color: var(--secondary-cream-700);
-  border-color: var(--primary-orange-700);
+.slot-horario:hover {
+  transform: translateY(-2px);
+}
+
+.slot-horario.vazio,
+.slot-horario.livre {
+  background: white;
 }
 
 .slot-horario.pendente {
-  background-color: var(--orange-default-100);
-  color: var(--black-950);
+  background: #eda061;
+  border-color: #e0924f;
 }
 
 .slot-horario.confirmado {
-  background-color: var(--green-light-default-100);
-  color: var(--black-950);
+  background: #9dd181;
+  border-color: #7cbc5f;
 }
 
 .slot-horario.cancelado,
 .slot-horario.recusado {
-  background-color: var(--red-default-100);
-  color: white;
+  background: #db6444;
+  border-color: #c74f30;
+  color: black;
 }
 
 .slot-horario.realizado {
-  background: var(--accent-dark-green-700);
-  color: var(--white-200);
-  border: 1px solid var(--accent-dark-green-800);
+  background: #2f6d4f;
+  border-color: #25563d;
+  color: white;
 }
 
-/* Legenda ================================= */
+/* =========================
+   ONLINE DOT
+========================= */
 
-.container-legenda-calendario {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 20px 30px;
-  align-items: flex-start;
-}
-
-.block-legenda {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.block-legenda p {
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: var(--black-950);
-}
-
-.block-legenda span {
-  width: 25px;
-  height: 25px;
-  border-radius: var(--border-radius-sm);
-}
-
-.consulta-marcada { background-color: var(--green-light-default-100); }
-.consulta-nao-confirmada { background-color: var(--orange-default-100); }
-.consulta-cancelada { background-color: var(--red-default-100); }
-
-/* Animação Dot */
 .dot-animated {
-  display: block;
-  width: 6px;
-  height: 6px;
-  background-color: var(--tertiary-light-green-800);
+  position: absolute;
+  bottom: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  margin: 4px auto 0;
-  position: relative;
+  background: #2f6d4f;
 }
 
 .dot-animated::after {
   content: "";
   position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background-color: inherit;
-  border-radius: inherit;
+  inset: 0;
+  border-radius: 50%;
+  background: inherit;
   animation: ping 1.5s infinite;
 }
 
 @keyframes ping {
-  75%, 100% { transform: scale(2.5); opacity: 0; }
+  75%,
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
 }
 
+/* =========================
+   LEGENDA
+========================= */
 
-/* Responsividade */
-@media (max-width:950px){
-  .container-calendario,
-  .wrapper-content-calendar{
-    max-width: 100%;
+.calendar-legend {
+  background: #e7e7e7;
+  border-radius: 20px;
+  padding: 35px 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  flex-shrink: 0;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.legend-item p {
+  font-size: 1rem;
+  line-height: 1.3;
+  color: #111;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.legend-color.nao-confirmada {
+  background: #eda061;
+}
+
+.legend-color.confirmada {
+  background: #9dd181;
+}
+
+.legend-color.cancelada {
+  background: #db6444;
+}
+
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media (max-width: 1200px) {
+
+  .container-calendario {
+    flex-direction: column;
   }
 
-  .calendar-unified-grid{
-    grid-template-columns: 35px repeat(7, 1fr) 35px;
+  .calendar-legend {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+}
+
+@media (max-width: 1000px) {
+
+  .calendar-content {
+    overflow-x: auto;
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  .calendar-center {
+    min-width: 980px;
+  }
+}
+
+@media (max-width: 700px) {
+
+  .container-calendario {
+    padding: 20px;
+  }
+
+  .calendar-month {
+    font-size: 1.8rem;
+  }
+
+  .slot-horario {
+    width: 90px;
+    height: 65px;
+    font-size: 1.2rem;
+  }
+
+  .calendar-header-row,
+  .calendar-body {
+    grid-template-columns: repeat(7, 90px);
+  }
+
+  .day-name {
+    font-size: 1.2rem;
+  }
+
+  .day-number {
+    font-size: 1.5rem;
   }
 }

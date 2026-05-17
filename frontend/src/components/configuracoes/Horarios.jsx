@@ -75,10 +75,10 @@ export default function Horarios() {
 
             <button 
               type="button"
-              className="btn-adicionar button-proceed"
+              className=" button-proceed btn-add-dia"
               onClick={() => newCardHorario()}
               aria-describedby="descricao-horarios">
-              + Adicionar Horário</button>
+              + Adicionar dia</button>
 
             {loading ? (
                 <p>Carregando horários...</p>

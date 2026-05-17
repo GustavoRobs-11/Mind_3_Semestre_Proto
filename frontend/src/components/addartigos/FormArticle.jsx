@@ -77,7 +77,7 @@ export default function FormArticle({
                 <span id="add-referencias-btn">Compartilhe as referencias necessárias para o acesso da veracidade das informações passadas durante o artigo</span>
                 <button
                   type="button"
-                  className="btn-adicionar button-proceed btn-add-references"
+                  className="button-proceed btn-add-artigo"
                   aria-describedby="add-referencias-btn"
                   onClick={() => newCardReference()}>
                   + Adicionar referências</button>

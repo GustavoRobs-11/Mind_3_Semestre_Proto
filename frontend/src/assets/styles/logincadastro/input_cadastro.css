@@ -47,7 +47,11 @@
     font-size: 0.9rem;
 }
 
-.checkbox { display: none; }
+.checkbox {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
 
 .container-termos label {
     display: flex;

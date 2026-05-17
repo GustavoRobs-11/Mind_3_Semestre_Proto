@@ -151,6 +151,9 @@
 .status-agendamento.cancelado{
     background-color: var(--accent-mid-orange-600);
 }
+.status-agendamento.recusado{
+    background-color: var(--accent-mid-orange-600);
+}
 .status-agendamento.realizado{
     background-color: var(--accent-dark-green-700);
     color: var(--white-200);

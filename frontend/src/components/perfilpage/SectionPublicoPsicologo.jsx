@@ -5,7 +5,7 @@ import { agendar } from "../../services/agendaService.js";
 import { toast } from "react-toastify";
 import InfoPublicoPsicologo from "./InfoPublicoPsicologo.jsx";
 import Calendario from "./Calendario.jsx";
-import SobrePsicologo from "./SobrePsicologo.jsx";
+import SobrePsicologo from "./psicologos/SobrePsicologo.jsx";
 import VerPsi from "../popups/Verpsi.jsx";
 import SkipNavigation from "../SkipNavigation.jsx";
 

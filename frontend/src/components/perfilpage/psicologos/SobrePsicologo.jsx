@@ -1,4 +1,4 @@
-import '../../assets/styles/perfil/sobre.css';
+import '../../../assets/styles/perfil/sobre.css';
 
 export default function SobrePsicologo({ profileData }) {
     return (
@@ -19,7 +19,7 @@ export default function SobrePsicologo({ profileData }) {
             <div className="container-horarios-psi">
                 <h4>Horários de Atendimento</h4>
 
-                {profileData.horarios && profileData.horarios.forEach((horario, index) => (
+                {profileData?.horarios?.map((horario, index) => (
                     <div className="container-horario-atendimento-psi" key={index}>
                         <p>{horario.diaDaSemana}</p>
                         <p>{horario.horaInicio}</p>
@@ -27,12 +27,13 @@ export default function SobrePsicologo({ profileData }) {
                     </div>
                 ))}
 
-                <div className="container-horario-atendimento-psi">
-                    <p>Segunda-feira</p>
-                    <p>09:00</p>
-                    <p>09:40</p>
-                </div>
-                
+                {!profileData?.horarios?.length && (
+                    <div className="container-horario-atendimento-psi">
+                        <p>Segunda-feira</p>
+                        <p>09:00</p>
+                        <p>09:40</p>
+                    </div>
+                )}
             </div>
         </div>
 

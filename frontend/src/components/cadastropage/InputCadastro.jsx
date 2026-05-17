@@ -33,7 +33,6 @@ export default function InputCadastro() {
         telefone: "",
         genero: "",
         crp: "",
-        especialidade: "",
         ra: "",
         token: "",
         senha: "",
@@ -117,7 +116,6 @@ export default function InputCadastro() {
 
         if (tipoUsuario === "psicologo") {
             if (!form.crp) newErrors.crp = "CRP obrigatório";
-            if (!form.especialidade) newErrors.especialidade = "Especialidade obrigatória";
         }
 
         if (tipoUsuario === "voluntario") {
@@ -216,7 +214,6 @@ export default function InputCadastro() {
 
         if (tipoUsuario === "psicologo") {
             userData.crp = form.crp;
-            userData.especialidade = form.especialidade;
         } else if (tipoUsuario === "voluntario") {
             userData.ra = form.ra;
             userData.token = form.token;
@@ -262,7 +259,7 @@ export default function InputCadastro() {
                     <Link to="/login=0" className="icon-btn icon-return-login">
                         <HiChevronLeft />
                     </Link>
-                    
+
                 </div>
 
                 <h1 id="signinPageForm">Cadastro</h1>
@@ -291,7 +288,6 @@ export default function InputCadastro() {
                         {tipoUsuario === "psicologo" && (
                             <>
                                 <InputField label="CRP" name="crp" value={form.crp} onChange={handleChange} placeholder="06/12345" error={errors.crp} required />
-                                <InputField label="Especialidade" name="especialidade" value={form.especialidade} onChange={handleChange} placeholder="Terapia Cognitivo-Comportamental" error={errors.especialidade} required />
                             </>
                         )}
 
@@ -309,8 +305,18 @@ export default function InputCadastro() {
 
                     <div className="container-cadastrar-entrar">
                         <div className="container-termos">
-                            <label htmlFor="Checkbox">
-                                <Link to="/termos-e-condicoes" className="link-cadastro">
+                            <input
+                                type="checkbox"
+                                id="checkbox"
+                                className="checkbox"
+                            />
+
+                            <label htmlFor="checkbox">
+                                Aceito os{" "}
+                                <Link
+                                    to="/termos-e-condicoes"
+                                    className="link-cadastro"
+                                >
                                     Termos e Condições
                                 </Link>
                             </label>

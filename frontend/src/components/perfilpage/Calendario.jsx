@@ -1,374 +1,727 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { toast } from "react-toastify";
+import {
+  HiChevronLeft,
+  HiChevronRight
+} from "react-icons/hi";
+
 import "../../assets/styles/perfil/calendario.css";
-import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
+
 import { useAuth } from "../../context/AuthContext";
+
 import AgendaHistorico from "../popups/AgendaHistorico";
 import AgendaHistoricoPsi from "../popups/AgendaHistoricoPsi";
-import { listarDoPaciente, listarDoPsicologo, remarcarAgendamento, cancelarAgendamento } from "../../services/agendaService";
+
+import {
+  listarDoPaciente,
+  listarDoPsicologo,
+  remarcarAgendamento,
+  cancelarAgendamento
+} from "../../services/agendaService";
+
 import { listarTodosDoPsicologo } from "../../services/horarioService";
+
+/* ========================================
+   CONSTANTES
+======================================== */
+
+const DIAS_SEMANA = [
+  "Dom",
+  "Seg",
+  "Ter",
+  "Qua",
+  "Qui",
+  "Sex",
+  "Sab"
+];
+
+const DIAS_MAP = [
+  "domingo",
+  "segunda",
+  "terca",
+  "quarta",
+  "quinta",
+  "sexta",
+  "sabado"
+];
+
+const STATUS_BLOQUEANTES = [
+  "pendente",
+  "confirmado",
+  "realizado"
+];
+
+const HORARIOS_INICIAIS = {
+  domingo: [],
+  segunda: [],
+  terca: [],
+  quarta: [],
+  quinta: [],
+  sexta: [],
+  sabado: []
+};
+
+const MAPA_DIAS = {
+  Domingo: "domingo",
+  Segunda: "segunda",
+  Terca: "terca",
+  Quarta: "quarta",
+  Quinta: "quinta",
+  Sexta: "sexta",
+  Sabado: "sabado"
+};
+
+/* ========================================
+   HELPERS
+======================================== */
 
 function gerarSemana(data) {
   const start = new Date(data);
+
   const diaSemana = start.getDay();
+
   start.setDate(start.getDate() - diaSemana);
 
-  const semana = [];
-  for (let i = 0; i < 7; i++) {
+  return Array.from({ length: 7 }, (_, i) => {
     const dia = new Date(start);
+
     dia.setDate(start.getDate() + i);
-    semana.push(dia);
-  }
-  return semana;
+
+    return dia;
+  });
 }
+
+function parseDateBR(dateString) {
+  const [ano, mes, dia] =
+    dateString.split("-");
+
+  return new Date(ano, mes - 1, dia);
+}
+
+function formatarStatus(status) {
+  return (
+    status.charAt(0).toUpperCase() +
+    status.slice(1).toLowerCase()
+  );
+}
+
+/* ========================================
+   COMPONENTE
+======================================== */
 
 export default function Calendario() {
   const { user } = useAuth();
 
-  const [openAgenda, setOpenAgenda] = useState(false);
-  const [agendaSelecionada, setAgendaSelecionada] = useState(null);
-  const [daySelected, setDaySelected] = useState(null);
+  const [dataAtual, setDataAtual] =
+    useState(new Date());
 
-  const [dataAtual, setDataAtual] = useState(new Date());
-  const diasSemanaAtual = gerarSemana(dataAtual);
+  const [agendamentos, setAgendamentos] =
+    useState([]);
+
+  const [horariosPsi, setHorariosPsi] =
+    useState(HORARIOS_INICIAIS);
+
+  const [openAgenda, setOpenAgenda] =
+    useState(false);
+
+  const [agendaSelecionada,
+    setAgendaSelecionada] =
+    useState(null);
+
+  const [daySelected, setDaySelected] =
+    useState(null);
+
   const hoje = new Date();
 
-  const diasSemana = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sab"];
-  const diasMap = ["domingo", "segunda", "terca", "quarta", "quinta", "sexta", "sabado"];
+  const diasSemanaAtual = useMemo(
+    () => gerarSemana(dataAtual),
+    [dataAtual]
+  );
 
-  const [agendamentos, setAgendamentos] = useState([]);
-  const [horariosPsi, setHorariosPsi] = useState({});
-
-  async function carregarDados() {
-    try {
-      if (!user || !user.id) return;
-      
-      if (user.tipo === "paciente") {
-        const dadosAgendas = await listarDoPaciente(user.id);
-        const mapeados = dadosAgendas.map(a => ({
-          id_agendamento: a.id,
-          horaAgendada: a.horaInicio,
-          diaAgendado: a.data,
-          status: a.status.charAt(0).toUpperCase() + a.status.slice(1).toLowerCase(),
-          paciente: { id: a.pacienteId, nome: a.pacienteNome },
-          psicologo: { id: a.psicologoId, nome: a.psicologoNome }
-        }));
-        setAgendamentos(mapeados);
-      } else if (user.tipo === "psicologo") {
-        const [dadosAgendas, dadosHorarios] = await Promise.all([
-          listarDoPsicologo(user.id),
-          listarTodosDoPsicologo(user.id)
-        ]);
-
-        const mapeados = dadosAgendas.map(a => ({
-          id_agendamento: a.id,
-          horaAgendada: a.horaInicio,
-          diaAgendado: a.data,
-          status: a.status.charAt(0).toUpperCase() + a.status.slice(1).toLowerCase(),
-          paciente: { id: a.pacienteId, nome: a.pacienteNome },
-          psicologo: { id: a.psicologoId, nome: a.psicologoNome }
-        }));
-        setAgendamentos(mapeados);
-
-        const mapaDias = {
-          "Domingo": "domingo", "Segunda": "segunda", "Terca": "terca",
-          "Quarta": "quarta", "Quinta": "quinta", "Sexta": "sexta", "Sabado": "sabado"
-        };
-        const novosHorarios = { domingo: [], segunda: [], terca: [], quarta: [], quinta: [], sexta: [], sabado: [] };
-        dadosHorarios.forEach(h => {
-          const diaKey = mapaDias[h.diaDaSemana];
-          if (novosHorarios[diaKey]) {
-            novosHorarios[diaKey].push(h.horaInicio);
-          }
-        });
-        for (const dia in novosHorarios) {
-          novosHorarios[dia].sort();
-        }
-        setHorariosPsi(novosHorarios);
-      }
-    } catch (error) {
-      console.error("Erro ao carregar dados do calendário:", error);
-    }
-  }
+  /* ========================================
+     LOAD DATA
+  ======================================== */
 
   useEffect(() => {
     carregarDados();
 
-    // Polling automático a cada 3 segundos para sincronizar com o backend (tempo real)
-    const interval = setInterval(() => {
-      carregarDados();
-    }, 3000);
+    const interval = setInterval(
+      carregarDados,
+      3000
+    );
 
     return () => clearInterval(interval);
   }, [user, dataAtual]);
 
-  function parseDateBR(dateString) {
-    const [ano, mes, dia] = dateString.split("-");
-    return new Date(ano, mes - 1, dia);
-  }
+  async function carregarDados() {
+    try {
+      if (!user?.id) return;
 
-  function getAgendamento(dia, hora) {
-    // Apenas consideramos agendamentos que estão bloqueando o horário (pendente, confirmado ou realizado)
-    const STATUS_BLOQUEANTES = ["pendente", "confirmado", "realizado"];
-    
-    const matches = agendamentos.filter(a => {
-      const data = parseDateBR(a.diaAgendado);
-      return (
-        data.toDateString() === dia.toDateString() &&
-        a.horaAgendada === hora &&
-        a.psicologo?.id === user.id
+      if (user.tipo === "paciente") {
+        carregarAgendasPaciente();
+      }
+
+      if (user.tipo === "psicologo") {
+        carregarAgendasPsicologo();
+      }
+    } catch (error) {
+      console.error(
+        "Erro ao carregar calendário:",
+        error
       );
-    });
-
-    // Retorna o agendamento apenas se ele estiver em um estado que "ocupa" o slot
-    return matches.find(a => STATUS_BLOQUEANTES.includes(a.status.toLowerCase())) || null;
+    }
   }
 
-  function semanaAnterior() {
-    const nova = new Date(dataAtual);
-    nova.setDate(nova.getDate() - 7);
-    setDataAtual(nova);
+  async function carregarAgendasPaciente() {
+    const dados =
+      await listarDoPaciente(user.id);
+
+    setAgendamentos(
+      mapearAgendamentos(dados)
+    );
   }
 
-  function semanaProxima() {
-    const nova = new Date(dataAtual);
-    nova.setDate(nova.getDate() + 7);
-    setDataAtual(nova);
+  async function carregarAgendasPsicologo() {
+    const [dadosAgendas, dadosHorarios] =
+      await Promise.all([
+        listarDoPsicologo(user.id),
+        listarTodosDoPsicologo(user.id)
+      ]);
+
+    setAgendamentos(
+      mapearAgendamentos(dadosAgendas)
+    );
+
+    setHorariosPsi(
+      mapearHorarios(dadosHorarios)
+    );
   }
+
+  function mapearAgendamentos(dados) {
+    return dados.map((a) => ({
+      id_agendamento: a.id,
+
+      horaAgendada: a.horaInicio,
+
+      diaAgendado: a.data,
+
+      status: formatarStatus(a.status),
+
+      paciente: {
+        id: a.pacienteId,
+        nome: a.pacienteNome
+      },
+
+      psicologo: {
+        id: a.psicologoId,
+        nome: a.psicologoNome
+      }
+    }));
+  }
+
+  function mapearHorarios(dadosHorarios) {
+  const novosHorarios = {
+    ...HORARIOS_INICIAIS
+  };
+
+  dadosHorarios.forEach((h) => {
+    const diaKey = MAPA_DIAS[h.diaDaSemana];
+
+    if (!novosHorarios[diaKey]) return;
+
+    // evita duplicados
+    const jaExiste =
+      novosHorarios[diaKey].includes(
+        h.horaInicio
+      );
+
+    if (!jaExiste) {
+      novosHorarios[diaKey].push(
+        h.horaInicio
+      );
+    }
+  });
+
+  Object.keys(novosHorarios).forEach(
+    (dia) => {
+      novosHorarios[dia].sort();
+    }
+  );
+
+  return novosHorarios;
+}
+
+  /* ========================================
+     HELPERS
+  ======================================== */
+  function getAgendamento(dia, hora) {
+  const matches = agendamentos.filter((a) => {
+    const data = parseDateBR(a.diaAgendado);
+
+    return (
+      data.toDateString() ===
+        dia.toDateString() &&
+      a.horaAgendada === hora &&
+      a.psicologo?.id === user.id
+    );
+  });
+
+  // prioridade de exibição
+  const prioridadeStatus = [
+    "confirmado",
+    "pendente",
+    "realizado",
+    "cancelado",
+    "recusado"
+  ];
+
+  for (const status of prioridadeStatus) {
+    const encontrado = matches.find(
+      (a) =>
+        a.status.toLowerCase() === status
+    );
+
+    if (encontrado) {
+      return encontrado;
+    }
+  }
+
+  return null;
+}
+  
 
   function isAgora(agenda) {
     if (!agenda) return false;
-    const inicio = new Date(`${agenda.diaAgendado}T${agenda.horaAgendada}`);
-    const inicioAntecipado = new Date(inicio.getTime() - 10 * 60000);
-    const fim = new Date(inicio.getTime() + 50 * 60000);
+
+    const inicio = new Date(
+      `${agenda.diaAgendado}T${agenda.horaAgendada}`
+    );
+
+    const inicioAntecipado = new Date(
+      inicio.getTime() - 10 * 60000
+    );
+
+    const fim = new Date(
+      inicio.getTime() + 50 * 60000
+    );
+
     const agora = new Date();
-    return agora >= inicioAntecipado && agora <= fim;
+
+    return (
+      agora >= inicioAntecipado &&
+      agora <= fim
+    );
+  }
+
+  /* ========================================
+     NAVEGAÇÃO
+  ======================================== */
+
+  function alterarSemana(valor) {
+    const nova = new Date(dataAtual);
+
+    nova.setDate(
+      nova.getDate() + valor
+    );
+
+    setDataAtual(nova);
+  }
+
+  function alterarMes(valor) {
+    const nova = new Date(dataAtual);
+
+    nova.setMonth(
+      nova.getMonth() + valor
+    );
+
+    setDataAtual(nova);
+  }
+
+  /* ========================================
+     ACTIONS
+  ======================================== */
+
+  function abrirAgenda(agenda, dia) {
+    setAgendaSelecionada(agenda);
+
+    setDaySelected(dia);
+
+    setOpenAgenda(true);
   }
 
   function changeStatus(novoStatus) {
     if (!agendaSelecionada) return;
-    const atualizados = agendamentos.map(a => 
-      a.id_agendamento === agendaSelecionada.id_agendamento ? { ...a, status: novoStatus } : a
-    );
-    setAgendamentos(atualizados);
-    setAgendaSelecionada(prev => ({ ...prev, status: novoStatus }));
-  }
 
-  async function handleRemarcar(agendaAntiga, novosDados) {
-    try {
-      await remarcarAgendamento(agendaAntiga.id_agendamento, novosDados);
-      setAgendamentos(prev =>
-        prev.map(a => {
-          if (a.id_agendamento === agendaAntiga.id_agendamento){
-            return {
+    setAgendamentos((prev) =>
+      prev.map((a) =>
+        a.id_agendamento ===
+        agendaSelecionada.id_agendamento
+          ? {
               ...a,
-              diaAgendado: novosDados.data,
-              horaAgendada: novosDados.horaInicio,
-              status: "Pendente"
-            };
-          }
-          return a;
-        })
+              status: novoStatus
+            }
+          : a
+      )
+    );
+
+    setAgendaSelecionada((prev) => ({
+      ...prev,
+      status: novoStatus
+    }));
+  }
+
+  async function handleRemarcar(
+    agendaAntiga,
+    novosDados
+  ) {
+    try {
+      await remarcarAgendamento(
+        agendaAntiga.id_agendamento,
+        novosDados
       );
-      toast.success("Solicitação de remarcação enviada!");
+
+      setAgendamentos((prev) =>
+        prev.map((a) =>
+          a.id_agendamento ===
+          agendaAntiga.id_agendamento
+            ? {
+                ...a,
+                diaAgendado:
+                  novosDados.data,
+
+                horaAgendada:
+                  novosDados.horaInicio,
+
+                status: "Pendente"
+              }
+            : a
+        )
+      );
+
+      toast.success(
+        "Solicitação de remarcação enviada!"
+      );
     } catch (err) {
       console.error(err);
-      alert("Erro ao remarcar a consulta: " + err.message);
+
+      alert(err.message);
     }
   }
 
-  async function handleRemover(agendaParaRemover) {
+  async function handleRemover(agenda) {
     try {
-      await cancelarAgendamento(agendaParaRemover.id_agendamento);
-      setAgendamentos(prev =>
-        prev.filter(a => a.id_agendamento !== agendaParaRemover.id_agendamento)
+      await cancelarAgendamento(
+        agenda.id_agendamento
       );
+
+      setAgendamentos((prev) =>
+        prev.filter(
+          (a) =>
+            a.id_agendamento !==
+            agenda.id_agendamento
+        )
+      );
+
       setOpenAgenda(false);
-      toast.success("Agendamento cancelado com sucesso!");
+
+      toast.success(
+        "Agendamento cancelado!"
+      );
     } catch (err) {
       console.error(err);
-      alert("Erro ao cancelar o agendamento: " + err.message);
+
+      alert(err.message);
     }
   }
+
+  /* ========================================
+     RENDER
+  ======================================== */
+
+  function renderHorario(
+    hora,
+    dia,
+    ag
+  ) {
+    const classe = ag
+      ? ag.status.toLowerCase()
+      : "livre";
+
+    return (
+      <div
+        key={hora}
+        className={`slot-horario ${classe}`}
+        onClick={() =>
+          ag && abrirAgenda(ag, dia)
+        }
+      >
+        {hora}
+
+        {ag &&
+          ag.status.toLowerCase() ===
+            "confirmado" &&
+          isAgora(ag) && (
+            <span className="dot-animated"></span>
+          )}
+      </div>
+    );
+  }
+
+  function renderColunaDia(dia) {
+  const key = DIAS_MAP[dia.getDay()];
+
+  const horarios = [...new Set(horariosPsi[key] || [])];
+
+  // quantidade mínima de slots
+  const totalSlots = 5;
+
+  // quantos slots vazios faltam
+  const faltantes =
+    totalSlots - horarios.length;
+
+  return (
+    <div
+      key={dia.toISOString()}
+      className="calendar-column"
+    >
+
+      {/* HORÁRIOS REAIS */}
+      {horarios.map((hora) => {
+        const ag =
+          user.tipo === "psicologo"
+            ? getAgendamento(dia, hora)
+            : null;
+
+        return renderHorario(
+          hora,
+          dia,
+          ag
+        );
+      })}
+
+      {/* COMPLETA COM VAZIOS */}
+      {Array.from({
+        length:
+          faltantes > 0 ? faltantes : 0
+      }).map((_, index) => (
+        <div
+          key={`vazio-${index}`}
+          className="slot-horario vazio"
+        />
+      ))}
+
+    </div>
+  );
+}
+
+  /* ========================================
+     JSX
+  ======================================== */
 
   return (
     <>
       <div className="container-calendario">
-        <h1>Agenda</h1>
 
-        <div className="wrapper-content-calendar">
-          <div className="header-calendario">
-            <button
-              className="button-seta-calendario"
-              onClick={() => {
-                const nova = new Date(dataAtual);
-                nova.setMonth(nova.getMonth() - 1);
-                setDataAtual(nova);
-              }}
-            >
-              <HiChevronLeft />
-            </button>
-            <h2>
-              {dataAtual.toLocaleString("pt-BR", { month: "long" })}
-            </h2>
-            <button
-              className="button-seta-calendario"
-              onClick={() => {
-                const nova = new Date(dataAtual);
-                nova.setMonth(nova.getMonth() + 1);
-                setDataAtual(nova);
-              }}
-            >
-              <HiChevronRight />
-            </button>
-          </div>
+        {/* CONTEÚDO */}
+        <div className="calendar-content">
 
-          <div className="calendar-unified-grid">
-            {/* Linha 1: Labels (Colunas 2 a 8) */}
-            <div className="grid-spacer"></div>
-            {diasSemana.map(dia => (
-              <div key={dia} className="dia-semana">{dia}</div>
-            ))}
-            <div className="grid-spacer"></div>
+          {/* SETA ESQUERDA */}
+          <button
+            className="side-arrow"
+            onClick={() =>
+              alterarSemana(-7)
+            }
+          >
+            <HiChevronLeft />
+          </button>
 
-            {/* Linha 2: Setas e Números (Colunas 1, 2-8, 9) */}
-            <button className="button-seta-calendario seta-semana" onClick={semanaAnterior}>
-              <HiChevronLeft />
-            </button>
-            {diasSemanaAtual.map(dia => (
-              <div key={dia.toISOString()} className="dia-numero-container">
-                <div className={dia.toDateString() === hoje.toDateString() ? "dia-hoje" : ""}>
-                  {dia.getDate()}
-                </div>
-              </div>
-            ))}
-            <button className="button-seta-calendario seta-semana" onClick={semanaProxima}>
-              <HiChevronRight />
-            </button>
+          {/* CENTRO */}
+          <div className="calendar-center">
 
-            {/* Linha 3: Slots de Horário (Colunas 2 a 8) */}
-            <div className="grid-spacer"></div>
-            {user.tipo === "psicologo" ? (
-              diasSemanaAtual.map(dia => {
-                const key = diasMap[dia.getDay()];
-                const horarios = horariosPsi[key] || [];
-                return (
-                  <div key={dia.toISOString()} className="coluna-dia">
-                    {horarios.length > 0 &&
-                      horarios.map(hora => {
-                        const ag = getAgendamento(dia, hora);
-                        return (
-                          <div
-                            key={hora}
-                            className={`slot-horario ${ag ? ag.status.toLowerCase() : "livre"}`}
-                            onClick={() => {
-                              if (!ag) return;
-                              setDaySelected(dia);
-                              setAgendaSelecionada(ag);
-                              setOpenAgenda(true);
-                            }}
-                          >
-                            {hora}
-                            {ag && ag.status.toLowerCase() === "confirmado" && isAgora(ag) && (
-                              <span className="dot-animated"></span>
-                            )}
-                          </div>
-                        );
-                      })
-                    }
-                  </div>
-                );
-              })
-            ) : (
-              diasSemanaAtual.map(dia => {
-                const STATUS_ATIVOS = ["pendente", "confirmado", "realizado"];
-                const agsDoDia = agendamentos.filter(a => {
-                  const data = parseDateBR(a.diaAgendado);
-                  return data.toDateString() === dia.toDateString() && a.paciente?.id === user.id;
-                });
+            {/* TOPO */}
+            <div className="calendar-top">
 
-                const horasVistas = new Map();
-                agsDoDia.forEach(ag => {
-                  const hora = ag.horaAgendada;
-                  const existente = horasVistas.get(hora);
-                  const agAtivo = STATUS_ATIVOS.includes(ag.status.toLowerCase());
-                  const existenteAtivo = existente && STATUS_ATIVOS.includes(existente.status.toLowerCase());
-                  if (!existente || (!existenteAtivo && agAtivo)) {
-                    horasVistas.set(hora, ag);
+              <button
+                className="month-arrow"
+                onClick={() =>
+                  alterarMes(-1)
+                }
+              >
+                <HiChevronLeft />
+              </button>
+
+              <h2 className="calendar-month">
+                {dataAtual.toLocaleString(
+                  "pt-BR",
+                  {
+                    month: "long"
                   }
-                });
-                const agsFiltrados = Array.from(horasVistas.values());
+                )}
+              </h2>
 
-                return (
-                  <div key={dia.toISOString()} className="coluna-dia">
-                    {agsFiltrados.map(ag => (
-                      <div
-                        key={ag.id_agendamento}
-                        className={`slot-horario ${ag.status.toLowerCase()}`}
-                        onClick={() => {
-                          setDaySelected(dia);
-                          setAgendaSelecionada(ag);
-                          setOpenAgenda(true);
-                        }}
+              <button
+                className="month-arrow"
+                onClick={() =>
+                  alterarMes(1)
+                }
+              >
+                <HiChevronRight />
+              </button>
+
+            </div>
+
+            {/* GRID */}
+            <div className="calendar-grid-wrapper">
+
+              {/* HEADER */}
+              <div className="calendar-header-row">
+
+                {diasSemanaAtual.map(
+                  (dia, index) => (
+                    <div
+                      key={dia.toISOString()}
+                      className="calendar-header-day"
+                    >
+                      <span className="day-name">
+                        {
+                          DIAS_SEMANA[
+                            index
+                          ]
+                        }
+                      </span>
+
+                      <span
+                        className={`day-number ${
+                          dia.toDateString() ===
+                          hoje.toDateString()
+                            ? "today"
+                            : ""
+                        }`}
                       >
-                        {ag.horaAgendada}
-                        {ag.status.toLowerCase() === "confirmado" && isAgora(ag) && (
-                          <span className="dot-animated"></span>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                );
-              })
-            )}
-            <div className="grid-spacer"></div>
+                        {dia.getDate()}
+                      </span>
+                    </div>
+                  )
+                )}
+
+              </div>
+
+              {/* BODY */}
+              <div className="calendar-body">
+                {diasSemanaAtual.map(
+                  renderColunaDia
+                )}
+              </div>
+
+            </div>
+
           </div>
+
+          {/* SETA DIREITA */}
+          <button
+            className="side-arrow"
+            onClick={() =>
+              alterarSemana(7)
+            }
+          >
+            <HiChevronRight />
+          </button>
+
         </div>
 
-        <div className="container-legenda-calendario">
-          <div className="block-legenda">
-            <span className="consulta-marcada"></span>
-            <p>Consulta marcada</p>
+        {/* LEGENDA */}
+        <div className="calendar-legend">
+
+          <div className="legend-item">
+
+            <span className="legend-color nao-confirmada"></span>
+
+            <p>
+              Consultas não confirmadas
+            </p>
+
           </div>
-          <div className="block-legenda">
-            <span className="consulta-nao-confirmada"></span>
-            <p>Consulta não confirmada</p>
+
+          <div className="legend-item">
+
+            <span className="legend-color confirmada"></span>
+
+            <p>
+              Consultas confirmadas
+            </p>
+
           </div>
-          <div className="block-legenda">
-            <span className="consulta-cancelada"></span>
-            <p>Consulta cancelada</p>
+
+          <div className="legend-item">
+
+            <span className="legend-color cancelada"></span>
+
+            <p>
+              Consultas canceladas
+            </p>
+
           </div>
+
         </div>
+
       </div>
 
-      {agendaSelecionada && (
-        user.tipo === "psicologo" ? (
+      {/* MODAIS */}
+      {agendaSelecionada &&
+        (user.tipo ===
+        "psicologo" ? (
           <AgendaHistoricoPsi
             user={user}
             open={openAgenda}
-            close={() => setOpenAgenda(false)}
+            close={() =>
+              setOpenAgenda(false)
+            }
             dia={daySelected?.getDate()}
             mes={daySelected?.getMonth()}
-            mesNome={daySelected?.toLocaleString("pt-BR", { month: "long" })}
+            mesNome={daySelected?.toLocaleString(
+              "pt-BR",
+              {
+                month: "long"
+              }
+            )}
             ano={daySelected?.getFullYear()}
-            changeStatus={(e) => changeStatus(e)}
-            agenda={agendaSelecionada}
+            changeStatus={
+              changeStatus
+            }
+            agenda={
+              agendaSelecionada
+            }
           />
         ) : (
           <AgendaHistorico
             user={user}
             open={openAgenda}
-            close={() => setOpenAgenda(false)}
+            close={() =>
+              setOpenAgenda(false)
+            }
             dia={daySelected?.getDate()}
             mes={daySelected?.getMonth()}
-            mesNome={daySelected?.toLocaleString("pt-BR", { month: "long" })}
+            mesNome={daySelected?.toLocaleString(
+              "pt-BR",
+              {
+                month: "long"
+              }
+            )}
             ano={daySelected?.getFullYear()}
-            agenda={agendaSelecionada}
-            onRemarcar={(novosDados) => handleRemarcar(agendaSelecionada, novosDados)}
-            onDeletar={(agenda) => handleRemover(agenda)}
+            agenda={
+              agendaSelecionada
+            }
+            onRemarcar={(dados) =>
+              handleRemarcar(
+                agendaSelecionada,
+                dados
+              )
+            }
+            onDeletar={
+              handleRemover
+            }
           />
-        )
-      )}
+        ))}
     </>
   );
 }

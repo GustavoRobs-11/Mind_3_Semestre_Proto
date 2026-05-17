@@ -2,6 +2,10 @@
 @import url("../ui/buttons.css");
 @import url("../ui/icons.css");
 
+.container-sair {
+    padding: clamp(0.6rem, 1.8vw, 1rem) clamp(1rem, 3vw, 1.6rem)!important;
+    background-color: var(--secondary-cream-700);
+}
 .container-sair h3{
   font-weight: 600;
   font-size: 1.1rem;

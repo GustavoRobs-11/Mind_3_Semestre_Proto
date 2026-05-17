@@ -1,0 +1,166 @@
+@import url("../main.css");
+
+/* CONTAINER PRINCIPAL */
+.sidebar-psicologo {
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--white-400);
+    padding: 1rem 2rem 2rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    border-radius: 2rem;
+}
+
+/* CONSULTAS */
+.container-consultas {
+    width: 100%;
+    background-color: var(--white-50);
+    border-radius: 1.8rem;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER */
+.header-consultas {
+    width: 100%;
+    background-color: var(--primary-orange-700);
+    padding: 1rem 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header-consultas h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #000;
+    text-align: center;
+}
+
+/* TOPO CONSULTAS */
+.acoes-consultas {
+    width: 100%;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.confirmar-todos {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+}
+
+.confirmar-todos p {
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+/* CHECKBOX */
+.confirmar-todos input,
+.checkbox-consulta input {
+    display: none;
+}
+
+.checkbox-custom {
+    width: 2rem;
+    height: 2rem;
+    min-width: 2rem;
+    border-radius: 8px;
+    background-color: var(--white-50);
+    border: 2px solid var(--white-700);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: transparent;
+    transition: 0.2s ease;
+}
+
+.confirmar-todos input:checked + .checkbox-custom,
+.checkbox-consulta input:checked + .checkbox-custom {
+    background-color: var(--green-default-100);
+    color: var(--white-50);
+    border: none;
+}
+
+/* LISTA */
+.lista-consultas {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1rem 1rem;
+}
+
+.card-consulta {
+    width: 100%;
+    background-color: var(--secondary-cream-700);
+    border-radius: 1.5rem;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    transition: 0.2s ease;
+}
+
+.card-consulta:hover {
+    transform: translateY(-2px);
+}
+
+/* CHECKBOX CARD */
+.checkbox-consulta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* INFOS */
+.infos-consulta {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.infos-consulta h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.infos-consulta p,
+.infos-consulta span {
+    font-size: 1.2rem;
+    line-height: 1.2;
+}
+
+/* BOTÃO SETA */
+.btn-ver-consulta {
+    border: none;
+    background: transparent;
+    font-size: 3.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.btn-ver-consulta:hover {
+    transform: translateX(5px);
+}
+
+/* AÇÕES */
+.acoes-sidebar {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}

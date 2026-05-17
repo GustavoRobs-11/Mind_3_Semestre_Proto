@@ -8,16 +8,19 @@ section.config {
   position: relative;
   padding-inline: 3rem;
 }
+
 section.config h1 {
   font-size: clamp(1.5rem, 5vw, 2rem);
 }
+
 .container-section {
   display: flex;
   justify-content: space-between;
   width: 100%;
-  gap: 50px;
+  gap: 1rem;
   margin: 20px 0;
 }
+
 .input-e-span input,
 .input-e-span select,
 .tags-especializacoes-input {
@@ -44,11 +47,13 @@ section.config h1 {
   align-items: center;
   gap: 2.5rem;
 }
+
 .container-img {
   margin-left: 0px;
   padding: 10px;
   width: 30%;
 }
+
 .imgEdit {
   width: clamp(150px, 20vw, 180px);
   height: clamp(150px, 20vw, 180px);
@@ -95,9 +100,11 @@ section.config h1 {
   cursor: pointer;
 }
 
-.atalhos li:last-child{
+.atalhos li:last-child {
   border-bottom: none;
-};
+}
+
+;
 
 #Deletar {
   color: var(--accent-mid-orange-950);
@@ -108,10 +115,10 @@ section.config h1 {
   border-radius: var(--border-radius-sm);
 }
 
-li > a#Geral,
-li > a#Perfil,
-li > a#Horarios,
-li > a#Deletar {
+li>a#Geral,
+li>a#Perfil,
+li>a#Horarios,
+li>a#Deletar {
   display: block;
   width: 100%;
   height: 100%;
@@ -146,6 +153,7 @@ li > a#Deletar {
   flex-direction: column;
   gap: var(--spacing-sm);
 }
+
 .container-sobre-mim,
 .container-medicamento,
 .container-preferencias,
@@ -155,6 +163,7 @@ li > a#Deletar {
   display: flex;
   flex-direction: column;
 }
+
 .container-sobre-mim span,
 .container-medicamento span,
 .container-preferencias span,
@@ -185,6 +194,7 @@ li > a#Deletar {
     border-color 0.15s ease-in-out,
     box-shadow 0.15s ease-in-out;
 }
+
 .container-sobre-mim textarea:focus,
 .container-medicamento textarea:focus,
 .container-preferencias textarea:focus,
@@ -208,7 +218,7 @@ ul.tags-list {
   margin-top: 10px;
 }
 
-ul.tags-list > .tag-item {
+ul.tags-list>.tag-item {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -255,38 +265,49 @@ ul.tags-list > .tag-item {
 input[type="file"] {
   display: none;
 }
+
 /* Responsividade -------------------------- */
 
 @media (max-width: 800px) {
   section.config {
     padding-inline: var(--spacing-sm);
   }
-  .atalhos {
+  .container-img{
+    flex-direction: row;
     width: 100%;
+    justify-content: center;
   }
+
+
   .container-section {
     flex-direction: column;
     align-items: center;
     margin: 1.5rem;
   }
+
   .container-img {
     margin: auto;
     width: 100%;
   }
+
   .container-input-1 {
     grid-template-columns: auto;
   }
+
   .container-atualizar {
     justify-content: center;
   }
+
   .container-deletar {
     flex-direction: column;
     margin: 1.5rem;
     align-items: center;
   }
+
   .pop-up-deletar div {
     width: 80%;
   }
+
   .img-edit-wallpaper {
     width: 100%;
   }
