@@ -1,7 +1,17 @@
 import { useEffect, useState } from "react";
 import { HiOutlineClipboardList } from "react-icons/hi";
 import CardProntuario from "../cards/CardProntuario";
-import React from "react";
+import React from 'react';
+import {
+    Briefcase,
+    Music,
+    Sparkles,
+    ShoppingCart,
+    Utensils,
+    Bed,
+    BookOpen,
+    ChevronDown
+} from 'lucide-react'
 
 export default function AreaProntuario({
     formatarData,
@@ -183,106 +193,152 @@ export default function AreaProntuario({
 
             {/* DIÁRIO */}
             {abaAtiva === "diario" && (
-                <div className="container">
-                    {/* TOP SECTION */}
+                <div className="dashboard-container">
+
+                    {/* SEÇÃO SUPERIOR */}
                     <div className="top-grid">
-                        {/* GERENCIAMENTO DIÁRIO */}
-                        <div className="card">
+
+                        {/* CARD: GERENCIAMENTO DIÁRIO */}
+                        <div className="dashboard-card">
                             <h3>Gerenciamento diário</h3>
 
-                            <div className="mood-bar">
-                                <div className="segment green">16%</div>
-                                <div className="segment yellow">25%</div>
-                                <div className="segment orange">40%</div>
-                                <div className="segment red">19%</div>
-                            </div>
+                            <div className="graph-section">
+                                {/* Gráfico Semicírculo via SVG matemático puro */}
+                                <div className="arc-wrapper">
+                                    <svg viewBox="0 0 100 50" className="arc-svg">
+                                        {/* Arco Verde (16%) */}
+                                        <circle cx="50" cy="50" r="40" fill="transparent" stroke="#a3e635" strokeWidth="11" strokeDasharray="20.1 125.6" strokeDashoffset="0" transform="rotate(180 50 50)" />
+                                        {/* Arco Amarelo (25%) */}
+                                        <circle cx="50" cy="50" r="40" fill="transparent" stroke="#fde047" strokeWidth="11" strokeDasharray="31.4 125.6" strokeDashoffset="-20.1" transform="rotate(180 50 50)" />
+                                        {/* Arco Laranja (40%) */}
+                                        <circle cx="50" cy="50" r="40" fill="transparent" stroke="#fed7aa" strokeWidth="11" strokeDasharray="50.2 125.6" strokeDashoffset="-51.5" transform="rotate(180 50 50)" />
+                                        {/* Arco Vermelho (19%) */}
+                                        <circle cx="50" cy="50" r="40" fill="transparent" stroke="#f87171" strokeWidth="11" strokeDasharray="23.9 125.6" strokeDashoffset="-101.7" transform="rotate(180 50 50)" />
+                                    </svg>
 
-                            <div className="emoji-grid">
-                                <span>😄</span>
-                                <span>😐</span>
-                                <span>🙂</span>
-                                <span>😡</span>
-                                <span>😶</span>
+                                    <span className="pct-label pct-16">16%</span>
+                                    <span className="pct-label pct-25">25%</span>
+                                    <span className="pct-label pct-40">40%</span>
+                                    <span className="pct-label pct-19">19%</span>
+                                </div>
+
+                                {/* Grid Lateral de Carinhas */}
+                                <div className="emoji-grid">
+                                    <div className="emoji-box green">😄</div>
+                                    <div className="emoji-box red">🙁</div>
+                                    <div className="emoji-box active">🙂</div>
+                                    <div className="emoji-box orange">😡</div>
+                                    <div className="emoji-box orange neutral">😐</div>
+                                </div>
                             </div>
                         </div>
 
-                        {/* POR HUMOR */}
-                        <div className="card">
-                            <h3>Por humor</h3>
+                        {/* CARD: POR HUMOR */}
+                        <div className="dashboard-card">
+                            <div>
+                                <h3>Por humor</h3>
 
-                            <select className="select">
-                                <option>Neutro</option>
-                                <option>Feliz</option>
-                                <option>Triste</option>
-                            </select>
+                                <div className="select-wrapper">
+                                    <div className="custom-select">
+                                        <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>😐 Neutro</span>
+                                        <ChevronDown size={16} style={{ color: '#6b7280' }} />
+                                    </div>
+                                </div>
 
-                            <table className="table">
-                                <thead>
-                                    <tr>
-                                        <th>Ações</th>
-                                        <th>Frequência</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>🔗 Trabalho</td>
-                                        <td>20x</td>
-                                    </tr>
-                                    <tr>
-                                        <td>🎵 Música</td>
-                                        <td>15x</td>
-                                    </tr>
-                                    <tr>
-                                        <td>🧹 Faxina</td>
-                                        <td>10x</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                <table className="mood-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Ações</th>
+                                            <th className="text-right">Frequência</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <span className="activity-tag">
+                                                    <Briefcase size={14} /> Trabalho
+                                                </span>
+                                            </td>
+                                            <td className="text-right">20x</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span className="activity-tag">
+                                                    <Music size={14} /> Música
+                                                </span>
+                                            </td>
+                                            <td className="text-right">15x</td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span className="activity-tag">
+                                                    <Sparkles size={14} /> Faxina
+                                                </span>
+                                            </td>
+                                            <td className="text-right">10x</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
 
-                    {/* BOTTOM SECTION */}
+                    {/* SEÇÃO INFERIOR */}
                     <div className="bottom-grid">
-                        {/* DIÁRIO MAIS RECENTES */}
-                        <div className="card">
-                            <h3>Diário mais recentes</h3>
 
-                            <div className="note">
-                                <span>🙂</span>
-                                <p>
-                                    Indica um estado de humor positivo e estável, demonstrando bem-estar...
-                                </p>
-                            </div>
-
-                            <h4>Atividades recentes:</h4>
-                            <div className="tags">
-                                <span>🛒 Compra</span>
-                                <span>🍽️ Boa refeição</span>
-                                <span>🛏️ Descanso</span>
-                            </div>
-                        </div>
-
-                        {/* MELHOR SEQUÊNCIA */}
-                        <div className="card">
-                            <h3>Melhor sequência de dias</h3>
-
-                            <div className="streak">
-                                <span>🙂</span>
-                                <div>
-                                    <strong>3 dias</strong>
-                                    <p>1 de Abril - 3 de Abril</p>
+                        {/* CARD: DIÁRIO MAIS RECENTES */}
+                        <div className="dashboard-card">
+                            <div>
+                                <h3>Diário mais recentes:</h3>
+                                <div className="note-block">
+                                    <div className="emoji-box active" style={{ width: '56px', height: '56px', fontSize: '1.8rem', flexShrink: 0 }}>
+                                        🙂
+                                    </div>
+                                    <p>
+                                        Indica um estado de humor positivo e estável, demonstrando bem-estar,
+                                        disposição e uma percepção geral agradável ao longo do momento ou
+                                        atividade realizada.
+                                    </p>
                                 </div>
                             </div>
 
-                            <h4>Atividades durante a sequência de dias</h4>
-                            <div className="tags">
-                                <span>🛒 Compra</span>
-                                <span>🛏️ Descanso</span>
-                                <span>📖 Leitura</span>
-                                <span>🎵 Música</span>
-                                <span>🍽️ Boa refeição</span>
+                            <div>
+                                <h4>Atividades recentes:</h4>
+                                <div className="tag-container">
+                                    <span className="activity-tag"><ShoppingCart size={14} /> Compra</span>
+                                    <span className="activity-tag"><Utensils size={14} /> Boa refeição</span>
+                                    <span className="activity-tag"><Bed size={14} /> Descanso</span>
+                                </div>
                             </div>
                         </div>
+
+                        {/* CARD: MELHOR SEQUÊNCIA */}
+                        <div className="dashboard-card">
+                            <div>
+                                <h3>Melhor sequência de dias</h3>
+                                <div className="streak-block">
+                                    <div className="emoji-box active" style={{ width: '56px', height: '56px', fontSize: '1.8rem' }}>
+                                        🙂
+                                    </div>
+                                    <div className="streak-info">
+                                        <strong>3 dias</strong>
+                                        <p>1 de Abril - 3 de Abril</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4>Atividades durante a sequência de dias</h4>
+                                <div className="tag-container">
+                                    <span className="activity-tag"><ShoppingCart size={14} /> Compra</span>
+                                    <span className="activity-tag"><Bed size={14} /> Descanso</span>
+                                    <span className="activity-tag"><BookOpen size={14} /> Leitura</span>
+                                    <span className="activity-tag"><Music size={14} /> Música</span>
+                                    <span className="activity-tag"><Utensils size={14} /> Boa refeição</span>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             )}
