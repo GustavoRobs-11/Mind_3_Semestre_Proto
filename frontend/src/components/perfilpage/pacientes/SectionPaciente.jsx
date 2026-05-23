@@ -6,6 +6,7 @@ import Sobre from './Sobre.jsx';
 import Logout from '../Logout.jsx';
 import SkipNavigation from "../../SkipNavigation.jsx";
 import ProfileNavbar from '../ProfileNavbar.jsx';
+import SideBarPaciente from './SideBarPaciente.jsx';
 import { Link } from "react-router-dom";
 
 export default function SectionPaciente({ profileData }) {
@@ -36,8 +37,18 @@ export default function SectionPaciente({ profileData }) {
 
         return (
             <>
-                <Info profileData={profileData} />
-                <Sobre profileData={profileData} />
+                <div className="conatiner-perfil-sidebar">
+                    <div className="container-perfil">
+                        <Info profileData={profileData} />
+                        <Sobre profileData={profileData} />
+                    </div>
+                    <div className="container-sidebar">
+                        <div className="perfil-sidebar">
+                            <SideBarPaciente profileData={profileData} />
+                        </div>
+                    </div>
+                </div>
+
             </>
         );
     };
@@ -50,14 +61,6 @@ export default function SectionPaciente({ profileData }) {
 
                 <div className="perfil-layout-grid">
                     <main className="perfil-main-content">{renderTabContent()}</main>
-
-                    <aside className="perfil-sidebar">
-                        <Logout />
-                        <div className="sidebar-card">
-                            <h3>Atalhos</h3>
-                            <p>Use a aba Agenda para ver consultas e a aba Configurações para atualizar seus dados.</p>
-                        </div>
-                    </aside>
                 </div>
             </div>
         </>

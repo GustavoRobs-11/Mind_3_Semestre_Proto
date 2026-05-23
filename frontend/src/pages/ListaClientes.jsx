@@ -1,7 +1,7 @@
 import "../assets/styles/listaclientes/listaclientes.css";
 import "../assets/styles/home/filtros-home.css";
 import { useState, useEffect } from "react";
-import { HiOutlineSearch } from "react-icons/hi";
+import { HiOutlineSearch, HiChevronRight } from "react-icons/hi";
 import CardClientes from "../components/cards/CardClientes";
 import Filtro from "../components/homepage/Filtro.jsx";
 import { useAuth } from "../context/AuthContext";
@@ -21,7 +21,7 @@ export default function ListaClientes() {
             try {
                 setLoading(true);
                 const data = await listarClientesDoPsicologo(user.id);
-                
+
                 // Ordenar no frontend: mais recentes primeiro
                 const sortedData = [...data].sort((a, b) => {
                     const dateA = a.primeiraConsulta || "";
@@ -68,6 +68,16 @@ export default function ListaClientes() {
         return matchTexto && matchStatus;
     });
 
+    const titulo="Status"
+    const opcao=["Pendente", "Ativo", "Inativo"]
+
+
+    const [open, setOpen] = useState(false);
+    
+    const toggleFilter = () => setOpen(!open);
+
+
+
     return (
         <>
             <div className="container-search-clientes">
@@ -79,19 +89,41 @@ export default function ListaClientes() {
                             placeholder="Pesquisar por nome do cliente..."
                             value={searchText}
                             onChange={handleSearch}
+                            className="search-input"
                         />
-                        <button type="submit" className="button-confirm button-search">
-                            <HiOutlineSearch className="icon-ui-button-search"/>
+                        <button type="submit" className="search-button">
+                            <HiOutlineSearch className="search-icon" />
                         </button>
                     </form>
-                    <Filtro 
-                        titulo="Status"
-                        opcoes={statusOptions}
-                        selecionados={statusSelecionados}
-                        setSelecionados={setStatusSelecionados}
-                    />
+                    <div className="filtro listaclientes">
+                        <button type="button" className="btn-searchbox btn-listaclientes " onClick={toggleFilter}>
+                            {titulo}
+                            <HiChevronRight
+                                className="seta-filtro"
+                                style={{
+                                    transform: open ? "rotate(90deg)" : "rotate(0deg)",
+                                    transition: "0.3s",
+                                }}
+                            />
+                        </button>
+
+                        {open && (
+                            <div className="checkbox-filter">
+                                {opcoes.map((opcao, i) => (
+                                    <label key={i} className="checkbox-input">
+                                        <input
+                                            type="checkbox"
+                                            checked={selecionados.includes(opcao)}
+                                            onChange={() => handleCheckboxChange(opcao)}
+                                        />
+                                        <span className="titulo-checkbox">{opcao}</span>
+                                    </label>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </section>
-            
+
                 <main className="list-clientes">
                     <div className="cabecalho-lista-clientes">
                         <p>Cliente</p>

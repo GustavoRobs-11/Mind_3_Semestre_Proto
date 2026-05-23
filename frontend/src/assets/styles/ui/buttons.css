@@ -280,6 +280,11 @@
 .btn-searchbox.listaclientes{
     width: 100px;
 }
+.btn-listaclientes{
+    background: var(--tertiary-light-green-700)!important;
+    font-weight: 600;
+    gap: 5rem
+}
 
 .button-sidebar{
     background-color: var(--tertiary-light-green-700)!important;

@@ -45,11 +45,6 @@ const DIAS_MAP = [
   "sabado"
 ];
 
-const STATUS_BLOQUEANTES = [
-  "pendente",
-  "confirmado",
-  "realizado"
-];
 
 const HORARIOS_INICIAIS = {
   domingo: [],
@@ -133,10 +128,11 @@ export default function Calendario() {
 
   const hoje = new Date();
 
-  const diasSemanaAtual = useMemo(
-    () => gerarSemana(dataAtual),
-    [dataAtual]
-  );
+  const diasSemanaAtual = useMemo(() => {
+  return user.tipo === "psicologo"
+    ? gerarSemana(dataAtual)
+    : [];
+}, [dataAtual, user.tipo]);
 
   /* ========================================
      LOAD DATA
@@ -147,7 +143,7 @@ export default function Calendario() {
 
     const interval = setInterval(
       carregarDados,
-      3000
+      10000
     );
 
     return () => clearInterval(interval);
@@ -220,36 +216,36 @@ export default function Calendario() {
   }
 
   function mapearHorarios(dadosHorarios) {
-  const novosHorarios = {
-    ...HORARIOS_INICIAIS
-  };
+    const novosHorarios = {
+      ...HORARIOS_INICIAIS
+    };
 
-  dadosHorarios.forEach((h) => {
-    const diaKey = MAPA_DIAS[h.diaDaSemana];
+    dadosHorarios.forEach((h) => {
+      const diaKey = MAPA_DIAS[h.diaDaSemana];
 
-    if (!novosHorarios[diaKey]) return;
+      if (!novosHorarios[diaKey]) return;
 
-    // evita duplicados
-    const jaExiste =
-      novosHorarios[diaKey].includes(
-        h.horaInicio
-      );
+      // evita duplicados
+      const jaExiste =
+        novosHorarios[diaKey].includes(
+          h.horaInicio
+        );
 
-    if (!jaExiste) {
-      novosHorarios[diaKey].push(
-        h.horaInicio
-      );
-    }
-  });
+      if (!jaExiste) {
+        novosHorarios[diaKey].push(
+          h.horaInicio
+        );
+      }
+    });
 
-  Object.keys(novosHorarios).forEach(
-    (dia) => {
-      novosHorarios[dia].sort();
-    }
-  );
+    Object.keys(novosHorarios).forEach(
+      (dia) => {
+        novosHorarios[dia].sort();
+      }
+    );
 
-  return novosHorarios;
-}
+    return novosHorarios;
+  }
 
   /* ========================================
      HELPERS
@@ -258,15 +254,18 @@ export default function Calendario() {
   const matches = agendamentos.filter((a) => {
     const data = parseDateBR(a.diaAgendado);
 
+    const pertenceUsuario =
+      user.tipo === "psicologo"
+        ? a.psicologo?.id === user.id
+        : a.paciente?.id === user.id;
+
     return (
-      data.toDateString() ===
-        dia.toDateString() &&
+      data.toDateString() === dia.toDateString() &&
       a.horaAgendada === hora &&
-      a.psicologo?.id === user.id
+      pertenceUsuario
     );
   });
 
-  // prioridade de exibição
   const prioridadeStatus = [
     "confirmado",
     "pendente",
@@ -277,18 +276,15 @@ export default function Calendario() {
 
   for (const status of prioridadeStatus) {
     const encontrado = matches.find(
-      (a) =>
-        a.status.toLowerCase() === status
+      (a) => a.status.toLowerCase() === status
     );
 
-    if (encontrado) {
-      return encontrado;
-    }
+    if (encontrado) return encontrado;
   }
 
   return null;
 }
-  
+
 
   function isAgora(agenda) {
     if (!agenda) return false;
@@ -355,11 +351,11 @@ export default function Calendario() {
     setAgendamentos((prev) =>
       prev.map((a) =>
         a.id_agendamento ===
-        agendaSelecionada.id_agendamento
+          agendaSelecionada.id_agendamento
           ? {
-              ...a,
-              status: novoStatus
-            }
+            ...a,
+            status: novoStatus
+          }
           : a
       )
     );
@@ -383,17 +379,17 @@ export default function Calendario() {
       setAgendamentos((prev) =>
         prev.map((a) =>
           a.id_agendamento ===
-          agendaAntiga.id_agendamento
+            agendaAntiga.id_agendamento
             ? {
-                ...a,
-                diaAgendado:
-                  novosDados.data,
+              ...a,
+              diaAgendado:
+                novosDados.data,
 
-                horaAgendada:
-                  novosDados.horaInicio,
+              horaAgendada:
+                novosDados.horaInicio,
 
-                status: "Pendente"
-              }
+              status: "Pendente"
+            }
             : a
         )
       );
@@ -434,6 +430,126 @@ export default function Calendario() {
     }
   }
 
+  function gerarMes(data) {
+    const ano = data.getFullYear();
+    const mes = data.getMonth();
+
+    const primeiroDia = new Date(
+      ano,
+      mes,
+      1
+    );
+
+    const ultimoDia = new Date(
+      ano,
+      mes + 1,
+      0
+    );
+
+    const inicioSemana =
+      primeiroDia.getDay();
+
+    const diasNoMes =
+      ultimoDia.getDate();
+
+    const dias = [];
+
+    // dias mês anterior
+    for (
+      let i = inicioSemana - 1;
+      i >= 0;
+      i--
+    ) {
+      dias.push({
+        data: new Date(
+          ano,
+          mes,
+          -i
+        ),
+        atual: false
+      });
+    }
+
+    // mês atual
+    for (
+      let dia = 1;
+      dia <= diasNoMes;
+      dia++
+    ) {
+      dias.push({
+        data: new Date(
+          ano,
+          mes,
+          dia
+        ),
+        atual: true
+      });
+    }
+
+    // completar 42 (6 semanas)
+    while (dias.length < 42) {
+      const ultimo =
+        dias[dias.length - 1].data;
+
+      dias.push({
+        data: new Date(
+          ultimo.getFullYear(),
+          ultimo.getMonth(),
+          ultimo.getDate() + 1
+        ),
+        atual: false
+      });
+    }
+
+    return dias;
+  }
+
+  const diasMesAtual = useMemo(
+    () => gerarMes(dataAtual),
+    [dataAtual]
+  );
+
+  function getStatusDia(dia) {
+    const agendasDoDia =
+      agendamentos.filter((a) => {
+        const data = parseDateBR(
+          a.diaAgendado
+        );
+
+        return (
+          data.toDateString() ===
+          dia.toDateString() &&
+          a.paciente?.id === user.id
+        );
+      });
+
+    if (!agendasDoDia.length)
+      return "livre";
+
+    const prioridade = [
+      "confirmado",
+      "pendente",
+      "realizado",
+      "cancelado",
+      "recusado"
+    ];
+
+    for (const status of prioridade) {
+      const tem =
+        agendasDoDia.find(
+          (a) =>
+            a.status.toLowerCase() ===
+            status
+        );
+
+      if (tem) return status;
+    }
+
+    return "livre";
+  }
+
+
+
   /* ========================================
      RENDER
   ======================================== */
@@ -459,7 +575,7 @@ export default function Calendario() {
 
         {ag &&
           ag.status.toLowerCase() ===
-            "confirmado" &&
+          "confirmado" &&
           isAgora(ag) && (
             <span className="dot-animated"></span>
           )}
@@ -468,51 +584,50 @@ export default function Calendario() {
   }
 
   function renderColunaDia(dia) {
-  const key = DIAS_MAP[dia.getDay()];
+    const key = DIAS_MAP[dia.getDay()];
 
-  const horarios = [...new Set(horariosPsi[key] || [])];
+    // remove duplicados e limita a no máximo 5 horários
+    const horarios = [
+      ...new Set(horariosPsi[key] || [])
+    ].slice(0, 5);
 
-  // quantidade mínima de slots
-  const totalSlots = 5;
+    // quantidade fixa máxima
+    const totalSlots = 5;
 
-  // quantos slots vazios faltam
-  const faltantes =
-    totalSlots - horarios.length;
+    // quantos slots vazios faltam
+    const faltantes = totalSlots - horarios.length;
 
-  return (
-    <div
-      key={dia.toISOString()}
-      className="calendar-column"
-    >
+    return (
+      <div
+        key={dia.toISOString()}
+        className="calendar-column"
+      >
+        {/* HORÁRIOS REAIS */}
+        {horarios.map((hora) => {
+          const ag =
+            user.tipo === "psicologo"
+              ? getAgendamento(dia, hora)
+              : null;
 
-      {/* HORÁRIOS REAIS */}
-      {horarios.map((hora) => {
-        const ag =
-          user.tipo === "psicologo"
-            ? getAgendamento(dia, hora)
-            : null;
+          return renderHorario(
+            hora,
+            dia,
+            ag
+          );
+        })}
 
-        return renderHorario(
-          hora,
-          dia,
-          ag
-        );
-      })}
-
-      {/* COMPLETA COM VAZIOS */}
-      {Array.from({
-        length:
-          faltantes > 0 ? faltantes : 0
-      }).map((_, index) => (
-        <div
-          key={`vazio-${index}`}
-          className="slot-horario vazio"
-        />
-      ))}
-
-    </div>
-  );
-}
+        {/* COMPLETA COM VAZIOS */}
+        {Array.from({
+          length: faltantes > 0 ? faltantes : 0
+        }).map((_, index) => (
+          <div
+            key={`vazio-${index}`}
+            className="slot-horario vazio"
+          />
+        ))}
+      </div>
+    );
+  }
 
   /* ========================================
      JSX
@@ -585,18 +700,17 @@ export default function Calendario() {
                       <span className="day-name">
                         {
                           DIAS_SEMANA[
-                            index
+                          index
                           ]
                         }
                       </span>
 
                       <span
-                        className={`day-number ${
-                          dia.toDateString() ===
+                        className={`day-number ${dia.toDateString() ===
                           hoje.toDateString()
-                            ? "today"
-                            : ""
-                        }`}
+                          ? "today"
+                          : ""
+                          }`}
                       >
                         {dia.getDate()}
                       </span>
@@ -607,11 +721,15 @@ export default function Calendario() {
               </div>
 
               {/* BODY */}
-              <div className="calendar-body">
-                {diasSemanaAtual.map(
-                  renderColunaDia
-                )}
-              </div>
+              {user.tipo === "psicologo" ? (
+                <div className="calendar-body">
+                  {diasSemanaAtual.map(
+                    renderColunaDia
+                  )}
+                </div>
+              ) : (
+                renderCalendarioPaciente()
+              )}
 
             </div>
 
@@ -669,7 +787,7 @@ export default function Calendario() {
       {/* MODAIS */}
       {agendaSelecionada &&
         (user.tipo ===
-        "psicologo" ? (
+          "psicologo" ? (
           <AgendaHistoricoPsi
             user={user}
             open={openAgenda}
@@ -724,4 +842,67 @@ export default function Calendario() {
         ))}
     </>
   );
+  function renderCalendarioPaciente() {
+    return (
+      <div className="calendar-month-wrapper">
+        {/* header */}
+        <div className="calendar-header-row">
+          {DIAS_SEMANA.map((dia) => (
+            <div
+              key={dia}
+              className="calendar-header-day"
+            >
+              {dia}
+            </div>
+          ))}
+        </div>
+
+        {/* grid */}
+        <div className="calendar-paciente-grid">
+          {diasMesAtual.map(
+            ({ data, atual }) => {
+              const status =
+                getStatusDia(data);
+
+              const agendaDoDia =
+                agendamentos.find(
+                  (a) =>
+                    parseDateBR(
+                      a.diaAgendado
+                    ).toDateString() ===
+                    data.toDateString()
+                );
+
+              return (
+                <div
+                  key={data.toISOString()}
+                  className={`paciente-day
+                  ${status}
+                  ${!atual
+                      ? "outro-mes"
+                      : ""
+                    }
+                  ${data.toDateString() ===
+                      hoje.toDateString()
+                      ? "today"
+                      : ""
+                    }
+                `}
+                  onClick={() =>
+                    agendaDoDia &&
+                    abrirAgenda(
+                      agendaDoDia,
+                      data
+                    )
+                  }
+                >
+                  {data.getDate()}
+                </div>
+              );
+            }
+          )}
+        </div>
+      </div>
+    );
+  }
 }

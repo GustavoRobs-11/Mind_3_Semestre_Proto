@@ -2,7 +2,6 @@
   width: 100%;
   background: var(--white-400);
   border-radius: 20px;
-  padding: 40px;
   display: flex;
   gap: 40px;
   overflow-x: auto;
@@ -19,6 +18,7 @@
   align-items: center;
   justify-content: center;
   gap: 40px;
+  padding: 20px 40px 20px 40px;
 }
 
 /* =========================
@@ -40,7 +40,7 @@
 }
 
 .calendar-month {
-  font-size: 2.3rem;
+  font-size: 1.8rem;
   font-weight: 600;
   color: var(--black-700);
   text-transform: capitalize;
@@ -68,13 +68,13 @@
 .side-arrow {
   border: none;
   background: transparent;
-  font-size: 4rem;
+  font-size: 3rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: 0.2s;
-  margin-top: -380px;
+  margin-top: -250px;
 }
 
 .side-arrow:hover {
@@ -88,25 +88,25 @@
 .calendar-grid-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 25px;
+  gap: 15px;
 }
 
 .calendar-header-row {
   display: grid;
-  grid-template-columns: repeat(7, 110px);
-  gap: 18px;
+  grid-template-columns: repeat(7, 80px);
+  gap: 15px;
 }
 
 .calendar-body {
   display: grid;
-  grid-template-columns: repeat(7, 110px);
-  gap: 18px;
+  grid-template-columns: repeat(7, 80px);
+  gap: 15px;
 }
 
 .calendar-column {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 15px;
 }
 
 /* =========================
@@ -121,20 +121,20 @@
 }
 
 .day-name {
-  font-size: 1.7rem;
+  font-size: 1.2rem;
   font-weight: 500;
   color: var(--black-700);
 }
 
 .day-number {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--black-700);
 }
 
 .day-number.today {
-  width: 50px;
-  height: 50px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background: var(--tertiary-light-green-700);
   display: flex;
@@ -147,21 +147,17 @@
 ========================= */
 
 .slot-horario {
-  width: 110px;
-  height: 78px;
+  width: 80px;
+  height: 48px;
   border-radius: 14px;
   border: 2px solid #cfcfcf;
   background: white;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  font-size: 1.5rem;
+  font-size: 1rem;
   font-weight: 500;
-
   position: relative;
-
   transition: 0.2s;
   cursor: pointer;
 }
@@ -181,6 +177,9 @@
 }
 
 .slot-horario.confirmado {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
   background: #9dd181;
   border-color: #7cbc5f;
 }
@@ -203,8 +202,9 @@
 ========================= */
 
 .dot-animated {
-  position: absolute;
-  bottom: 10px;
+  position: relative;
+  bottom: -0%;
+  left: -0%;
   width: 12px;
   height: 12px;
   border-radius: 50%;
@@ -235,11 +235,12 @@
 .calendar-legend {
   background: #e7e7e7;
   border-radius: 20px;
-  padding: 35px 25px;
+  padding: 40px;
   display: flex;
   flex-direction: column;
   gap: 30px;
   flex-shrink: 0;
+  height: 100%;
 }
 
 .legend-item {

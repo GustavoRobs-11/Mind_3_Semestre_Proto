@@ -71,9 +71,7 @@
 }
 
 .container-sidebar {
-  display: flex;
-  justify-content: flex-end;
-  width: 40%;
+  width: 60%;
 }
 
 .perfil-sidebar {
