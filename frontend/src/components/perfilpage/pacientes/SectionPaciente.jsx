@@ -37,7 +37,7 @@ export default function SectionPaciente({ profileData }) {
 
         return (
             <>
-                <div className="conatiner-perfil-sidebar">
+                <div className="container-perfil-sidebar">
                     <div className="container-perfil">
                         <Info profileData={profileData} />
                         <Sobre profileData={profileData} />
@@ -58,7 +58,6 @@ export default function SectionPaciente({ profileData }) {
             <SkipNavigation mainContent="cardPerfilPaciente" />
             <div className="container-section-perfil">
                 <ProfileNavbar tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
-
                 <div className="perfil-layout-grid">
                     <main className="perfil-main-content">{renderTabContent()}</main>
                 </div>

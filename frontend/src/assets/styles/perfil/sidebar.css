@@ -165,3 +165,197 @@
     flex-direction: column;
     gap: 1.5rem;
 }
+
+
+.sidebar-paciente {
+    width: 100%;
+    background: var(--white-600);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    border-radius: 10px;
+}
+
+/* ========================= */
+/* CONSULTA */
+/* ========================= */
+
+.container-proxima-consulta {
+    display: flex;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--white-50);
+    min-height: 110px;
+}
+
+.container-dia {
+    padding: 16px 14px;
+    background: var(--primary-orange-700);
+    color: var(--black-700);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+}
+
+.container-dia p {
+    font-size: 1.6rem;
+}
+
+.container-dia span {
+    font-size: 1rem;
+}
+
+.container-consulta-info {
+    flex: 1;
+    padding: 16px 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.container-consulta-info h4 {
+    font-size: 1rem;
+    line-height: 1.8;
+}
+
+.status-consulta {
+    align-self: flex-end;
+    background: var(--tertiary-light-green-700);
+    padding: 7px 14px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* ========================= */
+/* AUTOAVALIAÇÃO */
+/* ========================= */
+
+.container-autoavaliacao {
+    background: var(--white-50);
+    padding: 14px;
+    border-radius: 10px;
+}
+
+.container-autoavaliacao h3 {
+    margin-bottom: 14px;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.container-buttons {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 22px;
+}
+
+.container-buttons button {
+    height: 48px;
+    border: none;
+    background: #ececec;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container-buttons button:nth-child(1) svg {
+    color: #7bc55b;
+}
+
+.container-buttons button:nth-child(2) svg {
+    color: #d3a229;
+}
+
+.container-buttons button:nth-child(3) svg {
+    color: #dc9437;
+}
+
+.container-buttons button:nth-child(4) svg {
+    color: #e05d5d;
+}
+
+.container-buttons button:nth-child(5) svg {
+    color: #c53b2f;
+}
+
+/* ========================= */
+/* ATIVIDADES */
+/* ========================= */
+
+.container-atividades {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.ativ {
+    border: none;
+    background: var(--tertiary-light-green-700);
+    padding: 8px 12px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.ativ svg {
+    font-size: 1rem;
+}
+
+/* ========================= */
+/* BOTÕES */
+/* ========================= */
+
+.button-confirm {
+    margin-left: auto;
+}
+
+.acoes-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.button-sidebar {
+    width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.config-btn {
+    background: #9ad57f;
+    color: black;
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+    .sidebar-paciente {
+        max-width: 100%;
+    }
+
+    .container-buttons {
+        grid-template-columns: repeat(5, 1fr);
+    }
+
+    .container-autoavaliacao h3 {
+        font-size: 1.2rem;
+    }
+
+    .ativ {
+        font-size: 0.8rem;
+        padding: 7px 10px;
+    }
+}
