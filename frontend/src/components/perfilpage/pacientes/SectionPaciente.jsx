@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "../../../assets/styles/perfil/section.css";
 import Info from './Info.jsx';
-import Calendario from '../Calendario.jsx';
+import Calendario from './CalendarioPaciente.jsx';
 import Sobre from './Sobre.jsx';
 import Logout from '../Logout.jsx';
 import SkipNavigation from "../../SkipNavigation.jsx";
@@ -14,8 +14,9 @@ export default function SectionPaciente({ profileData }) {
 
     const tabs = [
         { key: "perfil", label: "Perfil" },
+        { key: "dashboard", label: "Dashboard" },
         { key: "agenda", label: "Agenda" },
-        { key: "configuracoes", label: "Configurações" },
+        { key: "financeiro", label: "Financeiro" },
     ];
 
     const renderTabContent = () => {
@@ -23,13 +24,16 @@ export default function SectionPaciente({ profileData }) {
             return <Calendario />;
         }
 
-        if (activeTab === "configuracoes") {
+        if (activeTab === "financeiro") {
             return (
                 <div className="card-perfil-content perfil-placeholder">
-                    <h2>Configurações</h2>
-                    <p>Aqui você pode revisar seus dados, ajustar notificações e atualizar informações pessoais.</p>
-                    <Link to="/paciente/perfil/configuracoes" className="button-confirm">
-                        Abrir configurações
+                    <h1>Financeiro</h1>
+                    <h2>Aqui você poderá consultar suas loucuras e baboseiras, se divirta e seja feliz pois você EU TO MANDANDO VAI LOGO!</h2>
+                    <h4>Brincadeiras à parte, essa seção é um desabafo de uma pessoa louca :)</h4>
+                    <h3>Assinado: Gustavo</h3>
+                    <p>Por enquanto, va para a página de configurações para revisar seus dados de faturamento.</p>
+                    <Link to="/psicologo/perfil/configuracoes" className="button-confirm">
+                        Ir para configurações
                     </Link>
                 </div>
             );

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "../../../assets/styles/perfil/section.css";
 import InfoPsicologo from './InfoPsicologo.jsx';
-import Calendario from '../Calendario.jsx';
+import Calendario from './CalendarioPsicologo.jsx';
 import SobrePsicologo from './SobrePsicologo.jsx';
 import SideBarPsicologo from './SideBarPsicologo.jsx';
 import ArtigosPerfil from '../ArtigosPerfil.jsx';

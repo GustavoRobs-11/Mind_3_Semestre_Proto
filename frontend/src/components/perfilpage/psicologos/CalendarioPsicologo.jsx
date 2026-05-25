@@ -5,21 +5,21 @@ import {
   HiChevronRight
 } from "react-icons/hi";
 
-import "../../assets/styles/perfil/calendario.css";
+import "../../../assets/styles/perfil/calendario.css";
 
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../../context/AuthContext";
 
-import AgendaHistorico from "../popups/AgendaHistorico";
-import AgendaHistoricoPsi from "../popups/AgendaHistoricoPsi";
+import AgendaHistorico from "../../popups/AgendaHistorico";
+import AgendaHistoricoPsi from "../../popups/AgendaHistoricoPsi";
 
 import {
   listarDoPaciente,
   listarDoPsicologo,
   remarcarAgendamento,
   cancelarAgendamento
-} from "../../services/agendaService";
+} from "../../../services/agendaService";
 
-import { listarTodosDoPsicologo } from "../../services/horarioService";
+import { listarTodosDoPsicologo } from "../../../services/horarioService";
 
 /* ========================================
    CONSTANTES
@@ -719,6 +719,18 @@ export default function Calendario() {
                 )}
 
               </div>
+
+              {/* BODY */}
+              {user.tipo === "psicologo" ? (
+                <div className="calendar-body">
+                  {diasSemanaAtual.map(
+                    renderColunaDia
+                  )}
+                </div>
+              ) : (
+                renderCalendarioPaciente()
+              )}
+
             </div>
 
           </div>
