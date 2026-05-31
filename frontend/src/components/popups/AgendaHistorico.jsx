@@ -139,6 +139,7 @@ export default function AgendaHistorico({
                             Começar consulta
                         </button>
                     )}
+                    {!jaPassou && (isPendente || (!isConfirmado && !isHoje)) && randomDay(setOpenReschedule, setOpenCancel)}
 
 
                     {/*     {!jaPassou && (isPendente || (isConfirmado && !isHoje)) && randomDay(setOpenReschedule, setOpenCancel)}       */}
@@ -151,9 +152,9 @@ export default function AgendaHistorico({
                 }}
                 onConfirm={() => removerSchedule(agenda.id_agendamento)}
                 loading={deletando}
-                title="Deletar agendamento"
+                title="Cancelar agendamento"
                 message="Você tem certeza que deseja deletar esta solicitação? Esta ação não pode ser desfeita. Será necessário realizar um novo agendamento."
-                confirmText="Deletar solicitação"
+                confirmText="Cancelar consulta"
             />
             <Verpsi
                 open={openReschedule}

@@ -56,7 +56,7 @@ export default function SideBarPaciente({ profileData }) {
                 </div>
 
                 <div className="container-consulta-info">
-                    <h4>Sua próxima consulta com o Dr. Luigi será em breve</h4>
+                    <h4>Sua próxima consulta com o(a) Dr. Luigi será em breve</h4>
                     <span className="status-consulta">
                         Status - Confirmado
                     </span>

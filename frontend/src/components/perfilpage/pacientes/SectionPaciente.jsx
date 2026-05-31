@@ -24,6 +24,12 @@ export default function SectionPaciente({ profileData }) {
             return <Calendario />;
         }
 
+        if(activeTab === "dashboard"){
+            return(
+                <h1>Dashboard em construção</h1>
+            )
+        }
+
         if (activeTab === "financeiro") {
             return (
                 <div className="card-perfil-content perfil-placeholder">

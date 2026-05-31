@@ -13,7 +13,6 @@ section.section-filter {
 .section-filters-searchbox {
     background-color: var(--white-300);
     border-radius: var(--border-radius-md);
-    margin: var(--spacing-xs);
     padding-top: var(--spacing-xs);
     padding-bottom: var(--spacing-xs);
     padding-inline: var(--spacing-xs);
